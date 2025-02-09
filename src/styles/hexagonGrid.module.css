@@ -1,0 +1,81 @@
+.main {
+    display: flex;
+    justify-content: center;
+  }
+  
+  .container {
+    font-size: 0; /* removes inline-block whitespace */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .gridRow {
+    display: grid;
+    gap: 25px;
+    justify-content: center;
+  }
+  
+  .odd {
+    margin-left: -calc((var(--s) + var(--m)));
+  }
+  
+  .even {
+    margin-right: calc((var(--s) + var(--m)) / 2 );
+  }
+  
+  .hexagonWrapper {
+    position: relative;
+    display: inline-block;
+    width: var(--s);
+    height: calc(var(--s) * 1.1547);
+    margin: var(--m);
+  }
+  
+  .outlineHexagon {
+    /* Outline layer is styled inline in the component */
+  }
+  
+  .hexagon {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    clip-path: polygon(0% 25%, 0% 75%, 50% 100%, 100% 75%, 100% 25%, 50% 0%);
+    overflow: hidden;
+    z-index: 2;
+  }
+  
+  .hexContent {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  
+  .icon {
+    margin-bottom: 4px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 639px) {
+    .hexContent h3 {
+      font-size: 0.7rem;
+    }
+    .hexContent p {
+      font-size: 0.5rem;
+    }
+    .icon {
+      font-size: 1rem;
+    }
+  }
+  

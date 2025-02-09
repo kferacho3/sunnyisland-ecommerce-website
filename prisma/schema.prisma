@@ -1,0 +1,120 @@
+// /Users/kamalferacho/sunnyislandpepper/prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // Change if using MySQL, SQLite, etc.
+  url      = env("DATABASE_URL")
+}
+
+/// The main user model stores basic account information.
+model User {
+  id                Int                @id @default(autoincrement())
+  firstName         String
+  lastName          String
+  email             String             @unique
+  password          String
+  verified          Boolean            @default(false)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  /// A user can have multiple saved addresses.
+  addresses         Address[]
+
+  /// A user’s order history.
+  orders            Order[]
+
+  /// Subscriptions saved by the user.
+  subscriptions     Subscription[]
+
+  /// Recipes submitted by the user.
+  submittedRecipes  SubmittedRecipe[]
+
+  /// Favorite recipes via a join table.
+  favoriteRecipes   FavoriteRecipe[]   @relation("UserFavorites")
+
+  /// Email verification records.
+  verifications     UserVerification[]
+}
+
+/// Model to store temporary email verification codes.
+model UserVerification {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  code      String
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+/// Model to store one or more addresses associated with a user.
+model Address {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  user         User     @relation(fields: [userId], references: [id])
+  label        String?  // e.g., "Home", "Work"
+  addressLine1 String
+  addressLine2 String?
+  city         String
+  state        String
+  zip          String
+  country      String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+/// Model to store an order summary.
+model Order {
+  id             Int      @id @default(autoincrement())
+  orderNumber    String   @unique
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id])
+  date           DateTime @default(now())
+  tracking       String?  // Optional tracking info
+  shippingStatus String
+  total          Float
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+/// Model to store subscription information.
+/// The "bag" field can store a JSON object with product details.
+model Subscription {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  name       String
+  bag        Json     // JSON containing a bag of products
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+/// Model for recipes submitted by users.
+model SubmittedRecipe {
+  id              Int               @id @default(autoincrement())
+  userId          Int
+  user            User              @relation(fields: [userId], references: [id])
+  name            String
+  photo           String?           // URL or file path for the recipe photo
+  description     String?
+  preparationTime Int?              // in minutes
+  ingredients     String            // could be a comma-separated list or JSON-formatted
+  cookTime        Int?              // in minutes
+  servings        Int?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  /// Users who have favorited this recipe.
+  favoritedBy     FavoriteRecipe[]  @relation("RecipeFavorites")
+}
+
+/// Join table to relate users to their favorite recipes.
+model FavoriteRecipe {
+  userId   Int
+  recipeId Int
+  user     User            @relation("UserFavorites", fields: [userId], references: [id])
+  recipe   SubmittedRecipe @relation("RecipeFavorites", fields: [recipeId], references: [id])
+  @@id([userId, recipeId])
+}
