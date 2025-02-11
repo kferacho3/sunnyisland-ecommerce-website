@@ -37,13 +37,14 @@ export default function RootLayout({
             the fixed Navbar (h-20) and Header (roughly 40px).
             Adjust the value (e.g. pt-32 equals 8rem, which is 128px) as needed.
           */}
-          <main className="pt-20 min-h-screen">
+          <main className="pt-28 min-h-screen">
             {children}
           </main>
-          <Footer />
+    
           {/* Sticky Components */}
           <StickyAccessibility />
           <StickyCookieConsent />
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

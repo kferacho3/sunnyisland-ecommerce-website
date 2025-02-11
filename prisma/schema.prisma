@@ -1,11 +1,9 @@
-// /Users/kamalferacho/sunnyislandpepper/prisma/schema.prisma
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql" // Change if using MySQL, SQLite, etc.
+  provider = "postgresql" 
   url      = env("DATABASE_URL")
 }
 
@@ -15,7 +13,7 @@ model User {
   firstName         String
   lastName          String
   email             String             @unique
-  password          String
+  password          String             // Store hashed & salted password (e.g., using bcrypt)
   verified          Boolean            @default(false)
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
@@ -37,6 +35,9 @@ model User {
 
   /// Email verification records.
   verifications     UserVerification[]
+
+  /// Each user can have one active cart.
+  cart              Cart?
 }
 
 /// Model to store temporary email verification codes.
@@ -117,4 +118,25 @@ model FavoriteRecipe {
   user     User            @relation("UserFavorites", fields: [userId], references: [id])
   recipe   SubmittedRecipe @relation("RecipeFavorites", fields: [recipeId], references: [id])
   @@id([userId, recipeId])
+}
+
+/// Model to store a user's shopping cart.
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    Int        @unique  // Each user can have one active cart.
+  user      User       @relation(fields: [userId], references: [id])
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+/// Model to store individual items in a cart.
+model CartItem {
+  id       Int    @id @default(autoincrement())
+  cartId   Int
+  cart     Cart   @relation(fields: [cartId], references: [id])
+  title    String // Title of the item.
+  price    Float  // Associated price.
+  quantity Int    // Quantity of the item.
+  // Note: Subtotal (price * quantity) can be calculated in your application code.
 }

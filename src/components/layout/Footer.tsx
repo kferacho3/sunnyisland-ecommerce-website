@@ -45,7 +45,7 @@ export default function Footer() {
 
             <hr className="w-full border-gray-600 mb-4" />
 
-            <div className="grid grid-cols-3 gap-4 w-full text-xs sm:text-sm">
+            <div className="grid grid-cols-4 gap-4 w-full text-xs sm:text-sm">
               {/* SHOP */}
               <div>
                 <h4 className="font-semibold mb-2">Shop</h4>
@@ -76,7 +76,7 @@ export default function Footer() {
                       href="/shop/sections/ratingsReview"
                       className="hover:text-secondary"
                     >
-                      Ratings & Reviews
+                      Ratings &amp; Reviews
                     </Link>
                   </li>
                   <li>
@@ -167,6 +167,29 @@ export default function Footer() {
                       className="hover:text-secondary"
                     >
                       Support Us
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+
+              {/* LEGAL */}
+              <div>
+                <h4 className="font-semibold mb-2">Legal</h4>
+                <ul className="space-y-1 text-gray-300">
+                  <li>
+                    <Link
+                      href="/legal/privacy"
+                      className="hover:text-secondary"
+                    >
+                      Privacy Policy
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      href="/legal/terms"
+                      className="hover:text-secondary"
+                    >
+                      Terms of Service
                     </Link>
                   </li>
                 </ul>
