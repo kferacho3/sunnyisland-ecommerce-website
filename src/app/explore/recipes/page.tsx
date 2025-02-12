@@ -77,7 +77,7 @@ const countryFlags: { [key: string]: string } = {
 const RecipesPage = () => {
   // Tab state: Established Recipes vs. Sunny Island Original Recipes
   const [activeTab, setActiveTab] = useState<"established" | "original">(
-    "established"
+    "established",
   );
 
   // Favorites: store recipe IDs – guests can favorite; results are cached in localStorage
@@ -114,7 +114,7 @@ const RecipesPage = () => {
   // Toggle favorite status for a recipe ID
   const toggleFavorite = (id: number) => {
     setFavorites((prev) =>
-      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id]
+      prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id],
     );
   };
 
@@ -287,8 +287,7 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
           <div className="flex items-center gap-2 mb-2">
             <Image
               src={
-                countryFlags[featuredRecipe.country] ||
-                countryFlags["Unknown"]
+                countryFlags[featuredRecipe.country] || countryFlags["Unknown"]
               }
               alt={featuredRecipe.country}
               width={24}
@@ -481,9 +480,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
             <span className="text-xl font-semibold">
               {recipe.rating.toFixed(1)}
             </span>
-            <span className="text-xs text-gray-500 ml-1">
-              NOT YET RATED
-            </span>
+            <span className="text-xs text-gray-500 ml-1">NOT YET RATED</span>
             <button
               onClick={() => {
                 if (!isLoggedIn) {
@@ -595,21 +592,19 @@ const OriginalRecipesPlaceholder: React.FC = () => {
         </h2>
         <p className="max-w-xl text-sm md:text-base leading-relaxed mb-4">
           Have a culturally inspiring dish that features our pepper sauce? We’d
-          love to showcase it on our website with your personal touch and credit!
-          Just follow our guidelines:
+          love to showcase it on our website with your personal touch and
+          credit! Just follow our guidelines:
         </p>
         <ul className="text-left max-w-lg mx-auto list-disc list-inside space-y-1 text-sm md:text-base">
           <li>
-            Ensure the dish highlights{" "}
-            <em>Sunny Island Pepper Sauce</em>.
+            Ensure the dish highlights <em>Sunny Island Pepper Sauce</em>.
           </li>
           <li>
             Use a <strong>non-black table</strong> for your photo background.
           </li>
           <li>
-            Photos must pass our{" "}
-            <strong>human quality check</strong> for clarity &amp;
-            presentation.
+            Photos must pass our <strong>human quality check</strong> for
+            clarity &amp; presentation.
           </li>
           <li>Keep it culturally authentic and creative!</li>
         </ul>

@@ -38,7 +38,9 @@ function getRandomIndices(max: number, count: number): number[] {
 
 // Custom hook to detect the current breakpoint.
 function useBreakpoint() {
-  const [breakpoint, setBreakpoint] = useState<"mobile" | "tablet" | "desktop">("mobile");
+  const [breakpoint, setBreakpoint] = useState<"mobile" | "tablet" | "desktop">(
+    "mobile",
+  );
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
@@ -88,29 +90,29 @@ export default function UseCaseSection() {
   // Get a random subset of items from combinedData using random indices.
   const [displayItems, setDisplayItems] = useState(
     getRandomIndices(combinedData.length, itemsPerPage).map(
-      (index) => combinedData[index]
-    )
+      (index) => combinedData[index],
+    ),
   );
   useEffect(() => {
     setDisplayItems(
       getRandomIndices(combinedData.length, itemsPerPage).map(
-        (index) => combinedData[index]
-      )
+        (index) => combinedData[index],
+      ),
     );
   }, [breakpoint, itemsPerPage]);
 
   // Split items into rows for the grid.
   const numRows = Math.ceil(displayItems.length / columns);
   const rows = Array.from({ length: numRows }, (_, i) =>
-    displayItems.slice(i * columns, i * columns + columns)
+    displayItems.slice(i * columns, i * columns + columns),
   );
 
   // "SHAKE" button handler to re-randomize items.
   const handleShake = () => {
     setDisplayItems(
       getRandomIndices(combinedData.length, itemsPerPage).map(
-        (index) => combinedData[index]
-      )
+        (index) => combinedData[index],
+      ),
     );
   };
 
@@ -131,11 +133,13 @@ export default function UseCaseSection() {
         </h2>
         <div
           className={styles.main}
-          style={{
-            "--s": hexSize, // hexagon width
-            "--m": "4px",   // margin between hexagons
-            "--f": `calc(${hexSize} * 1.732 + 16px - 1px)`,
-          } as React.CSSProperties}
+          style={
+            {
+              "--s": hexSize, // hexagon width
+              "--m": "4px", // margin between hexagons
+              "--f": `calc(${hexSize} * 1.732 + 16px - 1px)`,
+            } as React.CSSProperties
+          }
         >
           <div className={styles.container}>
             {rows.map((rowItems, rowIndex) => (
@@ -148,7 +152,8 @@ export default function UseCaseSection() {
               >
                 {rowItems.map((item) => {
                   // Choose background based on the item type.
-                  const contentBg = item.type === "pepper" ? pepperBg : useCaseBg;
+                  const contentBg =
+                    item.type === "pepper" ? pepperBg : useCaseBg;
                   return (
                     <motion.div
                       key={item.id}
@@ -218,8 +223,12 @@ export default function UseCaseSection() {
                             }}
                           >
                             <div className={styles.icon}>{item.icon}</div>
-                            <h3 className="text-sm md:text-base font-bold">{item.title}</h3>
-                            <p className="text-[0.375rem] md:text-[0.4375rem]">{item.desc}</p>
+                            <h3 className="text-sm md:text-base font-bold">
+                              {item.title}
+                            </h3>
+                            <p className="text-[0.375rem] md:text-[0.4375rem]">
+                              {item.desc}
+                            </p>
                           </motion.div>
                         </AnimatePresence>
                       </motion.div>

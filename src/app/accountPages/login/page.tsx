@@ -19,9 +19,7 @@ export default function LoginPage() {
         <h1 className="text-2xl sm:text-4xl font-bold text-center mb-4">
           Welcome to Sunny Island!
         </h1>
-        <p className="text-center mb-8 text-sm sm:text-base">
-          Login below
-        </p>
+        <p className="text-center mb-8 text-sm sm:text-base">Login below</p>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <FormInput

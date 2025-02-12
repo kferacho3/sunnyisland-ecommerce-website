@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 interface Article {
   id: number;
@@ -30,7 +30,9 @@ const ArticleList: React.FC<ArticleListProps> = ({ articles }) => {
           </Link>
           <div className="p-4 flex flex-col justify-between">
             <div>
-              <p className="text-sm text-gray-500 mb-1">{article.association}</p>
+              <p className="text-sm text-gray-500 mb-1">
+                {article.association}
+              </p>
               <h2 className="text-xl font-bold mb-2">{article.title}</h2>
               <p className="text-gray-700">{article.description}</p>
             </div>

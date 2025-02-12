@@ -3,7 +3,7 @@ export interface IStorySection {
   header: string;
   description: string;
   bullets: string[];
-  imageUrl?: string;      // Optional background image URL for this section
+  imageUrl?: string; // Optional background image URL for this section
   reverseLayout?: boolean; // If true, forces the layout to swap (image right, text left)
 }
 
@@ -19,7 +19,8 @@ const storyData: IStorySection[] = [
       "Rich, natural ingredients",
       "Ideal for versatile culinary use",
     ],
-    imageUrl: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about1.webp",
+    imageUrl:
+      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about1.webp",
   },
   {
     topline: "History",
@@ -31,7 +32,8 @@ const storyData: IStorySection[] = [
       "Celebrates authentic Caribbean culture",
       "Rooted in a family recipe",
     ],
-    imageUrl: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about2.webp",
+    imageUrl:
+      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about2.webp",
   },
   {
     topline: "About Us",
@@ -43,7 +45,8 @@ const storyData: IStorySection[] = [
       "Committed to supporting small business growth",
       "Ethical and sustainable practices",
     ],
-    imageUrl: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about3.webp",
+    imageUrl:
+      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about3.webp",
   },
   {
     topline: "Mental Health and Wellness",
@@ -55,8 +58,9 @@ const storyData: IStorySection[] = [
       "Encourages self-care and support",
       "Fosters a holistic approach to wellness",
     ],
-    imageUrl: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about4.webp",
-    reverseLayout: true
+    imageUrl:
+      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about4.webp",
+    reverseLayout: true,
   },
   {
     topline: "Partnering with Feracho Brand",
@@ -68,8 +72,9 @@ const storyData: IStorySection[] = [
       "Join a positive movement",
       "Promotes sustainable practices",
     ],
-    imageUrl: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about5.webp",
-    reverseLayout: true
+    imageUrl:
+      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about5.webp",
+    reverseLayout: true,
   },
   {
     topline: "Community Engagement",
@@ -81,7 +86,8 @@ const storyData: IStorySection[] = [
       "Encourages volunteerism and charitable giving",
       "Celebrates culinary diversity",
     ],
-    imageUrl: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about1.webp",
+    imageUrl:
+      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about1.webp",
   },
   {
     topline: "Event Participation",
@@ -93,7 +99,8 @@ const storyData: IStorySection[] = [
       "Bringing our sauce to food festivals",
       "Supporting Caribbean heritage initiatives",
     ],
-    imageUrl: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about2.webp",
+    imageUrl:
+      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about2.webp",
   },
   {
     topline: "Recipe Submissions",
@@ -105,7 +112,8 @@ const storyData: IStorySection[] = [
       "Get featured on our platform",
       "Join a community of creative cooks",
     ],
-    imageUrl: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about3.webp",
+    imageUrl:
+      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about3.webp",
   },
 ];
 

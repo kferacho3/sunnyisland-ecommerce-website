@@ -7,7 +7,10 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
 
   if (!code) {
-    return NextResponse.json({ error: "Missing authorization code" }, { status: 400 });
+    return NextResponse.json(
+      { error: "Missing authorization code" },
+      { status: 400 },
+    );
   }
 
   const params = new URLSearchParams();
@@ -28,7 +31,7 @@ export async function GET(request: NextRequest) {
     console.error("❌ Token exchange failed:", errorText);
     return NextResponse.json(
       { error: "Token exchange failed", details: errorText },
-      { status: 500 }
+      { status: 500 },
     );
   }
 

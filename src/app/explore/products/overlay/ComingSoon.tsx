@@ -99,7 +99,12 @@ export const ComingSoonPopup = ({ product, onClose }: ComingSoonPopupProps) => {
             return (
               <FaPepperHot
                 key={i}
-                style={{ color, margin: "0 2px", filter: product.id === 4 ? "drop-shadow(0 0 1px white)" : undefined }}
+                style={{
+                  color,
+                  margin: "0 2px",
+                  filter:
+                    product.id === 4 ? "drop-shadow(0 0 1px white)" : undefined,
+                }}
               />
             );
           })}

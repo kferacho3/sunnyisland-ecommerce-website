@@ -53,7 +53,10 @@ export default function RegisterPage() {
 
         {/* Social / External Sign-up Options */}
         <div className="flex flex-col gap-2 mb-6">
-          <button onClick={handleGoogleSignup} className="border border-gray-300 dark:border-gray-600 px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-sm">
+          <button
+            onClick={handleGoogleSignup}
+            className="border border-gray-300 dark:border-gray-600 px-4 py-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-sm"
+          >
             Sign up with Google
           </button>
           {/* Additional social buttons... */}
@@ -63,8 +66,18 @@ export default function RegisterPage() {
           <FormInput label="First Name" type="text" name="firstName" required />
           <FormInput label="Last Name" type="text" name="lastName" required />
           <FormInput label="Email Address" type="email" name="email" required />
-          <FormInput label="Password" type="password" name="password" required />
-          <FormInput label="Confirm Password" type="password" name="confirmPassword" required />
+          <FormInput
+            label="Password"
+            type="password"
+            name="password"
+            required
+          />
+          <FormInput
+            label="Confirm Password"
+            type="password"
+            name="confirmPassword"
+            required
+          />
 
           {/* reCAPTCHA widget */}
           <ReCAPTCHA
@@ -73,7 +86,12 @@ export default function RegisterPage() {
           />
 
           <div className="flex items-center gap-2">
-            <input type="checkbox" name="offers" id="offers" className="h-4 w-4 accent-secondary" />
+            <input
+              type="checkbox"
+              name="offers"
+              id="offers"
+              className="h-4 w-4 accent-secondary"
+            />
             <label htmlFor="offers" className="text-sm">
               Keep me up to date with special offers and promotions
             </label>
@@ -85,7 +103,10 @@ export default function RegisterPage() {
         </form>
 
         <div className="mt-4 text-center text-sm">
-          <Link href="/accountPages/login" className="underline hover:text-secondary">
+          <Link
+            href="/accountPages/login"
+            className="underline hover:text-secondary"
+          >
             Already have an account? Log in
           </Link>
         </div>

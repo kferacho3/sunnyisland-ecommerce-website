@@ -1,6 +1,10 @@
 import { Detailed, Environment, useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { DepthOfField, EffectComposer, ToneMapping } from "@react-three/postprocessing";
+import {
+  DepthOfField,
+  EffectComposer,
+  ToneMapping,
+} from "@react-three/postprocessing";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import { GLTF } from "three-stdlib";
@@ -32,10 +36,10 @@ function Pepper({ index, z, speed, color }: PepperProps) {
 
   // Load GLTF models with proper typing
   const yellowPepper = useGLTF(
-    "https://sunnyisland.s3.us-east-2.amazonaws.com/media/glb/yellowPepper.glb"
+    "https://sunnyisland.s3.us-east-2.amazonaws.com/media/glb/yellowPepper.glb",
   ) as unknown as PepperGLTF;
   const redPepper = useGLTF(
-    "https://sunnyisland.s3.us-east-2.amazonaws.com/media/glb/redPepper.glb"
+    "https://sunnyisland.s3.us-east-2.amazonaws.com/media/glb/redPepper.glb",
   ) as unknown as PepperGLTF;
 
   const [data] = useState(() => ({
@@ -51,7 +55,7 @@ function Pepper({ index, z, speed, color }: PepperProps) {
     const pepperPos = new THREE.Vector3(
       index === 0 ? 0 : data.x * width,
       data.y,
-      -z
+      -z,
     );
     // Bounce if too close to the logo or sauce centers.
     if (
@@ -66,7 +70,7 @@ function Pepper({ index, z, speed, color }: PepperProps) {
       ref.current.rotation.set(
         (data.rX += dt / data.spin),
         Math.sin(index * 1000 + state.clock.elapsedTime / 10) * Math.PI,
-        (data.rZ += dt / data.spin)
+        (data.rZ += dt / data.spin),
       );
     }
     if (
@@ -82,7 +86,10 @@ function Pepper({ index, z, speed, color }: PepperProps) {
 
   return (
     <Detailed ref={ref} distances={[0, 65, 80]}>
-      <mesh geometry={nodes.modelobj.geometry} material={nodes.modelobj.material} />
+      <mesh
+        geometry={nodes.modelobj.geometry}
+        material={nodes.modelobj.material}
+      />
     </Detailed>
   );
 }
@@ -111,7 +118,13 @@ export default function Peppers({
   return (
     <>
       <color attach="background" args={["#ffbf40"]} />
-      <spotLight position={[10, 20, 10]} penumbra={1} decay={0} intensity={3} color="orange" />
+      <spotLight
+        position={[10, 20, 10]}
+        penumbra={1}
+        decay={0}
+        intensity={3}
+        color="orange"
+      />
       {peppers.map((pepperColor, i) => (
         <Pepper
           key={i}
@@ -123,7 +136,12 @@ export default function Peppers({
       ))}
       <Environment preset="sunset" />
       <EffectComposer multisampling={0}>
-        <DepthOfField target={[0, 0, 60]} focalLength={0.4} bokehScale={10} height={700} />
+        <DepthOfField
+          target={[0, 0, 60]}
+          focalLength={0.4}
+          bokehScale={10}
+          height={700}
+        />
         <ToneMapping />
       </EffectComposer>
     </>

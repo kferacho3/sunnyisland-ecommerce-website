@@ -1,6 +1,11 @@
 // src/components/home/SectionExploreGrid.tsx
 
-import { Widget, permanentWidgets, secondaryWidgetsData, shuffleArray } from "@/data/gridData";
+import {
+  Widget,
+  permanentWidgets,
+  secondaryWidgetsData,
+  shuffleArray,
+} from "@/data/gridData";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -11,11 +16,11 @@ import { useEffect, useState } from "react";
    optionally which widget is assigned to that shape.
 --------------------------------------------------------------------------- */
 interface Tile {
-  row: number;      // top-left row (0-based)
-  col: number;      // top-left col (0-based)
+  row: number; // top-left row (0-based)
+  col: number; // top-left col (0-based)
   rowSpan: number;
   colSpan: number;
-  widget?: Widget;  // widget assigned to this shape
+  widget?: Widget; // widget assigned to this shape
 }
 
 /* ============================================================================
@@ -41,7 +46,7 @@ function getRandomFiveShapePositions3x8(): Tile[] {
   const side3x2 = Math.random() < 0.5 ? "left" : "right"; // leftmost 2 or rightmost 2 columns
 
   // 2) Top or bottom for the 2×6 piece?
-  const top2x6 = Math.random() < 0.5 ? "top" : "bottom";  // top 2 rows or bottom 2 rows
+  const top2x6 = Math.random() < 0.5 ? "top" : "bottom"; // top 2 rows or bottom 2 rows
 
   // Prepare the 3×2 shape
   const tile3x2: Tile =
@@ -98,7 +103,7 @@ function getRandomFiveShapePositions3x8(): Tile[] {
   // [ 2×6, 3×2, 1×3, 1×2, 1×1 ]
   // We'll identify which leftover tile is 1×3, 1×2, 1×1 by area
   const leftoverTiles = [tile1xA, tile1xB, tile1xC].sort(
-    (t1, t2) => (t2.rowSpan * t2.colSpan) - (t1.rowSpan * t1.colSpan)
+    (t1, t2) => t2.rowSpan * t2.colSpan - t1.rowSpan * t1.colSpan,
   );
   // leftoverTiles is now [1×3, 1×2, 1×1].
 
@@ -126,10 +131,10 @@ function getFiveWidgetLayoutPage0(
   // plus 2 secondary for a total of 5.
   scoville: Widget,
   foods: Widget,
-  secondaries: Widget[]
+  secondaries: Widget[],
 ): Tile[] {
   // 1) generate random positions
-  const tiles = getRandomFiveShapePositions3x8(); 
+  const tiles = getRandomFiveShapePositions3x8();
   // tiles order: [2x6, 3x2, 1x3, 1x2, 1x1]
 
   // 2) assign "Products" to the largest shape (index 0 => 2×6).
@@ -147,8 +152,8 @@ function getFiveWidgetLayoutPage0(
   //   index=1 => 3×2, index=2 => 1×3, index=3 => 1×2, index=4 => 1×1
   //   We'll do scoville -> 3×2, foods -> 1×3, then the two secondaries -> 1×2, 1×1
 
-  tiles[1].widget = scoville;       // 3×2
-  tiles[2].widget = foods;          // 1×3
+  tiles[1].widget = scoville; // 3×2
+  tiles[2].widget = foods; // 1×3
   tiles[3].widget = secondaries[0]; // 1×2
   tiles[4].widget = secondaries[1]; // 1×1
 
@@ -164,7 +169,7 @@ function getFiveWidgetLayoutPage0(
 ============================================================================ */
 function getFiveWidgetLayoutPageOther(widgets: Widget[]): Tile[] {
   // Generate shape layout
-  const tiles = getRandomFiveShapePositions3x8(); 
+  const tiles = getRandomFiveShapePositions3x8();
   // tiles in shape order: [2×6, 3×2, 1×3, 1×2, 1×1]
 
   // For variety, just sort the 5 widgets randomly:
@@ -196,7 +201,7 @@ function getThreeWidgetSingleRowLayout(widgets: Widget[]): Tile[] {
   shuffleArray(shapes);
 
   let currentCol = 0;
-  const tiles: Tile[] = shapes.map(s => {
+  const tiles: Tile[] = shapes.map((s) => {
     const t: Tile = { row: 0, col: currentCol, rowSpan: 1, colSpan: s.colSpan };
     currentCol += s.colSpan;
     return t;
@@ -216,8 +221,14 @@ function getThreeWidgetSingleRowLayout(widgets: Widget[]): Tile[] {
    you can simply define a simpler fallback. Shown below is your original code,
    slightly shortened. Then we assign widgets in the order they appear.
 ============================================================================ */
-function generateUniqueTiling(numRows: number, numCols: number, pieces: number): Tile[] | null {
-  const grid = Array.from({ length: numRows }, () => Array(numCols).fill(false));
+function generateUniqueTiling(
+  numRows: number,
+  numCols: number,
+  pieces: number,
+): Tile[] | null {
+  const grid = Array.from({ length: numRows }, () =>
+    Array(numCols).fill(false),
+  );
   const solution: Tile[] = [];
   const usedSizes = new Set<string>();
 
@@ -249,7 +260,13 @@ function generateUniqueTiling(numRows: number, numCols: number, pieces: number):
     return true;
   }
 
-  function markCells(row: number, col: number, h: number, w: number, value: boolean) {
+  function markCells(
+    row: number,
+    col: number,
+    h: number,
+    w: number,
+    value: boolean,
+  ) {
     for (let rr = row; rr < row + h; rr++) {
       for (let cc = col; cc < col + w; cc++) {
         grid[rr][cc] = value;
@@ -308,16 +325,20 @@ function generateUniqueTiling(numRows: number, numCols: number, pieces: number):
    - etc.
    Returns an array of Tiles (each with a widget assigned).
 ============================================================================ */
-function generateLayout(widgetCount: number, pageIndex: number, widgets: Widget[]): Tile[] {
+function generateLayout(
+  widgetCount: number,
+  pageIndex: number,
+  widgets: Widget[],
+): Tile[] {
   // 1) If we have exactly 5 widgets, we do the special 3×8 logic
   if (widgetCount === 5) {
     if (pageIndex === 0) {
       // We know the first page: 3 permanent (Products, Scoville, Foods) + 2 secondaries
       // The code below ensures the largest shape is always "Products".
-      const scoville = widgets.find(w => w.id === 102)!;  // "Scoville Scale"
-      const foods    = widgets.find(w => w.id === 103)!;  // "Foods all around!"
+      const scoville = widgets.find((w) => w.id === 102)!; // "Scoville Scale"
+      const foods = widgets.find((w) => w.id === 103)!; // "Foods all around!"
       const secondaries = widgets.filter(
-        w => w.id !== 101 && w.id !== 102 && w.id !== 103
+        (w) => w.id !== 101 && w.id !== 102 && w.id !== 103,
       ); // The 2 leftover are from secondary array
 
       return getFiveWidgetLayoutPage0(scoville, foods, secondaries);
@@ -333,7 +354,8 @@ function generateLayout(widgetCount: number, pageIndex: number, widgets: Widget[
   }
 
   // 3) Otherwise (1, 2, or 4 widgets), do your original 3×5 backtracking
-  const numRows = 3, numCols = 5;
+  const numRows = 3,
+    numCols = 5;
   const tiling = generateUniqueTiling(numRows, numCols, widgetCount);
   if (tiling) {
     // Assign each tile a widget from the array
@@ -390,7 +412,9 @@ function WidgetCard({ widget }: WidgetCardProps) {
           }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-            <span className="text-white font-bold text-xl px-2">{widget.title}</span>
+            <span className="text-white font-bold text-xl px-2">
+              {widget.title}
+            </span>
           </div>
         </motion.div>
       </div>
@@ -410,7 +434,9 @@ function WidgetCard({ widget }: WidgetCardProps) {
 ============================================================================ */
 export default function SectionExploreGrid() {
   const widgetsPerPage = 5; // or test with 3 for your last-section scenario
-  const [shuffledSecondaries, setShuffledSecondaries] = useState<Widget[]>(() => shuffleArray([...secondaryWidgetsData]));
+  const [shuffledSecondaries, setShuffledSecondaries] = useState<Widget[]>(() =>
+    shuffleArray([...secondaryWidgetsData]),
+  );
   const [secondaryPage, setSecondaryPage] = useState(0);
 
   // Assemble the current page's widgets
@@ -452,16 +478,20 @@ export default function SectionExploreGrid() {
   useEffect(() => {
     if (mounted) {
       // Generate a new layout whenever page or widget selection changes
-      const newLayout = generateLayout(widgetCount, secondaryPage, dashboardWidgets);
+      const newLayout = generateLayout(
+        widgetCount,
+        secondaryPage,
+        dashboardWidgets,
+      );
       setTiles(newLayout);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted, widgetCount, secondaryPage, shuffledSecondaries]);
 
   // Figure out final grid dimensions
   // - If we used 5 widgets in a 3×8, or we used 3 in a 1×6, or 3×5 for smaller sets, etc.
   // We'll just scan the assigned tiles to see the bounding box:
-  let maxRow = 0, maxCol = 0;
+  let maxRow = 0,
+    maxCol = 0;
   for (const t of tiles) {
     maxRow = Math.max(maxRow, t.row + t.rowSpan);
     maxCol = Math.max(maxCol, t.col + t.colSpan);
@@ -472,7 +502,8 @@ export default function SectionExploreGrid() {
   const containerHeight = maxRow * cellSize;
 
   // Pagination
-  const totalSecondaryPages = Math.ceil(shuffledSecondaries.length / widgetsPerPage) + 1;
+  const totalSecondaryPages =
+    Math.ceil(shuffledSecondaries.length / widgetsPerPage) + 1;
 
   const handleRefresh = () => {
     setShuffledSecondaries(shuffleArray([...secondaryWidgetsData]));
@@ -481,13 +512,13 @@ export default function SectionExploreGrid() {
 
   const handleNextPage = () => {
     setSecondaryPage((prev) =>
-      prev + 1 >= totalSecondaryPages ? 0 : prev + 1
+      prev + 1 >= totalSecondaryPages ? 0 : prev + 1,
     );
   };
 
   const handlePrevPage = () => {
     setSecondaryPage((prev) =>
-      prev - 1 < 0 ? totalSecondaryPages - 1 : prev - 1
+      prev - 1 < 0 ? totalSecondaryPages - 1 : prev - 1,
     );
   };
 

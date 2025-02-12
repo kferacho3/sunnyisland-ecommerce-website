@@ -24,7 +24,6 @@ export default function Preloader({ onLoaded }: PreloaderProps) {
 
   return (
     <>
-
       <Html center as="div">
         <motion.div
           initial="hidden"

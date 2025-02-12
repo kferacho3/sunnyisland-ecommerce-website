@@ -32,7 +32,9 @@ export default function Flame(props: ThreeElements["mesh"]) {
     if (ref.current && ref.current.material instanceof THREE.ShaderMaterial) {
       const material = ref.current.material as FireMaterial;
       material.uniforms.time.value = state.clock.elapsedTime;
-      material.uniforms.invModelMatrix.value = new THREE.Matrix4().copy(ref.current.matrixWorld).invert();
+      material.uniforms.invModelMatrix.value = new THREE.Matrix4()
+        .copy(ref.current.matrixWorld)
+        .invert();
       material.uniforms.scale.value = ref.current.scale;
     }
   });

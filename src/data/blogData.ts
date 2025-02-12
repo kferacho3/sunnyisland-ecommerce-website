@@ -49,7 +49,8 @@ export const blogData: Article[] = [
   },
   {
     id: 5,
-    thumbnail: "https://www.foodculture.com/images/traditional-scotch-bonnet.jpg",
+    thumbnail:
+      "https://www.foodculture.com/images/traditional-scotch-bonnet.jpg",
     association: "Scotch Bonnet Peppers",
     title: "Traditional Recipes with Scotch Bonnet Peppers",
     description:
@@ -58,7 +59,8 @@ export const blogData: Article[] = [
   },
   {
     id: 6,
-    thumbnail: "https://www.nutritioninsights.com/images/scotch-bonnet-health.jpg",
+    thumbnail:
+      "https://www.nutritioninsights.com/images/scotch-bonnet-health.jpg",
     association: "Scotch Bonnet Peppers",
     title: "Scotch Bonnet Peppers: Health Benefits and Culinary Uses",
     description:
@@ -76,7 +78,8 @@ export const blogData: Article[] = [
   },
   {
     id: 8,
-    thumbnail: "https://www.spicyrecipes.com/images/trinidad-moruga-adventures.jpg",
+    thumbnail:
+      "https://www.spicyrecipes.com/images/trinidad-moruga-adventures.jpg",
     association: "Trinidad Moruga Scorpion",
     title: "Culinary Adventures with Trinidad Moruga Scorpion",
     description:
@@ -85,7 +88,8 @@ export const blogData: Article[] = [
   },
   {
     id: 9,
-    thumbnail: "https://www.scienceofspice.com/images/trinidad-moruga-science.jpg",
+    thumbnail:
+      "https://www.scienceofspice.com/images/trinidad-moruga-science.jpg",
     association: "Trinidad Moruga Scorpion",
     title: "The Science Behind the Trinidad Moruga Scorpion",
     description:
@@ -94,16 +98,17 @@ export const blogData: Article[] = [
   },
   {
     id: 10,
-    thumbnail: "https://www.psychologytoday.com/images/spicy-foods-mental-health.jpg",
+    thumbnail:
+      "https://www.psychologytoday.com/images/spicy-foods-mental-health.jpg",
     association: "Mental Health Awareness",
     title: "Spicy Foods and Mental Health: The Unexpected Link",
-    description:
-      "Examining how spicy foods can influence mental well-being.",
+    description: "Examining how spicy foods can influence mental well-being.",
     url: "https://www.psychologytoday.com/spicy-foods-mental-health",
   },
   {
     id: 11,
-    thumbnail: "https://www.caribbeanwellness.com/images/cuisine-mental-health.jpg",
+    thumbnail:
+      "https://www.caribbeanwellness.com/images/cuisine-mental-health.jpg",
     association: "Mental Health Awareness",
     title: "Caribbean Cuisine and Mental Health",
     description:
@@ -130,7 +135,8 @@ export const blogData: Article[] = [
   },
   {
     id: 14,
-    thumbnail: "https://www.guinnessworldrecords.com/images/spiciest-pepper.jpg",
+    thumbnail:
+      "https://www.guinnessworldrecords.com/images/spiciest-pepper.jpg",
     association: "Info",
     title: "What Is the Spiciest Pepper in the World?",
     description:
@@ -178,8 +184,7 @@ export const blogData: Article[] = [
     thumbnail: "https://www.spicyinnovations.com/images/hot-pepper-trends.jpg",
     association: "Info",
     title: "Spicy Innovations: New Trends in Hot Pepper Cuisine",
-    description:
-      "Discover how chefs are innovating with hot pepper flavors.",
+    description: "Discover how chefs are innovating with hot pepper flavors.",
     url: "https://www.spicyinnovations.com/new-trends",
   },
   {
@@ -193,11 +198,11 @@ export const blogData: Article[] = [
   },
   {
     id: 21,
-    thumbnail: "https://www.culinaryevolution.com/images/scotch-bonnet-evolution.jpg",
+    thumbnail:
+      "https://www.culinaryevolution.com/images/scotch-bonnet-evolution.jpg",
     association: "Scotch Bonnet Peppers",
     title: "The Evolution of Scotch Bonnet in Culinary Arts",
-    description:
-      "How this unique pepper has evolved in modern recipes.",
+    description: "How this unique pepper has evolved in modern recipes.",
     url: "https://www.culinaryevolution.com/scotch-bonnet",
   },
   {
@@ -205,8 +210,7 @@ export const blogData: Article[] = [
     thumbnail: "https://www.exoticflavors.com/images/trinidad-moruga.jpg",
     association: "Trinidad Moruga Scorpion",
     title: "A Culinary Journey with Trinidad Moruga",
-    description:
-      "Exploring exotic dishes featuring Trinidad Moruga Scorpion.",
+    description: "Exploring exotic dishes featuring Trinidad Moruga Scorpion.",
     url: "https://www.exoticflavors.com/trinidad-moruga",
   },
   {
@@ -248,7 +252,8 @@ export const blogData: Article[] = [
   // New additional articles (IDs 27 to 50)
   {
     id: 27,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/9/91/Red_Chili_Pepper.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/9/91/Red_Chili_Pepper.jpg",
     association: "Peppers 101",
     title: "A Beginner's Guide to Peppers",
     description:
@@ -257,7 +262,8 @@ export const blogData: Article[] = [
   },
   {
     id: 28,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/4/47/Capsaicin_molecule.png",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/4/47/Capsaicin_molecule.png",
     association: "Scoville",
     title: "The Science of Capsaicin",
     description:
@@ -266,7 +272,8 @@ export const blogData: Article[] = [
   },
   {
     id: 29,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/5/5a/Hot_Sauce_Bottles.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/5/5a/Hot_Sauce_Bottles.jpg",
     association: "Hot Sauces",
     title: "Top 10 Hot Sauces in the World",
     description:
@@ -275,7 +282,8 @@ export const blogData: Article[] = [
   },
   {
     id: 30,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bell_peppers.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/b/bf/Bell_peppers.jpg",
     association: "Peppers 101",
     title: "Understanding the Different Types of Peppers",
     description:
@@ -284,7 +292,8 @@ export const blogData: Article[] = [
   },
   {
     id: 31,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/2/27/Spice_blends.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/2/27/Spice_blends.jpg",
     association: "Spice Combinations",
     title: "The Art of Spice Blending",
     description:
@@ -293,7 +302,8 @@ export const blogData: Article[] = [
   },
   {
     id: 32,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/8/80/Chili_peppers_video.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/8/80/Chili_peppers_video.jpg",
     association: "Video Essay",
     title: "The History of Chili Peppers: A Video Essay",
     description:
@@ -302,7 +312,8 @@ export const blogData: Article[] = [
   },
   {
     id: 33,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Spicy_food_podcast.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/0/0b/Spicy_food_podcast.jpg",
     association: "Podcast",
     title: "Spice Talk: The Capsaicin Conversation",
     description:
@@ -311,7 +322,8 @@ export const blogData: Article[] = [
   },
   {
     id: 34,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/3/39/Chili_Peppers_Capsaicin.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/3/39/Chili_Peppers_Capsaicin.jpg",
     association: "Peppers 101",
     title: "Capsaicin Levels Explained",
     description:
@@ -320,7 +332,8 @@ export const blogData: Article[] = [
   },
   {
     id: 35,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/9/9d/DIY_hot_sauce.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/9/9d/DIY_hot_sauce.jpg",
     association: "Hot Sauces",
     title: "DIY Hot Sauce Recipes",
     description:
@@ -329,7 +342,8 @@ export const blogData: Article[] = [
   },
   {
     id: 36,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/f/fd/Plate_of_peppers.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/f/fd/Plate_of_peppers.jpg",
     association: "Culinary",
     title: "Pairing Peppers with Food",
     description:
@@ -338,7 +352,8 @@ export const blogData: Article[] = [
   },
   {
     id: 37,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/4/45/Spice_journal.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/4/45/Spice_journal.jpg",
     association: "Journal",
     title: "Journal of Spices: Research and Reviews",
     description:
@@ -347,7 +362,8 @@ export const blogData: Article[] = [
   },
   {
     id: 38,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/1/10/Hot_pepper.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/1/10/Hot_pepper.jpg",
     association: "Definitions",
     title: "What Makes a Pepper 'Hot'?",
     description:
@@ -356,7 +372,8 @@ export const blogData: Article[] = [
   },
   {
     id: 39,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/7/76/Global_pepper_cultures.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/7/76/Global_pepper_cultures.jpg",
     association: "Culinary",
     title: "Global Pepper Traditions",
     description:
@@ -365,7 +382,8 @@ export const blogData: Article[] = [
   },
   {
     id: 40,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/6/67/Fusion_cuisine.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/6/67/Fusion_cuisine.jpg",
     association: "Spice Combinations",
     title: "Fusion Cuisine: Blending Cultures and Spices",
     description:
@@ -374,7 +392,8 @@ export const blogData: Article[] = [
   },
   {
     id: 41,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/5/5a/Hot_pepper_trends.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/5/5a/Hot_pepper_trends.jpg",
     association: "Video Essay",
     title: "The Evolution of Hot Pepper Trends",
     description:
@@ -383,7 +402,8 @@ export const blogData: Article[] = [
   },
   {
     id: 42,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/0/00/Spicy_food_podcast.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/0/00/Spicy_food_podcast.jpg",
     association: "Podcast",
     title: "Behind the Heat: Conversations with Pepper Experts",
     description:
@@ -392,7 +412,8 @@ export const blogData: Article[] = [
   },
   {
     id: 43,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/8/85/Scoville_scale.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/8/85/Scoville_scale.jpg",
     association: "Scoville",
     title: "Breaking Down the Scoville Scale",
     description:
@@ -401,7 +422,8 @@ export const blogData: Article[] = [
   },
   {
     id: 44,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Chili_vs_bell_pepper.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/3/3e/Chili_vs_bell_pepper.jpg",
     association: "Definitions",
     title: "Peppers vs. Chillies: Understanding the Difference",
     description:
@@ -410,7 +432,8 @@ export const blogData: Article[] = [
   },
   {
     id: 45,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/1/1d/Hot_sauce_collection.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/1/1d/Hot_sauce_collection.jpg",
     association: "Hot Sauces",
     title: "Exploring Global Hot Sauce Varieties",
     description:
@@ -419,7 +442,8 @@ export const blogData: Article[] = [
   },
   {
     id: 46,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/4/48/Modern_cuisine_peppers.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/4/48/Modern_cuisine_peppers.jpg",
     association: "Culinary",
     title: "Innovative Uses of Peppers in Modern Cuisine",
     description:
@@ -428,7 +452,8 @@ export const blogData: Article[] = [
   },
   {
     id: 47,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/2/2e/Capsaicin_review.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/2/2e/Capsaicin_review.jpg",
     association: "Journal",
     title: "Capsaicin and Health: A Scientific Review",
     description:
@@ -437,7 +462,8 @@ export const blogData: Article[] = [
   },
   {
     id: 48,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/7/70/Cultural_spice_impact.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/7/70/Cultural_spice_impact.jpg",
     association: "Video Essay",
     title: "The Cultural Impact of Spicy Foods",
     description:
@@ -446,7 +472,8 @@ export const blogData: Article[] = [
   },
   {
     id: 49,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/0/08/Spice_chronicles.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/0/08/Spice_chronicles.jpg",
     association: "Podcast",
     title: "Spice Chronicles: Stories Behind the Heat",
     description:
@@ -455,7 +482,8 @@ export const blogData: Article[] = [
   },
   {
     id: 50,
-    thumbnail: "https://upload.wikimedia.org/wikipedia/commons/8/85/Scoville_scale.jpg",
+    thumbnail:
+      "https://upload.wikimedia.org/wikipedia/commons/8/85/Scoville_scale.jpg",
     association: "Definitions",
     title: "The Origins of the Scoville Scale",
     description:

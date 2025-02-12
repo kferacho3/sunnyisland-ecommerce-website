@@ -10,25 +10,23 @@ export default function ShopSection() {
   const availableProducts = productsData.filter((p) => p.modelId);
   // Default to the first available product (if any)
   const [selectedFlavor, setSelectedFlavor] = useState(
-    availableProducts.length ? availableProducts[0].name : productsData[0].name
+    availableProducts.length ? availableProducts[0].name : productsData[0].name,
   );
   const [quantity, setQuantity] = useState("5");
   const [customQuantity, setCustomQuantity] = useState("");
 
   const handleCustomQuantityChange = (
-    e: React.ChangeEvent<HTMLInputElement>
+    e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     setCustomQuantity(e.target.value);
   };
 
-  const handleFlavorChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
+  const handleFlavorChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setSelectedFlavor(e.target.value);
   };
 
   const selectedProduct = productsData.find(
-    (product) => product.name === selectedFlavor
+    (product) => product.name === selectedFlavor,
   );
 
   // A product is available only if its modelId is not null.
@@ -55,7 +53,7 @@ export default function ShopSection() {
                     key={idx}
                     style={{ color: selectedProduct?.spiceColor || "red" }}
                   />
-                )
+                ),
               )}
             </span>
           </p>

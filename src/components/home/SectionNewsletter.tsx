@@ -20,7 +20,7 @@ export default function SectionNewsletter() {
           STAY IN THE LOOP!
         </h2>
         <p className="text-sm sm:text-base mb-6 text-center">
-          Sign up for our newsletter to be the first to know about everything 
+          Sign up for our newsletter to be the first to know about everything
           hot, spicy, and delicious from Sunny Island Pepper Sauce.
         </p>
 
@@ -35,7 +35,7 @@ export default function SectionNewsletter() {
             By entering your name and email address and submitting this form,
             you consent to receive marketing communications from Sunny Island
             Pepper Sauce at the email provided. You can unsubscribe at any time
-            using the “unsubscribe” link in our emails. View our 
+            using the “unsubscribe” link in our emails. View our
             <a
               href="#"
               className="underline ml-1 hover:text-secondary"
@@ -43,7 +43,8 @@ export default function SectionNewsletter() {
               rel="noopener noreferrer"
             >
               Privacy Policy
-            </a>.
+            </a>
+            .
           </p>
 
           <Button className="mt-4 w-full sm:w-auto">Subscribe</Button>

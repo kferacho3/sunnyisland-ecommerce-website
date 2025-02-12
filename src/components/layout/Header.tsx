@@ -30,7 +30,8 @@ export default function Header() {
         >
           <div className="container mx-auto px-4 py-2 text-center">
             <p className="text-sm">
-              Enjoy our Caribbean Pepper Sauce! Free shipping on orders over $100.
+              Enjoy our Caribbean Pepper Sauce! Free shipping on orders over
+              $100.
             </p>
           </div>
         </motion.header>

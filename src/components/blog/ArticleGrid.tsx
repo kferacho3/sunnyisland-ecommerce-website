@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import Link from "next/link";
 
 interface Article {
   id: number;
@@ -23,7 +23,7 @@ const ArticleGrid: React.FC<ArticleGridProps> = ({ articles }) => {
         >
           <Link href={article.url} target="_blank" rel="noopener noreferrer">
             <img
-              src={article.image}  // using article.image now
+              src={article.image} // using article.image now
               alt={article.title}
               className="w-full h-48 object-cover cursor-pointer"
             />

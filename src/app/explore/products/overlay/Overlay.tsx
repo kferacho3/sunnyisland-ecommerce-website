@@ -2,7 +2,7 @@ import { Product } from "@/data/productsData";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { FaPepperHot, FaSearch } from "react-icons/fa";
-import { IoIosFlame, } from "react-icons/io";
+import { IoIosFlame } from "react-icons/io";
 
 interface OverlayProps {
   toggleFlame: () => void;
@@ -19,7 +19,8 @@ const productStyles: { [key: number]: { button: string; header: string } } = {
     header: "text-red-700",
   },
   2: {
-    button: "bg-gradient-to-r from-purple-600 to-red-600 border border-purple-900",
+    button:
+      "bg-gradient-to-r from-purple-600 to-red-600 border border-purple-900",
     header: "text-purple-600",
   },
   3: {
@@ -73,7 +74,7 @@ export function Overlay({
   onSelectProduct,
 }: OverlayProps) {
   const [activePanel, setActivePanel] = useState<"none" | "info" | "scoville">(
-    "none"
+    "none",
   );
 
   const togglePanel = (panel: "info" | "scoville") => {
@@ -218,7 +219,9 @@ export function Overlay({
                     color,
                     margin: "0 2px",
                     filter:
-                      currentProduct.id === 4 ? "drop-shadow(0 0 1px white)" : undefined,
+                      currentProduct.id === 4
+                        ? "drop-shadow(0 0 1px white)"
+                        : undefined,
                   }}
                 />
               );
@@ -270,7 +273,9 @@ export function Overlay({
                     color,
                     margin: "0 2px",
                     filter:
-                      currentProduct.id === 4 ? "drop-shadow(0 0 1px white)" : undefined,
+                      currentProduct.id === 4
+                        ? "drop-shadow(0 0 1px white)"
+                        : undefined,
                   }}
                 />
               );

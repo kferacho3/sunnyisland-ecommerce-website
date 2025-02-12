@@ -57,7 +57,11 @@ function SectionDisplay({
   // Framer-motion animation variant
   const fadeVariant = {
     hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" },
+    },
   };
 
   // Use the provided section.imageUrl; if none, choose from placeholderImages
@@ -68,12 +72,15 @@ function SectionDisplay({
     "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about4.webp",
     "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about5.webp",
   ];
-  const imageSrc = section.imageUrl || placeholderImages[index % placeholderImages.length];
+  const imageSrc =
+    section.imageUrl || placeholderImages[index % placeholderImages.length];
 
   // Alternate based on index: even sections get image left / text right,
   // odd sections get text left / image right.
   const isEven = index % 2 === 0;
-  const containerBg = isEven ? "bg-white dark:bg-black" : "bg-gray-100 dark:bg-gray-800";
+  const containerBg = isEven
+    ? "bg-white dark:bg-black"
+    : "bg-gray-100 dark:bg-gray-800";
 
   return (
     <motion.div
@@ -125,7 +132,9 @@ function SectionText({ section }: { section: IStorySection }) {
       <h3 className="text-sm sm:text-base uppercase text-secondary font-bold mb-1">
         {section.topline}
       </h3>
-      <h2 className="text-2xl sm:text-3xl font-semibold mb-4">{section.header}</h2>
+      <h2 className="text-2xl sm:text-3xl font-semibold mb-4">
+        {section.header}
+      </h2>
       <p className="text-base mb-4">{section.description}</p>
       <ul className="space-y-2">
         {section.bullets.map((bullet, idx) => (
@@ -144,7 +153,7 @@ export default function AboutPage() {
   const historySection = storyData.find((s) => s.topline === "History");
   const aboutUsSection = storyData.find((s) => s.topline === "About Us");
   const remainingSections = storyData.filter(
-    (s) => s.topline !== "History" && s.topline !== "About Us"
+    (s) => s.topline !== "History" && s.topline !== "About Us",
   );
   const orderedSections: IStorySection[] = [];
   if (historySection) orderedSections.push(historySection);
@@ -155,7 +164,9 @@ export default function AboutPage() {
   const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
-    const sectionIds = orderedSections.map((section) => generateId(section.topline));
+    const sectionIds = orderedSections.map((section) =>
+      generateId(section.topline),
+    );
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -164,7 +175,7 @@ export default function AboutPage() {
           }
         });
       },
-      { rootMargin: "-50% 0px -50% 0px" }
+      { rootMargin: "-50% 0px -50% 0px" },
     );
     sectionIds.forEach((id) => {
       const el = document.getElementById(id);
@@ -198,16 +209,25 @@ export default function AboutPage() {
         {/* Layout: TOC sidebar (desktop) + content */}
         <div className="max-w-6xl mx-auto px-4 sm:px-8 py-8 grid grid-cols-1 md:grid-cols-4 gap-8">
           <aside className="hidden md:block">
-            <TableOfContents sections={orderedSections} activeSection={activeSection} />
+            <TableOfContents
+              sections={orderedSections}
+              activeSection={activeSection}
+            />
             <div className="mt-8 p-4 bg-gray-200 dark:bg-gray-700 rounded">
               <h2 className="text-xl font-bold mb-2 uppercase tracking-wider text-primary">
                 Recipe Sponsorship
               </h2>
               <p className="text-sm mb-4">
-                Have a culturally inspiring dish featuring <em>Sunny Island Pepper Sauce</em>? We’d love to showcase it on our website with your personal touch and credit! Follow our guidelines:
+                Have a culturally inspiring dish featuring{" "}
+                <em>Sunny Island Pepper Sauce</em>? We’d love to showcase it on
+                our website with your personal touch and credit! Follow our
+                guidelines:
               </p>
               <ul className="list-disc list-inside text-sm space-y-1">
-                <li>Ensure your dish highlights <em>Sunny Island Pepper Sauce</em>.</li>
+                <li>
+                  Ensure your dish highlights <em>Sunny Island Pepper Sauce</em>
+                  .
+                </li>
                 <li>Use a non‑black table for your photo background.</li>
                 <li>Photos must be clear and pass our quality check.</li>
                 <li>Keep your dish culturally authentic and creative!</li>
@@ -225,7 +245,11 @@ export default function AboutPage() {
           </aside>
           <div className="md:col-span-3 space-y-12">
             {orderedSections.map((section, idx) => (
-              <SectionDisplay key={section.topline} section={section} index={idx} />
+              <SectionDisplay
+                key={section.topline}
+                section={section}
+                index={idx}
+              />
             ))}
           </div>
         </div>

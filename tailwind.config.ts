@@ -1,9 +1,6 @@
 // tailwind.config.js
 module.exports = {
-  content: [
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./public/**/*.html",
-  ],
+  content: ["./src/**/*.{js,ts,jsx,tsx}", "./public/**/*.html"],
   theme: {
     extend: {
       colors: {
@@ -16,7 +13,8 @@ module.exports = {
         secondary: "#DA1A35", // your secondary color
       },
       backgroundImage: {
-        "primary-gradient": "linear-gradient(to right, #FFB300, #FFC107, #FFA000)",
+        "primary-gradient":
+          "linear-gradient(to right, #FFB300, #FFC107, #FFA000)",
       },
     },
   },

@@ -37,7 +37,7 @@ const Home = () => {
           <SectionProductSneak />
         </div>
         {/* Section 3: Parallax Product View */}
-        <SectionParallax/>
+        <SectionParallax />
 
         {/* Section 4: Explore Grid */}
         <SectionExploreGrid />

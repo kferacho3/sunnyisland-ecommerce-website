@@ -95,7 +95,10 @@ export default function Footer() {
                 <h4 className="font-semibold mb-2">Explore</h4>
                 <ul className="space-y-1 text-gray-300">
                   <li>
-                    <Link href="/explore/about" className="hover:text-secondary">
+                    <Link
+                      href="/explore/about"
+                      className="hover:text-secondary"
+                    >
                       About Us
                     </Link>
                   </li>
@@ -105,7 +108,10 @@ export default function Footer() {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/explore/events" className="hover:text-secondary">
+                    <Link
+                      href="/explore/events"
+                      className="hover:text-secondary"
+                    >
                       Events
                     </Link>
                   </li>
@@ -185,10 +191,7 @@ export default function Footer() {
                     </Link>
                   </li>
                   <li>
-                    <Link
-                      href="/legal/terms"
-                      className="hover:text-secondary"
-                    >
+                    <Link href="/legal/terms" className="hover:text-secondary">
                       Terms of Service
                     </Link>
                   </li>

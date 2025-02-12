@@ -12,7 +12,9 @@ export default function SectionProductSneak() {
     setQuantity(e.target.value);
   };
 
-  const handleCustomQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCustomQuantityChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     setCustomQuantity(e.target.value);
   };
 
@@ -23,10 +25,12 @@ export default function SectionProductSneak() {
     >
       {/* Clever Witty Header */}
       <div className="w-full text-center mb-8">
-        <h1 className="text-4xl sm:text-6xl font-extrabold text-white uppercase tracking-widest"
-            style={{
-              textShadow: "2px 2px 4px rgba(0,0,0,0.7)"
-            }}>
+        <h1
+          className="text-4xl sm:text-6xl font-extrabold text-white uppercase tracking-widest"
+          style={{
+            textShadow: "2px 2px 4px rgba(0,0,0,0.7)",
+          }}
+        >
           GET LOST IN THE SAUCE, TASTE THE SPICE!
         </h1>
       </div>
@@ -50,7 +54,9 @@ export default function SectionProductSneak() {
         <div className="flex-1 flex flex-col justify-between">
           <div>
             <h2 className="text-3xl font-bold mb-2">Signature Pepper Sauce</h2>
-            <p className="text-xl text-gray-800 dark:text-gray-200 mb-4">$9.99</p>
+            <p className="text-xl text-gray-800 dark:text-gray-200 mb-4">
+              $9.99
+            </p>
             <p className="text-green-600 font-semibold mb-4">
               20% off on orders of 10 or more!
             </p>

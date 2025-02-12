@@ -52,11 +52,23 @@ export default function SectionParallax() {
       {/* Animated Clouds and Birds */}
       <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
         {/* Fancy CSS clouds */}
-        <div className="cloud fancy-cloud" style={{ top: "10%", left: "20%" }}></div>
-        <div className="cloud fancy-cloud" style={{ top: "15%", left: "70%" }}></div>
+        <div
+          className="cloud fancy-cloud"
+          style={{ top: "10%", left: "20%" }}
+        ></div>
+        <div
+          className="cloud fancy-cloud"
+          style={{ top: "15%", left: "70%" }}
+        ></div>
         {/* Fancy animated birds */}
-        <div className="bird fancy-bird" style={{ top: "20%", left: "30%" }}></div>
-        <div className="bird fancy-bird" style={{ top: "25%", left: "80%" }}></div>
+        <div
+          className="bird fancy-bird"
+          style={{ top: "20%", left: "30%" }}
+        ></div>
+        <div
+          className="bird fancy-bird"
+          style={{ top: "25%", left: "80%" }}
+        ></div>
       </div>
 
       {/* Image Container */}
@@ -148,9 +160,15 @@ export default function SectionParallax() {
           animation: floatCloud 20s linear infinite;
         }
         @keyframes floatCloud {
-          0% { transform: translateX(0); }
-          50% { transform: translateX(30px); }
-          100% { transform: translateX(0); }
+          0% {
+            transform: translateX(0);
+          }
+          50% {
+            transform: translateX(30px);
+          }
+          100% {
+            transform: translateX(0);
+          }
         }
         /* Fancy Bird Styling */
         .fancy-bird {
@@ -158,9 +176,15 @@ export default function SectionParallax() {
           animation: flyBird 8s linear infinite;
         }
         @keyframes flyBird {
-          0% { transform: translateX(0); }
-          50% { transform: translateX(50px) translateY(-20px); }
-          100% { transform: translateX(0); }
+          0% {
+            transform: translateX(0);
+          }
+          50% {
+            transform: translateX(50px) translateY(-20px);
+          }
+          100% {
+            transform: translateX(0);
+          }
         }
         /* Decorative sun triangles */
         .sun-triangles {
@@ -197,8 +221,12 @@ export default function SectionParallax() {
           animation: rotateTriangle 10s linear infinite reverse;
         }
         @keyframes rotateTriangle {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+          0% {
+            transform: rotate(0deg);
+          }
+          100% {
+            transform: rotate(360deg);
+          }
         }
       `}</style>
       {/* Google Font Link for Anton (Bold, thick font) */}

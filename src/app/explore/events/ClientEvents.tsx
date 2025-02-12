@@ -39,11 +39,19 @@ function Modal({ event, onClose }: { event: EventItem; onClose: () => void }) {
             />
           </div>
           <h2 className="text-3xl font-bold mb-4">{event.title}</h2>
-          <p className="mb-2"><strong>Date:</strong> {event.date}</p>
-          <p className="mb-2"><strong>Location:</strong> {event.location}</p>
-          <p className="mb-2"><strong>Theme:</strong> {event.theme}</p>
+          <p className="mb-2">
+            <strong>Date:</strong> {event.date}
+          </p>
+          <p className="mb-2">
+            <strong>Location:</strong> {event.location}
+          </p>
+          <p className="mb-2">
+            <strong>Theme:</strong> {event.theme}
+          </p>
           <p className="mb-2">{event.description}</p>
-          <p className="mb-2"><strong>Price:</strong> {event.price}</p>
+          <p className="mb-2">
+            <strong>Price:</strong> {event.price}
+          </p>
           <a
             href={event.url}
             target="_blank"
@@ -59,7 +67,7 @@ function Modal({ event, onClose }: { event: EventItem; onClose: () => void }) {
 }
 
 export default function ClientEvents({ sections }: { sections: Section[] }) {
- // const [filterDate, setFilterDate] = useState("");
+  // const [filterDate, setFilterDate] = useState("");
   //const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [modalEvent, setModalEvent] = useState<EventItem | null>(null);
   const [visibleCount, setVisibleCount] = useState(5);
@@ -77,7 +85,10 @@ export default function ClientEvents({ sections }: { sections: Section[] }) {
         <div className="absolute bottom-0 right-0 w-10 h-6 bg-gradient-to-l from-black via-transparent to-transparent flex items-center justify-center">
           <button
             className="text-white text-xs"
-            onClick={(e) => { e.stopPropagation(); setModalEvent(ev); }}
+            onClick={(e) => {
+              e.stopPropagation();
+              setModalEvent(ev);
+            }}
           >
             +
           </button>
@@ -89,7 +100,9 @@ export default function ClientEvents({ sections }: { sections: Section[] }) {
   // Render all sections.
   return (
     <div>
-      {modalEvent && <Modal event={modalEvent} onClose={() => setModalEvent(null)} />}
+      {modalEvent && (
+        <Modal event={modalEvent} onClose={() => setModalEvent(null)} />
+      )}
 
       {sections.map((section, idx) => (
         <section key={section.term} className="mb-16">
@@ -112,11 +125,25 @@ export default function ClientEvents({ sections }: { sections: Section[] }) {
                       className="object-cover rounded-md"
                     />
                   </div>
-                  <h2 className="text-4xl font-bold mb-4">{section.events[0].title}</h2>
-                  <p className="mb-2"><strong>Date:</strong> {section.events[0].date}</p>
-                  <p className="mb-2"><strong>Location:</strong> {section.events[0].location}</p>
-                  <div onClick={(e) => { e.stopPropagation(); setModalEvent(section.events[0]); }}>
-                    {renderTruncatedDescription(section.events[0].description, section.events[0])}
+                  <h2 className="text-4xl font-bold mb-4">
+                    {section.events[0].title}
+                  </h2>
+                  <p className="mb-2">
+                    <strong>Date:</strong> {section.events[0].date}
+                  </p>
+                  <p className="mb-2">
+                    <strong>Location:</strong> {section.events[0].location}
+                  </p>
+                  <div
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setModalEvent(section.events[0]);
+                    }}
+                  >
+                    {renderTruncatedDescription(
+                      section.events[0].description,
+                      section.events[0],
+                    )}
                   </div>
                 </div>
               </div>
@@ -142,9 +169,18 @@ export default function ClientEvents({ sections }: { sections: Section[] }) {
                             />
                           </div>
                           <h3 className="text-xl font-bold mb-2">{ev.title}</h3>
-                          <p className="text-sm mb-1"><strong>Date:</strong> {ev.date}</p>
-                          <p className="text-sm mb-1"><strong>Location:</strong> {ev.location}</p>
-                          <div onClick={(e) => { e.stopPropagation(); setModalEvent(ev); }}>
+                          <p className="text-sm mb-1">
+                            <strong>Date:</strong> {ev.date}
+                          </p>
+                          <p className="text-sm mb-1">
+                            <strong>Location:</strong> {ev.location}
+                          </p>
+                          <div
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setModalEvent(ev);
+                            }}
+                          >
                             {renderTruncatedDescription(ev.description, ev)}
                           </div>
                         </div>
@@ -175,9 +211,18 @@ export default function ClientEvents({ sections }: { sections: Section[] }) {
                             />
                           </div>
                           <h3 className="text-sm font-bold mb-1">{ev.title}</h3>
-                          <p className="text-xs mb-1"><strong>Date:</strong> {ev.date}</p>
-                          <p className="text-xs mb-1"><strong>Location:</strong> {ev.location}</p>
-                          <div onClick={(e) => { e.stopPropagation(); setModalEvent(ev); }}>
+                          <p className="text-xs mb-1">
+                            <strong>Date:</strong> {ev.date}
+                          </p>
+                          <p className="text-xs mb-1">
+                            <strong>Location:</strong> {ev.location}
+                          </p>
+                          <div
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setModalEvent(ev);
+                            }}
+                          >
                             {renderTruncatedDescription(ev.description, ev)}
                           </div>
                         </div>
@@ -216,9 +261,18 @@ export default function ClientEvents({ sections }: { sections: Section[] }) {
                       />
                     </div>
                     <h3 className="text-sm font-bold mb-1">{ev.title}</h3>
-                    <p className="text-xs mb-1"><strong>Date:</strong> {ev.date}</p>
-                    <p className="text-xs mb-1"><strong>Location:</strong> {ev.location}</p>
-                    <div onClick={(e) => { e.stopPropagation(); setModalEvent(ev); }}>
+                    <p className="text-xs mb-1">
+                      <strong>Date:</strong> {ev.date}
+                    </p>
+                    <p className="text-xs mb-1">
+                      <strong>Location:</strong> {ev.location}
+                    </p>
+                    <div
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setModalEvent(ev);
+                      }}
+                    >
                       {renderTruncatedDescription(ev.description, ev)}
                     </div>
                   </div>
@@ -362,7 +416,9 @@ export default function ClientEvents({ sections }: { sections: Section[] }) {
           position: relative;
           border: 2px solid #000 !important;
           background-clip: padding-box;
-          transition: border 0.5s ease, transform 0.3s ease;
+          transition:
+            border 0.5s ease,
+            transform 0.3s ease;
         }
         .default-card::before,
         .default-card::after {
@@ -393,11 +449,11 @@ export default function ClientEvents({ sections }: { sections: Section[] }) {
         }
         .default-card:hover {
           border: 2px solid transparent !important;
-          border-image: linear-gradient(to right, #FFB300, #DA1A35) 1 !important;
+          border-image: linear-gradient(to right, #ffb300, #da1a35) 1 !important;
         }
         .default-card:hover .card-inner {
           border: 2px solid transparent !important;
-          border-image: linear-gradient(to right, #FFB300, #DA1A35) 1 !important;
+          border-image: linear-gradient(to right, #ffb300, #da1a35) 1 !important;
         }
       `}</style>
     </div>

@@ -45,7 +45,8 @@ export default function StickyCookieConsent() {
             <div className="h-40 overflow-y-auto text-xs">
               <p className="mb-2">
                 Cookies are integral to the way modern websites work. Most
-                personalisation and social media integration relies on cookies...
+                personalisation and social media integration relies on
+                cookies...
               </p>
               <p className="mb-2">
                 <strong>Privacy Preference Center</strong> – you can choose not
@@ -71,9 +72,7 @@ export default function StickyCookieConsent() {
                 </button>
               </p>
 
-              <p className="text-right mt-2 text-[10px]">
-                Powered by OneTrust
-              </p>
+              <p className="text-right mt-2 text-[10px]">Powered by OneTrust</p>
             </div>
           </motion.div>
         )}

@@ -25,12 +25,16 @@ import { Overlay } from "./overlay/Overlay";
 import Preloader from "./Preloader";
 
 export default function MainPage() {
-  const [currentProduct, setCurrentProduct] = useState<Product>(productsData[0]);
+  const [currentProduct, setCurrentProduct] = useState<Product>(
+    productsData[0],
+  );
   const [isIdle, setIsIdle] = useState(false);
   const [currentPositionIndex, setCurrentPositionIndex] = useState(0);
   const [flameOn, setFlameOn] = useState(false);
   const [perfSucks, degrade] = useState(false);
-  const [comingSoonProduct, setComingSoonProduct] = useState<Product | null>(null);
+  const [comingSoonProduct, setComingSoonProduct] = useState<Product | null>(
+    null,
+  );
   const [showPeppers, setShowPeppers] = useState(true);
   const [showOverlay, setShowOverlay] = useState(true);
   const [rotateSauce, setRotateSauce] = useState(false);
@@ -68,7 +72,9 @@ export default function MainPage() {
   }, [showOverlay]);
 
   const handleProductSelection = (productId: number) => {
-    const selectedProduct = productsData.find((product) => product.id === productId);
+    const selectedProduct = productsData.find(
+      (product) => product.id === productId,
+    );
     if (selectedProduct) {
       setCurrentProduct(selectedProduct);
       if (selectedProduct.modelId === null) {
@@ -115,7 +121,11 @@ export default function MainPage() {
             </Suspense>
           </Physics>
           <EffectComposer>
-            <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
+            <Bloom
+              luminanceThreshold={0}
+              luminanceSmoothing={0.9}
+              height={300}
+            />
           </EffectComposer>
         </Canvas>
       </div>
@@ -168,14 +178,16 @@ function Scene({
       camera.lookAt(...target.target);
     }
     if (rotateSauce && sauceRef.current) {
-      sauceRef.current.rotation.y += delta/4;
+      sauceRef.current.rotation.y += delta / 4;
     }
   });
 
   useEffect(() => {
     if (isIdle) {
       const interval = setInterval(() => {
-        setCurrentPositionIndex((prevIndex) => (prevIndex + 1) % positions.length);
+        setCurrentPositionIndex(
+          (prevIndex) => (prevIndex + 1) % positions.length,
+        );
       }, 5000);
       return () => clearInterval(interval);
     }
@@ -195,7 +207,7 @@ function Scene({
   return (
     <>
       <ambientLight intensity={1.5} />
-      <a.group {...logoSpring} >
+      <a.group {...logoSpring}>
         <SunnyIslandLogo />
       </a.group>
       <a.group ref={sauceRef} {...sauceSpring}>

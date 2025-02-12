@@ -1,5 +1,5 @@
-"use client"; 
-// ^ If using Next.js App Router and want to use client-side logic (e.g. geolocation), 
+"use client";
+// ^ If using Next.js App Router and want to use client-side logic (e.g. geolocation),
 //   keep this directive. If using Pages Router, it's not strictly necessary.
 
 import Image from "next/image";
@@ -30,8 +30,11 @@ export default function LocationsPage() {
           });
         },
         (error) => {
-          console.warn("Geolocation not available or permission denied.", error);
-        }
+          console.warn(
+            "Geolocation not available or permission denied.",
+            error,
+          );
+        },
       );
     }
   }, []);
@@ -60,17 +63,19 @@ export default function LocationsPage() {
             </h1>
             <p className="leading-relaxed">
               We operate out of a fully licensed commercial kitchen in Oakland
-              Park, FL. Our team emphasizes a <strong>clean cooking process</strong> and
-              the highest quality ingredients. Every batch of <em>Sunny Island Pepper
-              Sauce</em> is hand‑made, ensuring unmatched freshness and flavor. We
-              believe in taking our time to deliver a superior product that captures
-              the essence of our Caribbean heritage.
+              Park, FL. Our team emphasizes a{" "}
+              <strong>clean cooking process</strong> and the highest quality
+              ingredients. Every batch of <em>Sunny Island Pepper Sauce</em> is
+              hand‑made, ensuring unmatched freshness and flavor. We believe in
+              taking our time to deliver a superior product that captures the
+              essence of our Caribbean heritage.
             </p>
             <p className="leading-relaxed">
-              From gas stoves and convection ovens to walk‑in coolers and freezers,
-              our kitchen is equipped for any scale of production. This professional
-              environment allows us to <strong>focus on quality</strong> so you can enjoy
-              the best pepper sauce around.
+              From gas stoves and convection ovens to walk‑in coolers and
+              freezers, our kitchen is equipped for any scale of production.
+              This professional environment allows us to{" "}
+              <strong>focus on quality</strong> so you can enjoy the best pepper
+              sauce around.
             </p>
           </div>
         </div>
@@ -83,19 +88,22 @@ export default function LocationsPage() {
           <strong>Location:</strong> 4072 NE 5th Ter, Fort Lauderdale, FL 33334
         </p>
         <p className="text-sm md:text-base">
-          We share this kitchen space alongside other passionate food entrepreneurs.
-          It features:
+          We share this kitchen space alongside other passionate food
+          entrepreneurs. It features:
         </p>
         <ul className="list-disc list-inside text-sm md:text-base">
           <li>Spacious 5000+ sq ft fully licensed commercial facility</li>
           <li>Walk‑in coolers, freezers, gas stoves, ovens, slicers, mixers</li>
           <li>Stainless prep tables, sinks, fire suppression & grease traps</li>
-          <li>Secure 24/7 access with WiFi, camera systems, & climate control</li>
+          <li>
+            Secure 24/7 access with WiFi, camera systems, & climate control
+          </li>
           <li>Plenty of parking & food truck friendly</li>
         </ul>
         <p className="text-sm md:text-base">
           Whether for test batches or full production runs, we maintain rigorous
-          sanitary standards to ensure our pepper sauces are consistently top‑notch.
+          sanitary standards to ensure our pepper sauces are consistently
+          top‑notch.
         </p>
       </section>
 
@@ -112,9 +120,9 @@ export default function LocationsPage() {
               Atlanta, Georgia
             </h3>
             <p className="text-sm md:text-base">
-              Our product will soon be available for pick‑up or local delivery in the
-              Atlanta Metro area. Stay tuned for more info as we finalize distribution
-              partnerships.
+              Our product will soon be available for pick‑up or local delivery
+              in the Atlanta Metro area. Stay tuned for more info as we finalize
+              distribution partnerships.
             </p>
             {/* Example: Embedded Google Map or static image */}
             <iframe
@@ -131,8 +139,9 @@ export default function LocationsPage() {
               Ft. Lauderdale, Florida
             </h3>
             <p className="text-sm md:text-base">
-              Home to our primary kitchen operations. Pick‑ups can be arranged by
-              appointment, and we’re working on expanding local store availability.
+              Home to our primary kitchen operations. Pick‑ups can be arranged
+              by appointment, and we’re working on expanding local store
+              availability.
             </p>
             <iframe
               className="w-full h-60 rounded-md border-none"
@@ -150,16 +159,17 @@ export default function LocationsPage() {
           Clean Cooking & Quality You Can Trust
         </h2>
         <p className="text-sm md:text-base leading-relaxed">
-          Each bottle of <em>Sunny Island Pepper Sauce</em> undergoes a thorough,
-          hands‑on production cycle. From meticulously selecting fresh peppers and
-          spices to slow cooking in small batches, we refuse to compromise on taste
-          or safety. Our facility meets all commercial standards, but it’s our
-          passion and care that elevate our sauce above the rest. This is why each
-          order may take time—we want it perfect for you!
+          Each bottle of <em>Sunny Island Pepper Sauce</em> undergoes a
+          thorough, hands‑on production cycle. From meticulously selecting fresh
+          peppers and spices to slow cooking in small batches, we refuse to
+          compromise on taste or safety. Our facility meets all commercial
+          standards, but it’s our passion and care that elevate our sauce above
+          the rest. This is why each order may take time—we want it perfect for
+          you!
         </p>
         <p className="text-sm md:text-base leading-relaxed">
-          Questions or special requests? Reach out—we love hearing from fellow hot
-          sauce enthusiasts.
+          Questions or special requests? Reach out—we love hearing from fellow
+          hot sauce enthusiasts.
         </p>
       </section>
 
@@ -167,10 +177,9 @@ export default function LocationsPage() {
       {userLocation && (
         <div className="max-w-xl mx-auto px-4 py-6 mt-10 text-center bg-black bg-opacity-40 rounded-lg shadow-lg">
           <p className="text-xs">
-            <strong>Your location (approx.):</strong> Latitude {userLocation.lat.toFixed(
-              4
-            )}
-            , Longitude {userLocation.lng.toFixed(4)}
+            <strong>Your location (approx.):</strong> Latitude{" "}
+            {userLocation.lat.toFixed(4)}, Longitude{" "}
+            {userLocation.lng.toFixed(4)}
           </p>
         </div>
       )}

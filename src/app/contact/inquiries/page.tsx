@@ -17,7 +17,9 @@ export default function InquiriesPage() {
   const router = useRouter();
 
   // The UI can swap between two tabs: "Individual" or "Wholesale"
-  const [activeTab, setActiveTab] = useState<"individual" | "wholesale">("individual");
+  const [activeTab, setActiveTab] = useState<"individual" | "wholesale">(
+    "individual",
+  );
 
   // States for "Individual/Restaurants" form
   const [indivName, setIndivName] = useState("");
@@ -193,14 +195,16 @@ ${message}
             "
           >
             <Image
-              src="/icons/faq.png" 
+              src="/icons/faq.png"
               // 30x30 placeholder image
               alt="FAQ Icon"
               width={30}
               height={30}
               className="mb-3"
             />
-            <h2 className="font-bold text-xl mb-2">Frequently Asked Questions</h2>
+            <h2 className="font-bold text-xl mb-2">
+              Frequently Asked Questions
+            </h2>
             <p className="text-center text-sm flex-grow">
               Find answers to most of your questions here.
             </p>
@@ -231,13 +235,15 @@ ${message}
             </p>
             <div className="mt-2 flex flex-col gap-2">
               <button
-                onClick={() => window.location.href = "mailto:sunnyislandpepper@gmail.com"}
+                onClick={() =>
+                  (window.location.href = "mailto:sunnyislandpepper@gmail.com")
+                }
                 className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-white"
               >
                 Send Email
               </button>
               <button
-                onClick={() => window.location.href = "tel:877-853-7262"}
+                onClick={() => (window.location.href = "tel:877-853-7262")}
                 className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-white"
               >
                 (877) 853-7262
@@ -438,7 +444,10 @@ ${message}
                   className="w-full p-2 rounded bg-gray-800 text-white"
                   value={wholesaleData.company}
                   onChange={(e) =>
-                    setWholesaleData({ ...wholesaleData, company: e.target.value })
+                    setWholesaleData({
+                      ...wholesaleData,
+                      company: e.target.value,
+                    })
                   }
                 />
               </div>
@@ -449,7 +458,10 @@ ${message}
                   className="w-full p-2 rounded bg-gray-800 text-white"
                   value={wholesaleData.website}
                   onChange={(e) =>
-                    setWholesaleData({ ...wholesaleData, website: e.target.value })
+                    setWholesaleData({
+                      ...wholesaleData,
+                      website: e.target.value,
+                    })
                   }
                 />
               </div>
@@ -616,7 +628,10 @@ ${message}
                 className="w-full p-2 rounded bg-gray-800 text-white"
                 value={wholesaleData.message}
                 onChange={(e) =>
-                  setWholesaleData({ ...wholesaleData, message: e.target.value })
+                  setWholesaleData({
+                    ...wholesaleData,
+                    message: e.target.value,
+                  })
                 }
               />
             </div>

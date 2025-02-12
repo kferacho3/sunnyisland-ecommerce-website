@@ -23,10 +23,10 @@ export default function EventSearchForm() {
       <form onSubmit={handleSubmit}>
         <label>
           Event name:
-          <input 
-            type="text" 
-            value={name} 
-            onChange={(e) => setName(e.target.value)} 
+          <input
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
         </label>
         <label>
@@ -41,9 +41,7 @@ export default function EventSearchForm() {
         <button type="submit">Search</button>
       </form>
 
-      {results && (
-        <pre>{JSON.stringify(results, null, 2)}</pre>
-      )}
+      {results && <pre>{JSON.stringify(results, null, 2)}</pre>}
     </div>
   );
 }

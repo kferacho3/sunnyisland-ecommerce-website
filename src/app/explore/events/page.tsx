@@ -49,11 +49,15 @@ interface TicketmasterResponse {
 
 // Helper: Remove milliseconds from an ISO string.
 function formatISOWithoutMs(date: Date): string {
-  return date.toISOString().split('.')[0] + 'Z';
+  return date.toISOString().split(".")[0] + "Z";
 }
 
 // Fallback: Use Unsplash to provide an image if none is available.
-function getUnsplashThumbnailUrl(title: string, width = 400, height = 300): string {
+function getUnsplashThumbnailUrl(
+  title: string,
+  width = 400,
+  height = 300,
+): string {
   return `https://source.unsplash.com/random/${width}x${height}/?caribbean,african,${encodeURIComponent(title)}`;
 }
 
@@ -80,7 +84,9 @@ function mapEvent(ev: TicketmasterEvent): EventItem {
         : "Free or N/A",
     url: ev.url,
     imageUrl:
-      ev.images && ev.images.length > 0 ? ev.images[0].url : getUnsplashThumbnailUrl(ev.name),
+      ev.images && ev.images.length > 0
+        ? ev.images[0].url
+        : getUnsplashThumbnailUrl(ev.name),
     theme: ev.info ? ev.info.slice(0, 10) : "Ticketmaster",
   };
 }
@@ -107,16 +113,25 @@ async function fetchEventsForTerm(term: string): Promise<EventItem[]> {
   url.searchParams.set("startDateTime", nowISOString);
   url.searchParams.set("endDateTime", endDateTime);
 
-  console.log(`Fetching Ticketmaster events for term "${term}" from:`, url.toString());
+  console.log(
+    `Fetching Ticketmaster events for term "${term}" from:`,
+    url.toString(),
+  );
 
   try {
     const res = await fetch(url.toString(), { cache: "no-store" });
     if (!res.ok) {
-      console.error(`Error fetching events for term "${term}":`, await res.text());
+      console.error(
+        `Error fetching events for term "${term}":`,
+        await res.text(),
+      );
       return [];
     }
     const data: TicketmasterResponse = await res.json();
-    console.log(`Fetched events JSON for term "${term}":`, JSON.stringify(data, null, 2));
+    console.log(
+      `Fetched events JSON for term "${term}":`,
+      JSON.stringify(data, null, 2),
+    );
     if (!data._embedded?.events) return [];
     return data._embedded.events.map(mapEvent);
   } catch (error) {
@@ -133,7 +148,7 @@ const searchTerms = [
   "food festival",
   "spicy food",
   "spicy sauce",
-  "condiment"
+  "condiment",
 ];
 
 export default async function EventsPage() {

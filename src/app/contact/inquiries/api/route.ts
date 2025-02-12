@@ -22,7 +22,7 @@ const SMTP_PASS = "yourSMTPpassword";
 async function sendEmailRaw(
   to: string,
   subject: string,
-  message: string
+  message: string,
 ): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     const client = net.createConnection(SMTP_PORT, SMTP_HOST, () => {
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     if (!email || !subject || !message) {
       return NextResponse.json(
         { error: "Invalid form submission." },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -108,7 +108,7 @@ export async function POST(request: NextRequest) {
       if (stored.count >= 3) {
         return NextResponse.json(
           { error: "Message limit exceeded (3 per day per email)." },
-          { status: 429 }
+          { status: 429 },
         );
       }
       stored.count += 1;
@@ -119,9 +119,9 @@ export async function POST(request: NextRequest) {
 
     // Send via SMTP
     await sendEmailRaw(
-      "sunnyislandpepper@gmail.com", 
-      `Inquiry: ${subject}`, 
-      finalMessage
+      "sunnyislandpepper@gmail.com",
+      `Inquiry: ${subject}`,
+      finalMessage,
     );
 
     // Respond success

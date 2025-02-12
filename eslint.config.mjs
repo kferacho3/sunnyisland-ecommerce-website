@@ -1,41 +1,47 @@
-import { FlatCompat } from "@eslint/eslintrc";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
+// eslint.config.mjs
+import { createRequire } from "module";
+const require = createRequire(import.meta.url);
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const prettierPlugin = require("eslint-plugin-prettier");
+const tsPlugin = require("@typescript-eslint/eslint-plugin");
+const reactPlugin = require("eslint-plugin-react");
 
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  // Import Next.js + TypeScript recommended configs
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-
-  // JavaScript-only overrides
+export default [
+  // Global ignores: these patterns are applied to every file.
   {
-    files: ["**/*.js", "**/*.jsx"],
-    rules: {
-      "@typescript-eslint/no-unused-vars": "off", // Disable TS rules for JS
-      "@typescript-eslint/no-empty-interface": "off", // Not needed for JS
-      "no-unused-vars": "warn",
-      "no-undef": "error",
-    },
+    ignores: [".next/**", "node_modules/**", "out/**", "build/**"]
   },
-
-  // TypeScript-only overrides
+  // Your main configuration for source files.
   {
-    files: ["**/*.ts", "**/*.tsx"],
-    rules: {
-      // Allow an interface that only extends another interface (no new properties)
-      "@typescript-eslint/no-empty-interface": [
-        "error",
-        { allowSingleExtends: true },
-      ],
-      // Add other TS-specific rules here if desired
+    files: [
+      "src/**/*.{js,jsx,ts,tsx}",
+      "app/**/*.{js,jsx,ts,tsx}",
+      "next.config.{js,ts}"
+    ],
+    languageOptions: {
+      parser: require("@typescript-eslint/parser"),
+      parserOptions: {
+        ecmaVersion: "latest",
+        sourceType: "module",
+        ecmaFeatures: { jsx: true }
+      }
     },
-  },
+    plugins: {
+      prettier: prettierPlugin,
+      "@typescript-eslint": tsPlugin,
+      react: reactPlugin
+    },
+    rules: {
+      "prettier/prettier": "error",
+      "@typescript-eslint/no-namespace": ["error", { allowDeclarations: true }],
+      "react/no-unknown-property": "off",
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^(?:__turbopack.*|global|__dirname)$"
+        }
+      ]
+    }
+  }
 ];
-
-export default eslintConfig;

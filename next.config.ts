@@ -11,7 +11,6 @@ const nextConfig: NextConfig = {
     return config;
   },
   images: {
-    
     remotePatterns: [
       { protocol: "https", hostname: "source.unsplash.com" },
       { protocol: "https", hostname: "img.evbstatic.com" },
@@ -20,7 +19,14 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "loremflickr.com" },
       { protocol: "https", hostname: "images.universe.com" },
     ],
-    domains: ["sunnyisland.s3.us-east-2.amazonaws.com", "via.placeholder.com", "loremflickr.com", 'img.spoonacular.com', 'flagsapi.com', 'www.epicurious.com'],
+    domains: [
+      "sunnyisland.s3.us-east-2.amazonaws.com",
+      "via.placeholder.com",
+      "loremflickr.com",
+      "img.spoonacular.com",
+      "flagsapi.com",
+      "www.epicurious.com",
+    ],
   },
 };
 

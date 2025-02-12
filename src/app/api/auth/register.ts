@@ -10,22 +10,33 @@ async function verifyCaptcha(token: string) {
   const secretKey = process.env.RECAPTCHA_SECRET_KEY!;
   const res = await fetch(
     `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`,
-    { method: "POST" }
+    { method: "POST" },
   );
   const data = await res.json();
   return data.success;
 }
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") return res.status(405).json({ message: "Method not allowed" });
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse,
+) {
+  if (req.method !== "POST")
+    return res.status(405).json({ message: "Method not allowed" });
 
-  const { firstName, lastName, email, password, confirmPassword, captchaToken } = req.body;
+  const {
+    firstName,
+    lastName,
+    email,
+    password,
+    confirmPassword,
+    captchaToken,
+  } = req.body;
 
   // 1. Validate input
   if (password !== confirmPassword) {
     return res.status(400).json({ message: "Passwords do not match" });
   }
-  if (!await verifyCaptcha(captchaToken)) {
+  if (!(await verifyCaptcha(captchaToken))) {
     return res.status(400).json({ message: "Captcha verification failed" });
   }
 
@@ -50,7 +61,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   });
 
   // 5. Generate a 6-digit verification code and store it with expiration (3 minutes)
-  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const verificationCode = Math.floor(
+    100000 + Math.random() * 900000,
+  ).toString();
   await prisma.userVerification.create({
     data: {
       userId: user.id,
@@ -75,5 +88,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     text: `Your verification code is ${verificationCode}. It expires in 3 minutes.`,
   });
 
-  res.status(201).json({ message: "User registered. Please verify your email." });
+  res
+    .status(201)
+    .json({ message: "User registered. Please verify your email." });
 }

@@ -18,7 +18,9 @@ export default function NutritionSection() {
           <hr className="border-gray-600 my-2" />
 
           <div className="flex justify-between">
-            <p className="text-sm md:text-base font-semibold">Amount per serving</p>
+            <p className="text-sm md:text-base font-semibold">
+              Amount per serving
+            </p>
             <p className="text-sm md:text-base font-semibold">0 Calories</p>
           </div>
 
@@ -51,10 +53,11 @@ export default function NutritionSection() {
 
           <hr className="border-gray-600 my-2" />
           <p className="text-xs md:text-sm text-gray-300">
-            Ingredients: Peppers, Garlic, Water, Vinegar, Fruit, Condiments, Salt
+            Ingredients: Peppers, Garlic, Water, Vinegar, Fruit, Condiments,
+            Salt
           </p>
           <p className="text-xs md:text-sm text-gray-400 mt-2">
-            For more info or allergy concerns, contact 
+            For more info or allergy concerns, contact
             <br />
             <strong>TheFerachoGroup@gmail.com</strong>
           </p>

@@ -61,8 +61,9 @@ export default function SupportUsPage() {
           Support Us
         </h1>
         <p className="text-sm md:text-base">
-          We appreciate your support in any shape or form! Explore the ways you can help 
-          Sunny Island Pepper Sauce continue to grow and impact the community.
+          We appreciate your support in any shape or form! Explore the ways you
+          can help Sunny Island Pepper Sauce continue to grow and impact the
+          community.
         </p>
       </section>
 
@@ -145,9 +146,9 @@ export default function SupportUsPage() {
       <section className="max-w-5xl mx-auto px-4 py-8 text-center">
         <h2 className="text-2xl font-bold mb-2">Join Our Journey</h2>
         <p className="text-sm md:text-base mb-4">
-          Whether you buy a bottle, share a post, or donate to a mental health 
-          cause, every act of support matters. Thank you for being part of 
-          the Sunny Island family!
+          Whether you buy a bottle, share a post, or donate to a mental health
+          cause, every act of support matters. Thank you for being part of the
+          Sunny Island family!
         </p>
         <button
           className="px-6 py-3 bg-pink-600 hover:bg-pink-500 rounded text-white font-semibold uppercase"
@@ -170,10 +171,10 @@ export default function SupportUsPage() {
             Career Support
           </h2>
           <p className="max-w-xl text-sm md:text-base leading-relaxed mb-4">
-            Want to do more than just buy a bottle? Join our team! Sunny Island Pepper Sauce 
-            is always on the lookout for passionate people to help us grow. From 
-            product testing to marketing and community outreach, there’s a place 
-            for you if you love bold flavors and big dreams.
+            Want to do more than just buy a bottle? Join our team! Sunny Island
+            Pepper Sauce is always on the lookout for passionate people to help
+            us grow. From product testing to marketing and community outreach,
+            there’s a place for you if you love bold flavors and big dreams.
           </p>
           <button
             className="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-white font-semibold uppercase"
@@ -197,8 +198,8 @@ export default function SupportUsPage() {
             Recipe Sponsorship
           </h2>
           <p className="max-w-xl text-sm md:text-base leading-relaxed mb-4">
-            Have a culturally inspiring dish that features our pepper sauce? 
-            We’d love to showcase it on our website with your personal touch and 
+            Have a culturally inspiring dish that features our pepper sauce?
+            We’d love to showcase it on our website with your personal touch and
             credit! Just follow our guidelines:
           </p>
           <ul className="text-left max-w-lg mx-auto list-disc list-inside space-y-1 text-sm md:text-base">
@@ -209,11 +210,10 @@ export default function SupportUsPage() {
               Use a <strong>non-black table</strong> for your photo background.
             </li>
             <li>
-              Photos must pass our <strong>human quality check</strong> for clarity &amp; presentation.
+              Photos must pass our <strong>human quality check</strong> for
+              clarity &amp; presentation.
             </li>
-            <li>
-              Keep it culturally authentic and creative!
-            </li>
+            <li>Keep it culturally authentic and creative!</li>
           </ul>
           <p className="max-w-xl text-sm md:text-base leading-relaxed mt-4">
             Once approved, we’ll tag you on your dedicated recipe page!
@@ -229,7 +229,10 @@ export default function SupportUsPage() {
 
       {/* Footer */}
       <footer className="text-center text-sm text-gray-400 py-8">
-        <p>© {new Date().getFullYear()} Sunny Island Pepper Sauce. All rights reserved.</p>
+        <p>
+          © {new Date().getFullYear()} Sunny Island Pepper Sauce. All rights
+          reserved.
+        </p>
       </footer>
     </main>
   );

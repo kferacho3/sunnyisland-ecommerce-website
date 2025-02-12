@@ -12,8 +12,16 @@ export default function RatingsReviewSection() {
   // Sample reviews
   const [reviews] = useState<Review[]>([
     { user: "Alicia M.", rating: 5, comment: "Absolutely love the flavor!" },
-    { user: "James D.", rating: 4, comment: "Great sauce but a bit too spicy." },
-    { user: "Kendra T.", rating: 5, comment: "Perfect balance of heat and tang." },
+    {
+      user: "James D.",
+      rating: 4,
+      comment: "Great sauce but a bit too spicy.",
+    },
+    {
+      user: "Kendra T.",
+      rating: 5,
+      comment: "Perfect balance of heat and tang.",
+    },
   ]);
 
   // Simple star rendering
@@ -21,9 +29,12 @@ export default function RatingsReviewSection() {
     const stars = [];
     for (let i = 1; i <= 5; i++) {
       stars.push(
-        <span key={i} className={i <= count ? "text-yellow-400" : "text-gray-600"}>
+        <span
+          key={i}
+          className={i <= count ? "text-yellow-400" : "text-gray-600"}
+        >
           ★
-        </span>
+        </span>,
       );
     }
     return stars;

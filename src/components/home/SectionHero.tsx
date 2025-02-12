@@ -33,7 +33,7 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
         <div className="flex gap-4">
           {/* Products Button */}
           <a
-            href="/explore/products" 
+            href="/explore/products"
             className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-black font-bold rounded hover:opacity-80 transition"
           >
             Products <GiChiliPepper />

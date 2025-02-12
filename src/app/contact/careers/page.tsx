@@ -11,10 +11,10 @@ export default function CareersPage() {
           Join Our Team
         </h1>
         <p className="text-sm md:text-base max-w-3xl mx-auto">
-          Sunny Island Pepper Sauce is always on the lookout for passionate foodies,
-          hardworking kitchen staff, and creative minds. Whether you’re a local 
-          restaurant, wholesaler, or an ambitious chef, there’s a place for you 
-          in our growing family!
+          Sunny Island Pepper Sauce is always on the lookout for passionate
+          foodies, hardworking kitchen staff, and creative minds. Whether you’re
+          a local restaurant, wholesaler, or an ambitious chef, there’s a place
+          for you in our growing family!
         </p>
       </section>
 
@@ -33,10 +33,11 @@ export default function CareersPage() {
             Kitchen Workers
           </h2>
           <p className="text-sm md:text-base flex-grow">
-            Help us produce our signature pepper sauce in a vibrant, fully 
-            licensed commercial kitchen. We’re always seeking dedicated folks 
-            ready to prep, cook, and package with precision. If you’re passionate 
-            about quality and love working with fresh ingredients, this is for you!
+            Help us produce our signature pepper sauce in a vibrant, fully
+            licensed commercial kitchen. We’re always seeking dedicated folks
+            ready to prep, cook, and package with precision. If you’re
+            passionate about quality and love working with fresh ingredients,
+            this is for you!
           </p>
           <button
             className="mt-4 px-5 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-white font-semibold"
@@ -59,10 +60,10 @@ export default function CareersPage() {
             Brand Ambassadors
           </h2>
           <p className="text-sm md:text-base flex-grow">
-            If you have a knack for social media and want to share your love for 
-            Sunny Island Pepper Sauce, join us as a Brand Ambassador! From 
-            live demos to Instagram reels, show the world how our sauce can 
-            elevate any meal.
+            If you have a knack for social media and want to share your love for
+            Sunny Island Pepper Sauce, join us as a Brand Ambassador! From live
+            demos to Instagram reels, show the world how our sauce can elevate
+            any meal.
           </p>
           <button
             className="mt-4 px-5 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-white font-semibold"
@@ -85,10 +86,10 @@ export default function CareersPage() {
             Chef Collaborations
           </h2>
           <p className="text-sm md:text-base flex-grow">
-            Have a unique recipe that showcases our pepper sauce? We’ll partner 
-            with you to feature it on our site and tag you for recognition. Let’s 
-            bring bold, culturally inspiring dishes to life together—your creativity, 
-            our flavor!
+            Have a unique recipe that showcases our pepper sauce? We’ll partner
+            with you to feature it on our site and tag you for recognition.
+            Let’s bring bold, culturally inspiring dishes to life together—your
+            creativity, our flavor!
           </p>
           <button
             className="mt-4 px-5 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-white font-semibold"
@@ -111,8 +112,8 @@ export default function CareersPage() {
             Wholesale &amp; Restaurants
           </h2>
           <p className="text-sm md:text-base flex-grow">
-            Stock our sauce in your store or use it in your eatery—whatever you 
-            need, we’ve got flexible wholesale options. Let’s work together so 
+            Stock our sauce in your store or use it in your eatery—whatever you
+            need, we’ve got flexible wholesale options. Let’s work together so
             your customers can enjoy the island flair wherever they dine.
           </p>
           <button
@@ -130,9 +131,9 @@ export default function CareersPage() {
           Ready to Spice Up Your Career?
         </h2>
         <p className="text-sm md:text-base max-w-3xl mx-auto">
-          We believe in uplifting every member of our team, from the kitchen to 
-          the storefront. If you’re passionate about good food, community, and 
-          growth, we want to hear from you. Send us a note or apply to one of 
+          We believe in uplifting every member of our team, from the kitchen to
+          the storefront. If you’re passionate about good food, community, and
+          growth, we want to hear from you. Send us a note or apply to one of
           our positions today!
         </p>
         <button
