@@ -34,8 +34,9 @@
     "src/types/types.d.ts",
     "src/types/glsl.d.ts",
     "**/*.ts",
-    "**/*.tsx",// <-- Explicitly including GLSL macro types
-    "src/app/explore/products/page.jsx"
-, "src/app/api/auth/[...nextauth.ts]"  ],
+    "**/*.tsx", // <-- Explicitly including GLSL macro types
+    "src/app/explore/products/page.jsx",
+    "src/app/api/auth/[...nextauth.ts]"
+  ],
   "exclude": ["node_modules"]
 }

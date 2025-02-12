@@ -1,3 +1,5 @@
+// src/app/explore/blog/page.tsx
+
 import ArticleGrid from "@/components/blog/ArticleGrid";
 import ArticleList from "@/components/blog/ArticleList";
 import Image from "next/image";
@@ -48,9 +50,9 @@ type AggregatedData = {
   }>;
 };
 
-// Fix BlogPageProps so searchParams is just an object.
+// Change BlogPageProps so that searchParams is a Promise that resolves to an object.
 type BlogPageProps = {
-  searchParams: { view?: string; q?: string; filter?: string };
+  searchParams: Promise<{ view?: string; q?: string; filter?: string }>;
 };
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -63,8 +65,7 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 /**
- * fetchImageForKeyword uses the Pexels API to search for an image using the given keyword.
- * It logs the API response and avoids duplicate images by checking a Set of used image URLs.
+ * Uses the Pexels API to fetch an image for the given keyword.
  */
 async function fetchImageForKeyword(
   keyword: string,
@@ -107,33 +108,31 @@ async function fetchImageForKeyword(
 }
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
-  // Now searchParams is a plain object, so no need to await it.
-  const { view, q, filter } = searchParams;
+  // Await searchParams because it's now a Promise.
+  const { view, q, filter } = await searchParams;
   const viewMode = view === "list" ? "list" : "grid";
   const query = q || "";
   const filterParam = filter || "";
 
-  // Use an absolute URL to avoid URL parsing errors.
+  // Use an absolute URL (set in environment variables) to avoid URL parsing issues.
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   const res = await fetch(`${baseUrl}/api/aggregator`, {
     next: { revalidate: 60 },
   });
   const aggregatedData: AggregatedData = await res.json();
 
-  // Combine media items into one flat array.
+  // Combine media items into a flat array.
   const combinedAggregated = [
     ...aggregatedData.wikipedia,
     ...aggregatedData.crossref,
     ...aggregatedData.openAlex,
     ...aggregatedData.archive,
-    // For podcasts, prefix the title.
     ...aggregatedData.podcasts.map((podcast) => ({
       ...podcast,
       title: `[Podcast] ${podcast.title}`,
     })),
   ];
 
-  // Include the fact as a special "article."
   combinedAggregated.push({
     title: `Did You Know? (${aggregatedData.fact.number})`,
     description: aggregatedData.fact.text,
@@ -141,17 +140,15 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     source: aggregatedData.fact.source,
   });
 
-  // Transform aggregated items into Article objects.
   let combinedArticles: Article[] = combinedAggregated.map((item, index) => ({
     id: index + 1,
     title: item.title,
     description: item.description,
     url: item.url,
     association: item.source,
-    image: "", // placeholder; to be filled below
+    image: "",
   }));
 
-  // Filter out irrelevant articles (ensure they mention "pepper" or "sauce").
   combinedArticles = combinedArticles.filter(
     (article) =>
       article.title.toLowerCase().includes("pepper") ||
@@ -160,11 +157,8 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
       article.description.toLowerCase().includes("sauce"),
   );
 
-  // Create a Set to track used image URLs.
   const usedImages = new Set<string>();
 
-  // For each article, if no image is provided by the aggregator,
-  // fetch an image using a keyword extracted from the title.
   const articlesWithImages: Article[] = await Promise.all(
     combinedArticles.map(async (article) => {
       const image = await fetchImageForKeyword(article.title, usedImages);
@@ -172,7 +166,6 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
     }),
   );
 
-  // Further filter articles by search query.
   let filteredArticles = articlesWithImages;
   if (query) {
     filteredArticles = filteredArticles.filter(
@@ -181,7 +174,6 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         article.description.toLowerCase().includes(query.toLowerCase()),
     );
   }
-  // Filter articles by source (association) if filterParam is provided.
   if (filterParam) {
     filteredArticles = filteredArticles.filter(
       (article) =>
@@ -191,7 +183,6 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
   const articlesToDisplay = shuffleArray(filteredArticles);
 
-  // Build URL parameters for toggling view modes.
   const urlParams =
     (query ? `&q=${encodeURIComponent(query)}` : "") +
     (filterParam ? `&filter=${encodeURIComponent(filterParam)}` : "");

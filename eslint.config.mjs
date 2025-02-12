@@ -9,27 +9,27 @@ const reactPlugin = require("eslint-plugin-react");
 export default [
   // Global ignores: these patterns are applied to every file.
   {
-    ignores: [".next/**", "node_modules/**", "out/**", "build/**"]
+    ignores: [".next/**", "node_modules/**", "out/**", "build/**"],
   },
   // Your main configuration for source files.
   {
     files: [
       "src/**/*.{js,jsx,ts,tsx}",
       "app/**/*.{js,jsx,ts,tsx}",
-      "next.config.{js,ts}"
+      "next.config.{js,ts}",
     ],
     languageOptions: {
       parser: require("@typescript-eslint/parser"),
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
-        ecmaFeatures: { jsx: true }
-      }
+        ecmaFeatures: { jsx: true },
+      },
     },
     plugins: {
       prettier: prettierPlugin,
       "@typescript-eslint": tsPlugin,
-      react: reactPlugin
+      react: reactPlugin,
     },
     rules: {
       "prettier/prettier": "error",
@@ -39,9 +39,9 @@ export default [
         "warn",
         {
           argsIgnorePattern: "^_",
-          varsIgnorePattern: "^(?:__turbopack.*|global|__dirname)$"
-        }
-      ]
-    }
-  }
+          varsIgnorePattern: "^(?:__turbopack.*|global|__dirname)$",
+        },
+      ],
+    },
+  },
 ];
