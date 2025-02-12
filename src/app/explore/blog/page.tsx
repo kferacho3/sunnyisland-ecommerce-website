@@ -48,10 +48,9 @@ type AggregatedData = {
   }>;
 };
 
+// Fix BlogPageProps so searchParams is just an object.
 type BlogPageProps = {
-  searchParams:
-    | { view?: string; q?: string; filter?: string }
-    | Promise<{ view?: string; q?: string; filter?: string }>;
+  searchParams: { view?: string; q?: string; filter?: string };
 };
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -77,7 +76,9 @@ async function fetchImageForKeyword(
       "VXlFYUc4IsxVdFQjueP6uClpLLRZqqW4NkAUKT5ZS6EqRz2TGiAvHHtE";
     console.log(`Fetching image for keyword: ${keyword}`);
     const res = await fetch(
-      `https://api.pexels.com/v1/search?query=${encodeURIComponent(keyword)}&per_page=1`,
+      `https://api.pexels.com/v1/search?query=${encodeURIComponent(
+        keyword,
+      )}&per_page=1`,
       {
         headers: {
           Authorization: accessKey,
@@ -106,8 +107,8 @@ async function fetchImageForKeyword(
 }
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
-  // Await searchParams if it's a promise.
-  const { view, q, filter } = await Promise.resolve(searchParams);
+  // Now searchParams is a plain object, so no need to await it.
+  const { view, q, filter } = searchParams;
   const viewMode = view === "list" ? "list" : "grid";
   const query = q || "";
   const filterParam = filter || "";
