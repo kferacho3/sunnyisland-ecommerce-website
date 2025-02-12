@@ -16,7 +16,6 @@ import { easing } from "maath";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 
 import { Product, productsData } from "@/data/productsData";
-import Flame from "./FlameShader";
 import Peppers from "./models/Peppers";
 import PepperSauce from "./models/PepperSauce";
 import SunnyIslandLogo from "./models/SunnyIslandLogo";
@@ -46,7 +45,7 @@ export default function MainPage() {
     const handleMouseMove = () => {
       clearTimeout(idleTimeout);
       setIsIdle(false);
-      idleTimeout = setTimeout(() => setIsIdle(true), 500000);
+      idleTimeout = setTimeout(() => setIsIdle(true), 5000);
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => {
@@ -55,12 +54,11 @@ export default function MainPage() {
     };
   }, []);
 
-  // Keydown event listener for "h" (toggle overlay and hide cursor) and "r" (toggle rotation)
+  // Keydown listener for "h" and "r"
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "h") {
         setShowOverlay((prev) => !prev);
-        // Hide cursor when overlay is hidden; restore when visible.
         document.body.style.cursor = showOverlay ? "none" : "default";
       }
       if (e.key === "r") {
@@ -159,7 +157,7 @@ function Scene({
   sauceRef,
 }: SceneProps) {
   const { camera } = useThree();
-  // DO NOT CHANGE ANY CAMERA POSITION VALUES.
+  // Define target positions for idle camera movement.
   const positions = [
     {
       position: [10, 20, 10] as [number, number, number],
@@ -193,13 +191,23 @@ function Scene({
     }
   }, [isIdle, positions.length, setCurrentPositionIndex]);
 
-  const logoSpring = useSpring({
-    from: { scale: [0, 0, 0], position: [-0.82, 0.75 - 2, 0] },
+  // Create an animated group component using the helper.
+  const AnimatedGroup = a("group");
+
+  // Specify the expected types so that our .to conversions work properly.
+  const logoSpring = useSpring<{
+    scale: [number, number, number];
+    position: [number, number, number];
+  }>({
+    from: { scale: [0, 0, 0], position: [-0.82, -1.25, 0] },
     to: { scale: [1, 1, 1], position: [-0.82, 0.75, 0] },
     config: { mass: 1, tension: 170, friction: 26 },
   });
-  const sauceSpring = useSpring({
-    from: { scale: [0, 0, 0], position: [0, -0.5 - 2, 0] },
+  const sauceSpring = useSpring<{
+    scale: [number, number, number];
+    position: [number, number, number];
+  }>({
+    from: { scale: [0, 0, 0], position: [0, -2.5, 0] },
     to: { scale: [1, 1, 1], position: [0, -0.5, 0] },
     config: { mass: 1, tension: 170, friction: 26 },
   });
@@ -207,12 +215,31 @@ function Scene({
   return (
     <>
       <ambientLight intensity={1.5} />
-      <a.group {...logoSpring}>
+      <AnimatedGroup
+        scale={logoSpring.scale.to(
+          (x: number, y: number, z: number) =>
+            [x, y, z] as [number, number, number],
+        )}
+        position={logoSpring.position.to(
+          (x: number, y: number, z: number) =>
+            [x, y, z] as [number, number, number],
+        )}
+      >
         <SunnyIslandLogo />
-      </a.group>
-      <a.group ref={sauceRef} {...sauceSpring}>
+      </AnimatedGroup>
+      <AnimatedGroup
+        ref={sauceRef}
+        scale={sauceSpring.scale.to(
+          (x: number, y: number, z: number) =>
+            [x, y, z] as [number, number, number],
+        )}
+        position={sauceSpring.position.to(
+          (x: number, y: number, z: number) =>
+            [x, y, z] as [number, number, number],
+        )}
+      >
         <PepperSauce />
-        {flameOn && <Flame color="red" position={[0.5, 1.5, 0]} />}
+        {/* {flameOn && <Flame color="red" position={[0.5, 1.5, 0]} />} */}
         <AccumulativeShadows
           frames={100}
           alphaTest={0.85}
@@ -230,7 +257,7 @@ function Scene({
             bias={0.001}
           />
         </AccumulativeShadows>
-      </a.group>
+      </AnimatedGroup>
       <Env perfSucks={perfSucks} />
     </>
   );
