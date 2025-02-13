@@ -42,7 +42,7 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
           {/* Shop Button */}
           <a
             href="/shop"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-thirdary text-black font-bold rounded hover:opacity-80 transition"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-black font-bold rounded hover:opacity-80 transition"
           >
             Shop <AiOutlineArrowRight />
           </a>

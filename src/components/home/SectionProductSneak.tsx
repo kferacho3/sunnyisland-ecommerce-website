@@ -41,7 +41,7 @@ export default function SectionProductSneak() {
           <picture>
             <source
               media="(max-width: 640px)"
-              srcSet="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/SunnyIslandPepperSaucePortaitMobile.png"
+              srcSet="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/SunnyIslandPepperSaucePortait.png"
             />
             <img
               src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/SunnyIslandPepperSaucePortait.png"

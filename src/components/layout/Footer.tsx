@@ -16,7 +16,7 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         {/* Top section */}
         <div className="flex flex-col sm:flex-row sm:justify-between gap-8">
-          <div className="sm:w-1/5 flex flex-col items-start justify-start">
+          <div className="sm:w-1/5 flex flex-col items-center sm:items-start justify-start">
             <div className="mb-2">
               <img
                 src="/SunnyIslandLogo.png"

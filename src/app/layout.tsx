@@ -17,7 +17,7 @@ import StickyCookieConsent from "@/components/layout/StickyComponents/StickyCook
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SunnyIslandPepper",
+  title: "Spicy Caribbean Tang | Sunny Island Pepper Sauce",
   description: "A modern Caribbean pepper sauce website",
 };
 
@@ -39,7 +39,7 @@ export default function RootLayout({
             the fixed Navbar (h-20) and Header (roughly 40px).
             Adjust the value (e.g. pt-32 equals 8rem, which is 128px) as needed.
           */}
-          <main className="pt-28 min-h-screen">{children}</main>
+          <main className="pt-28 md: pt-20 min-h-screen">{children}</main>
 
           {/* Sticky Components */}
           <StickyAccessibility />
