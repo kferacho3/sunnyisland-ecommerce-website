@@ -34,7 +34,7 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
           {/* Products Button */}
           <a
             href="/explore/products"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-black font-bold rounded hover:opacity-80 transition"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-black font-bold rounded hover:opacity-80 transition"
           >
             Products <GiChiliPepper />
           </a>
@@ -42,7 +42,7 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
           {/* Shop Button */}
           <a
             href="/shop"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-black font-bold rounded hover:opacity-80 transition"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-black font-bold rounded hover:opacity-80 transition"
           >
             Shop <AiOutlineArrowRight />
           </a>

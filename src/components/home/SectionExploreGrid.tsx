@@ -492,14 +492,14 @@ export default function SectionExploreGrid() {
         ) : (
           <button
             onClick={handleRefresh}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary transition"
           >
             Refresh Dashboard
           </button>
         )}
         <button
           onClick={handleNextPage}
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition"
+          className="px-4 py-2 bg-secondary text-white rounded hover: opacity-80 transition"
         >
           Next Section →
         </button>

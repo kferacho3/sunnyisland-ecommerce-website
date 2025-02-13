@@ -1,6 +1,7 @@
 // src/components/home/SectionNewsletter.tsx
 import Button from "@/components/ui/Button";
 import FormInput from "@/components/ui/FormInput";
+import Link from "next/link";
 import React from "react";
 
 export default function SectionNewsletter() {
@@ -36,14 +37,12 @@ export default function SectionNewsletter() {
             you consent to receive marketing communications from Sunny Island
             Pepper Sauce at the email provided. You can unsubscribe at any time
             using the “unsubscribe” link in our emails. View our
-            <a
-              href="#"
+            <Link
+              href="/legal/privacy"
               className="underline ml-1 hover:text-secondary"
-              target="_blank"
-              rel="noopener noreferrer"
             >
               Privacy Policy
-            </a>
+            </Link>
             .
           </p>
 

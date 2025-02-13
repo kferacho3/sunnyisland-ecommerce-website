@@ -1,7 +1,7 @@
 "use client";
 
 import { useTheme } from "@/context/ThemeContext";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
@@ -10,6 +10,7 @@ import {
   FiBook,
   FiBriefcase,
   FiCalendar,
+  FiChevronDown,
   FiEdit,
   FiHeart,
   FiHelpCircle,
@@ -43,7 +44,10 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed top-0 w-full h-[64px] md:h-[80px] bg-primary text-white dark:bg-black dark:text-white z-50 shadow-md">
+      <nav
+        className="fixed top-0 w-full h-[64px] md:h-[80px] bg-primary text-white dark:bg-black dark:text-white z-50 shadow-md"
+        onMouseLeave={closeDropdown}
+      >
         <div className="flex items-center justify-between px-6 py-2 md:py-3 relative">
           {/* Left Section: Mobile Hamburger on mobile; Desktop nav on md */}
           <div className="w-1/3 flex items-center">
@@ -59,17 +63,23 @@ export default function Navbar() {
               {/* SHOP DROPDOWN */}
               <div className="relative">
                 <button
-                  className="hover:text-secondary"
+                  className="hover:text-secondary flex items-center"
                   onMouseEnter={() => openDropdown("shop")}
                   onFocus={() => openDropdown("shop")}
                 >
                   Shop
+                  <motion.span
+                    animate={{ rotate: activeDropdown === "shop" ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="inline-block ml-1"
+                  >
+                    <FiChevronDown className="w-4 h-4" />
+                  </motion.span>
                 </button>
                 {activeDropdown === "shop" && (
                   <div
                     className="absolute left-0 top-full mt-2 w-48 bg-black text-white rounded shadow-lg py-2 z-50"
                     onMouseEnter={() => openDropdown("shop")}
-                    onMouseLeave={closeDropdown}
                   >
                     <div className="group">
                       <Link
@@ -100,17 +110,23 @@ export default function Navbar() {
               {/* EXPLORE DROPDOWN */}
               <div className="relative">
                 <button
-                  className="hover:text-secondary"
+                  className="hover:text-secondary flex items-center"
                   onMouseEnter={() => openDropdown("explore")}
                   onFocus={() => openDropdown("explore")}
                 >
                   Explore
+                  <motion.span
+                    animate={{ rotate: activeDropdown === "explore" ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="inline-block ml-1"
+                  >
+                    <FiChevronDown className="w-4 h-4" />
+                  </motion.span>
                 </button>
                 {activeDropdown === "explore" && (
                   <div
                     className="absolute left-0 top-full mt-2 w-48 bg-black text-white rounded shadow-lg py-2 z-50"
                     onMouseEnter={() => openDropdown("explore")}
-                    onMouseLeave={closeDropdown}
                   >
                     <div className="group">
                       <Link
@@ -199,19 +215,25 @@ export default function Navbar() {
                 )}
               </div>
               {/* CONTACT DROPDOWN */}
-              <div className="relative">
+              <div className="relative" onMouseLeave={closeDropdown}>
                 <button
-                  className="hover:text-secondary"
+                  className="hover:text-secondary flex items-center"
                   onMouseEnter={() => openDropdown("contact")}
                   onFocus={() => openDropdown("contact")}
                 >
                   Contact
+                  <motion.span
+                    animate={{ rotate: activeDropdown === "contact" ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="inline-block ml-1"
+                  >
+                    <FiChevronDown className="w-4 h-4" />
+                  </motion.span>
                 </button>
                 {activeDropdown === "contact" && (
                   <div
                     className="absolute left-0 top-full mt-2 w-48 bg-black text-white rounded shadow-lg py-2 z-50"
                     onMouseEnter={() => openDropdown("contact")}
-                    onMouseLeave={closeDropdown}
                   >
                     <div className="group">
                       <Link
