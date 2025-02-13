@@ -6,21 +6,21 @@ import Image from "next/image";
 import Link from "next/link";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import {
-    FiBook,
-    FiBriefcase,
-    FiCalendar,
-    FiEdit,
-    FiFacebook,
-    FiHeart,
-    FiHelpCircle,
-    FiInfo,
-    FiInstagram,
-    FiMail,
-    FiMapPin,
-    FiPackage,
-    FiShoppingBag,
-    FiTwitter,
-    FiYoutube,
+  FiBook,
+  FiBriefcase,
+  FiCalendar,
+  FiEdit,
+  FiFacebook,
+  FiHeart,
+  FiHelpCircle,
+  FiInfo,
+  FiInstagram,
+  FiMail,
+  FiMapPin,
+  FiPackage,
+  FiShoppingBag,
+  FiTwitter,
+  FiYoutube,
 } from "react-icons/fi";
 import { GiChiliPepper } from "react-icons/gi";
 
