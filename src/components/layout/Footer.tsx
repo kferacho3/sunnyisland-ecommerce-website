@@ -12,7 +12,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="w-full bg-primary text-white dark:bg-black dark:text-white py-8 mt-8">
+    <footer className="w-full bg-primary text-white dark:bg-black dark:text-white py-8 mt-0.5">
       <div className="container mx-auto px-4">
         {/* Top section */}
         <div className="flex flex-col sm:flex-row sm:justify-between gap-8">
