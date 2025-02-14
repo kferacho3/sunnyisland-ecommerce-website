@@ -1,5 +1,4 @@
-// src/context/ThemeContext.tsx
-"use client"; // Required in Next.js App Router for client-side context
+"use client";
 
 import { ReactNode, createContext, useContext, useState } from "react";
 
@@ -15,17 +14,14 @@ const ThemeContext = createContext<ThemeContextType>({
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   const [isDark, setIsDark] = useState(false);
-
-  const toggleTheme = () => {
-    setIsDark((prev) => !prev);
-  };
+  const toggleTheme = () => setIsDark((prev) => !prev);
 
   return (
     <ThemeContext.Provider value={{ isDark, toggleTheme }}>
+      {/* Wrap children in a div that gets the "dark" class when active */}
       <div className={isDark ? "dark" : ""}>{children}</div>
     </ThemeContext.Provider>
   );
 };
 
-// Custom hook
 export const useTheme = () => useContext(ThemeContext);

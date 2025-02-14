@@ -66,7 +66,8 @@ export const secondaryWidgetsData: Widget[] = [
     id: 5,
     title: "Events",
     route: "/explore/events",
-    image: "https://picsum.photos/id/108/500/500", // No matching S3 image provided
+    image:
+      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/widgets/eventsSIPS.webp",
   },
   {
     id: 6,

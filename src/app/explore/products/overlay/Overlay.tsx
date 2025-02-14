@@ -84,33 +84,33 @@ export function Overlay({
   return (
     <div className="relative z-50 pointer-events-auto">
       {/* Main overlay buttons */}
-      <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-4 transition-all duration-300">
+      <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 flex flex-wrap justify-center gap-4 transition-all duration-300">
         <motion.button
           whileHover={{ scale: 1.1 }}
           onClick={() => togglePanel("scoville")}
-          className="bg-white p-4 rounded-full shadow-md"
+          className="bg-white p-3 sm:p-4 rounded-full shadow-md"
         >
-          <FaPepperHot className="text-red-500" />
+          <FaPepperHot className="text-red-500 w-5 h-5 sm:w-6 sm:h-6" />
         </motion.button>
         <motion.button
           whileHover={{ scale: 1.1 }}
-          className="bg-white p-4 rounded-full shadow-md flex items-center space-x-1"
+          className="bg-white p-3 sm:p-4 rounded-full shadow-md flex items-center space-x-1"
         >
           <span
-            className="font-bold italic text-black"
+            className="font-bold italic text-black text-sm sm:text-base"
             style={{ textShadow: "0 0 0.2px black" }}
           >
             INSPECT
           </span>
-          <FaSearch className="text-black" />
+          <FaSearch className="text-black w-5 h-5 sm:w-6 sm:h-6" />
         </motion.button>
         <motion.button
           whileHover={{ scale: 1.1 }}
           onClick={() => togglePanel("info")}
-          className="bg-white p-4 rounded-full shadow-md"
+          className="bg-white p-3 sm:p-4 rounded-full shadow-md"
         >
           <span
-            className="font-bold italic text-white"
+            className="font-bold italic text-black text-sm sm:text-base"
             style={{ textShadow: "0 0 0.2px black" }}
           >
             INFO
@@ -119,7 +119,7 @@ export function Overlay({
       </div>
 
       {/* Model selection buttons */}
-      <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-4 transition-all duration-300">
+      <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 flex flex-wrap justify-center gap-2 transition-all duration-300">
         {productsData.map((product) => {
           const styles = productStyles[product.id];
           const { shortName } = parseProductName(product.name);
@@ -129,11 +129,10 @@ export function Overlay({
               key={product.id}
               whileHover={{ scale: 1.1 }}
               onClick={() => onSelectProduct(product.id)}
-              className={`${styles.button} text-white rounded-md px-4 transition-all duration-300`}
+              className={`${styles.button} text-white rounded-md px-3 py-1 transition-all duration-300`}
               style={{
-                height: "25px",
                 fontWeight: "bold",
-                fontSize: "15px",
+                fontSize: "0.8rem",
                 fontStyle: "italic",
                 textShadow: "0 1px 1px black",
                 boxShadow: isSelected
@@ -151,27 +150,27 @@ export function Overlay({
       <div className="fixed bottom-5 left-5 flex flex-col space-y-4 transition-all duration-300">
         <motion.button
           whileHover={{ scale: 1.1 }}
-          className="bg-white p-4 rounded-full shadow-md"
           onClick={toggleFlame}
+          className="bg-white p-3 sm:p-4 rounded-full shadow-md"
         >
-          <IoIosFlame className="text-orange-500" />
+          <IoIosFlame className="text-orange-500 w-5 h-5 sm:w-6 sm:h-6" />
         </motion.button>
       </div>
       <div className="fixed bottom-5 right-5 flex flex-col space-y-4 transition-all duration-300">
         <motion.button
           whileHover={{ scale: 1.1 }}
-          className="bg-white p-4 rounded-full shadow-md"
           onClick={togglePeppers}
+          className="bg-white p-3 sm:p-4 rounded-full shadow-md"
         >
           <span
-            className="font-bold italic"
+            className="font-bold italic text-sm sm:text-base"
             style={{
               background: "linear-gradient(45deg, red, orange, yellow)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
             }}
           >
-            <FaPepperHot />
+            <FaPepperHot className="w-5 h-5 sm:w-6 sm:h-6" />
           </span>
         </motion.button>
       </div>
@@ -179,17 +178,19 @@ export function Overlay({
       {/* Info popup (right) */}
       {activePanel === "info" && (
         <motion.div
-          className="fixed top-1/2 right-10 bg-white p-6 rounded-lg shadow-lg max-w-xs transition-all duration-300 z-50"
+          className="fixed top-1/2 right-4 sm:right-10 bg-white p-4 sm:p-6 rounded-lg shadow-lg max-w-xs transition-all duration-300 z-50"
           variants={popupVariants}
           initial="hiddenRight"
           animate="visible"
         >
           <h2
-            className={`text-2xl font-bold mb-2 ${productStyles[currentProduct.id]?.header}`}
+            className={`text-xl sm:text-2xl font-bold mb-2 ${productStyles[currentProduct.id]?.header}`}
           >
             {parseProductName(currentProduct.name).longName}
           </h2>
-          <p className="mt-2 text-gray-600">{currentProduct.description}</p>
+          <p className="mt-2 text-gray-600 text-sm sm:text-base">
+            {currentProduct.description}
+          </p>
           <div className="mt-2 flex justify-center">
             {Array.from({ length: currentProduct.spiceLevel }).map((_, i) => {
               let color = "";
@@ -223,6 +224,7 @@ export function Overlay({
                         ? "drop-shadow(0 0 1px white)"
                         : undefined,
                   }}
+                  className="w-4 h-4 sm:w-5 sm:h-5"
                 />
               );
             })}
@@ -233,17 +235,19 @@ export function Overlay({
       {/* Scoville popup (left) */}
       {activePanel === "scoville" && (
         <motion.div
-          className="fixed top-1/2 left-10 bg-white p-6 rounded-lg shadow-lg max-w-xs transition-all duration-300 z-50"
+          className="fixed top-1/2 left-4 sm:left-10 bg-white p-4 sm:p-6 rounded-lg shadow-lg max-w-xs transition-all duration-300 z-50"
           variants={popupVariants}
           initial="hiddenLeft"
           animate="visible"
         >
           <h2
-            className={`text-2xl font-bold mb-2 ${productStyles[currentProduct.id]?.header}`}
+            className={`text-xl sm:text-2xl font-bold mb-2 ${productStyles[currentProduct.id]?.header}`}
           >
             {parseProductName(currentProduct.name).longName}
           </h2>
-          <p className="mt-2 text-gray-600">{currentProduct.scoville}</p>
+          <p className="mt-2 text-gray-600 text-sm sm:text-base">
+            {currentProduct.scoville}
+          </p>
           <div className="mt-2 flex justify-center">
             {Array.from({ length: currentProduct.spiceLevel }).map((_, i) => {
               let color = "";
@@ -277,6 +281,7 @@ export function Overlay({
                         ? "drop-shadow(0 0 1px white)"
                         : undefined,
                   }}
+                  className="w-4 h-4 sm:w-5 sm:h-5"
                 />
               );
             })}

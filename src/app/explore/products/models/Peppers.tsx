@@ -16,12 +16,6 @@ export type PepperGLTF = GLTF & {
   };
 };
 
-// Define collision centers and radii for bouncing off the logo and sauce
-const logoCenter = new THREE.Vector3(-0.82, 0.75, 0);
-const logoRadius = 1.5;
-const sauceCenter = new THREE.Vector3(0, -0.5, 0);
-const sauceRadius = 1.5;
-
 interface PepperProps {
   index: number;
   z: number;
@@ -32,7 +26,8 @@ interface PepperProps {
 function Pepper({ index, z, speed, color }: PepperProps) {
   const ref = useRef<THREE.Mesh>(null);
   const { viewport, camera } = useThree();
-  const { width, height } = viewport.getCurrentViewport(camera, [0, 0, -z]);
+  // Get viewport dimensions at the pepper's z-plane.
+  const { width, height } = viewport.getCurrentViewport(camera, [0, 0, z]);
 
   // Load GLTF models with proper typing
   const yellowPepper = useGLTF(
@@ -42,6 +37,7 @@ function Pepper({ index, z, speed, color }: PepperProps) {
     "https://sunnyisland.s3.us-east-2.amazonaws.com/media/glb/redPepper.glb",
   ) as unknown as PepperGLTF;
 
+  // Initialize pepper-specific data
   const [data] = useState(() => ({
     y: THREE.MathUtils.randFloatSpread(height * 2),
     x: THREE.MathUtils.randFloatSpread(2),
@@ -52,27 +48,29 @@ function Pepper({ index, z, speed, color }: PepperProps) {
   }));
 
   useFrame((state, dt) => {
+    // Compute pepper position; note that we now use the given z directly.
     const pepperPos = new THREE.Vector3(
       index === 0 ? 0 : data.x * width,
       data.y,
-      -z,
+      z,
     );
-    // Bounce if too close to the logo or sauce centers.
-    if (
-      pepperPos.distanceTo(logoCenter) < logoRadius ||
-      pepperPos.distanceTo(sauceCenter) < sauceRadius
-    ) {
-      data.direction *= -1;
-    }
+
+    // (Collision code removed—peppers no longer interact with PepperSauce.)
+
+    // Update vertical position.
     data.y += dt * speed * data.direction;
+
+    // Update mesh position and rotation.
     if (ref.current) {
-      ref.current.position.set(pepperPos.x, pepperPos.y, pepperPos.z);
+      ref.current.position.set(pepperPos.x, data.y, pepperPos.z);
       ref.current.rotation.set(
         (data.rX += dt / data.spin),
         Math.sin(index * 1000 + state.clock.elapsedTime / 10) * Math.PI,
         (data.rZ += dt / data.spin),
       );
     }
+
+    // Reset vertical position if pepper moves too far.
     if (
       data.y > height * (index === 0 ? 4 : 1) ||
       data.y < -(height * (index === 0 ? 4 : 1))
@@ -81,6 +79,7 @@ function Pepper({ index, z, speed, color }: PepperProps) {
     }
   });
 
+  // Select the appropriate model.
   const gltf = color === "yellow" ? yellowPepper : redPepper;
   const { nodes } = gltf;
 
@@ -107,6 +106,7 @@ export default function Peppers({
   depth = 80,
   easing = (x: number) => Math.sqrt(1 - Math.pow(x - 1, 2)),
 }: PeppersProps) {
+  // Generate a color for each pepper (80% yellow, 20% red)
   const peppers = useMemo<("yellow" | "red")[]>(() => {
     const temp: ("yellow" | "red")[] = [];
     for (let i = 0; i < count; i++) {
@@ -129,7 +129,8 @@ export default function Peppers({
         <Pepper
           key={i}
           index={i}
-          z={Math.round(easing(i / count) * depth)}
+          // All peppers are now placed behind the PepperSauce by ensuring a negative z value.
+          z={-(Math.round(easing(i / count) * depth) + 10)}
           speed={speed}
           color={pepperColor}
         />

@@ -1,13 +1,23 @@
 "use client";
 
+import ExitIcon from "@/components/globalComponents/ExitIcon";
+import PinterestImage from "@/components/globalComponents/PinterestImage";
+import { useTheme } from "@/context/ThemeContext";
+import { recipes as establishedRecipesData } from "@/data/recipes";
 import { AnimatePresence, motion } from "framer-motion";
 import Head from "next/head";
-import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { FiHeart, FiPlus, FiStar, FiX } from "react-icons/fi";
-import { GiFoodChain } from "react-icons/gi";
-// Import your local recipes data – adjust the path as needed
-import { recipes as establishedRecipesData } from "../../../data/recipes";
+import { FiHeart, FiPlus, FiStar } from "react-icons/fi";
+import {
+  GiCheeseWedge,
+  GiChiliPepper,
+  GiFoodChain,
+  GiGarlic,
+  GiHerbsBundle,
+  GiMeat,
+  GiOni,
+  GiTomato,
+} from "react-icons/gi";
 
 // ─────────────────────────────────────────────
 // Type Definitions
@@ -27,7 +37,7 @@ export type Recipe = {
 };
 
 // ─────────────────────────────────────────────
-// Country Flags Mapping (adjust or add as needed)
+// Country Flags Mapping
 // ─────────────────────────────────────────────
 
 const countryFlags: { [key: string]: string } = {
@@ -35,7 +45,7 @@ const countryFlags: { [key: string]: string } = {
   India: "https://flagsapi.com/IN/flat/64.png",
   Jamaica: "https://flagsapi.com/JM/flat/64.png",
   Mexico: "https://flagsapi.com/MX/flat/64.png",
-  Caribbean: "https://flagsapi.com/UN/flat/64.png", // default for general Caribbean recipes
+  Caribbean: "https://flagsapi.com/UN/flat/64.png",
   China: "https://flagsapi.com/CN/flat/64.png",
   Japan: "https://flagsapi.com/JP/flat/64.png",
   Korea: "https://flagsapi.com/KR/flat/64.png",
@@ -71,77 +81,63 @@ const countryFlags: { [key: string]: string } = {
 };
 
 // ─────────────────────────────────────────────
+// Helper: Get Appropriate Ingredient Icon
+// ─────────────────────────────────────────────
+
+function getIngredientIcon(ingredient: string): React.ReactNode {
+  const lower = ingredient.toLowerCase();
+  if (lower.includes("tomato")) return <GiTomato size={20} />;
+  if (lower.includes("onion")) return <GiOni size={20} />;
+  if (lower.includes("garlic")) return <GiGarlic size={20} />;
+  if (lower.includes("pepper")) return <GiChiliPepper size={20} />;
+  if (lower.includes("cheese")) return <GiCheeseWedge size={20} />;
+  if (lower.includes("meat")) return <GiMeat size={20} />;
+  if (lower.includes("basil") || lower.includes("herb"))
+    return <GiHerbsBundle size={20} />;
+  return <GiFoodChain size={20} />;
+}
+
+// ─────────────────────────────────────────────
 // Main Page Component
 // ─────────────────────────────────────────────
 
 const RecipesPage = () => {
-  // Tab state: Established Recipes vs. Sunny Island Original Recipes
   const [activeTab, setActiveTab] = useState<"established" | "original">(
     "established",
   );
-
-  // Favorites: store recipe IDs – guests can favorite; results are cached in localStorage
   const [favorites, setFavorites] = useState<number[]>([]);
-
-  // Modal state: currently selected recipe (if any)
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-
-  // Lazy loading: visible count for horizontal scroll recipes
   const [visibleCount, setVisibleCount] = useState(5);
-
-  // Simulate user authentication status (false = guest)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // On mount, load any favorited recipes from localStorage
   useEffect(() => {
     const storedFav = localStorage.getItem("favoriteRecipes");
-    if (storedFav) {
-      setFavorites(JSON.parse(storedFav));
-    }
+    if (storedFav) setFavorites(JSON.parse(storedFav));
   }, []);
 
-  // Whenever favorites change, update localStorage
   useEffect(() => {
     localStorage.setItem("favoriteRecipes", JSON.stringify(favorites));
   }, [favorites]);
 
-  // Prepare established recipes from local data – add a fixed rating of 0.0
   const establishedRecipes: Recipe[] = establishedRecipesData.map((r) => ({
     ...r,
     rating: 0.0,
   }));
 
-  // Toggle favorite status for a recipe ID
   const toggleFavorite = (id: number) => {
     setFavorites((prev) =>
       prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id],
     );
   };
 
-  // Handle rating – if not logged in, prompt the user to sign in
   const handleRating = (id: number) => {
-    if (!isLoggedIn) {
-      alert("Please sign in or sign up to rate recipes!");
-    } else {
-      // Add rating functionality here if you later support it
-      console.log(`User rated recipe ${id}`);
-    }
+    if (!isLoggedIn) alert("Please sign in or sign up to rate recipes!");
+    else console.log(`User rated recipe ${id}`);
   };
 
-  // Open modal to view full recipe details
-  const openModal = (recipe: Recipe) => {
-    setSelectedRecipe(recipe);
-  };
-
-  // Close the modal
-  const closeModal = () => {
-    setSelectedRecipe(null);
-  };
-
-  // Load more recipes for horizontal scroll
-  const loadMoreRecipes = () => {
-    setVisibleCount((prev) => prev + 4);
-  };
+  const openModal = (recipe: Recipe) => setSelectedRecipe(recipe);
+  const closeModal = () => setSelectedRecipe(null);
+  const loadMoreRecipes = () => setVisibleCount((prev) => prev + 4);
 
   return (
     <>
@@ -160,8 +156,7 @@ const RecipesPage = () => {
             <span className="text-pink-600">Sunny Island Pepper Sauce</span>
           </h1>
         </header>
-
-        {/* Tabs for Established vs. Original Recipes */}
+        {/* Tabs */}
         <div className="flex justify-center mb-6 space-x-4">
           <button
             onClick={() => setActiveTab("established")}
@@ -184,11 +179,9 @@ const RecipesPage = () => {
             Sunny Island Original Recipes
           </button>
         </div>
-
         {activeTab === "established" ? (
           establishedRecipes.length > 0 && (
             <div className="space-y-6">
-              {/* Featured Recipe with horizontal scroll for additional recipes */}
               <FeaturedLayout
                 featuredRecipe={establishedRecipes[0]}
                 otherRecipes={establishedRecipes.slice(1, visibleCount + 1)}
@@ -197,8 +190,6 @@ const RecipesPage = () => {
                 favorites={favorites}
                 onOpenModal={openModal}
               />
-
-              {/* Load More Button if there are more recipes */}
               {visibleCount < establishedRecipes.length - 1 && (
                 <div className="text-center">
                   <button
@@ -212,12 +203,9 @@ const RecipesPage = () => {
             </div>
           )
         ) : (
-          // Original Recipes Placeholder with Recipe Submission Prompt
           <OriginalRecipesPlaceholder />
         )}
-
-        {/* Recipe Modal Popup */}
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {selectedRecipe && (
             <RecipeModal
               recipe={selectedRecipe}
@@ -257,14 +245,12 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
 }) => {
   return (
     <div>
-      {/* Featured Recipe Large Card */}
+      {/* Featured Recipe Card */}
       <div className="flex flex-col md:flex-row gap-4 mb-6 bg-white dark:bg-gray-800 rounded shadow overflow-hidden">
         <div className="relative w-full md:w-1/2 h-64">
-          <Image
-            src={featuredRecipe.imageUrl}
+          <PinterestImage
+            query={`${featuredRecipe.title} ${featuredRecipe.cuisine}`}
             alt={featuredRecipe.title}
-            fill
-            className="object-cover"
           />
         </div>
         <div className="flex-1 p-4 flex flex-col">
@@ -285,7 +271,7 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
             </button>
           </div>
           <div className="flex items-center gap-2 mb-2">
-            <Image
+            <img
               src={
                 countryFlags[featuredRecipe.country] || countryFlags["Unknown"]
               }
@@ -317,7 +303,6 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
           </div>
         </div>
       </div>
-
       {/* Horizontal Scroll for Other Recipes */}
       <div className="overflow-x-auto">
         <div className="flex space-x-4">
@@ -359,20 +344,14 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
 }) => {
   return (
     <div className="relative bg-white dark:bg-gray-800 rounded shadow overflow-hidden flex flex-col">
-      {/* Recipe Image */}
       <div className="relative h-48">
-        <Image
-          src={recipe.imageUrl}
+        <PinterestImage
+          query={`${recipe.title} ${recipe.cuisine}`}
           alt={recipe.title}
-          fill
-          className="object-cover"
         />
       </div>
       <div className="p-4 flex-grow flex flex-col">
-        {/* Recipe Title */}
         <h3 className="text-lg font-bold mb-1">{recipe.title}</h3>
-
-        {/* Rating Section */}
         <div className="flex items-center mb-2">
           <span className="text-xl font-semibold">
             {recipe.rating.toFixed(1)}
@@ -385,10 +364,8 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
             <FiStar />
           </button>
         </div>
-
-        {/* Country Flag and Name */}
         <div className="flex items-center mb-2">
-          <Image
+          <img
             src={countryFlags[recipe.country] || countryFlags["Unknown"]}
             alt={recipe.country}
             width={24}
@@ -397,9 +374,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
           />
           <span className="ml-2 text-sm">{recipe.country}</span>
         </div>
-
-        <div className="flex-grow"></div>
-        {/* Bottom Row: Favorite and View Full Recipe */}
+        <div className="flex-grow" />
         <div className="flex items-center justify-between">
           <button
             onClick={() => onFavorite(recipe.id)}
@@ -423,7 +398,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
 };
 
 // ─────────────────────────────────────────────
-// Recipe Modal Component (Full Recipe Popup)
+// Recipe Modal Component
 // ─────────────────────────────────────────────
 
 type RecipeModalProps = {
@@ -439,6 +414,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
   onRating,
   isLoggedIn,
 }) => {
+  const { isDark } = useTheme();
   const [activeTab, setActiveTab] = useState<
     "description" | "ingredients" | "instructions"
   >("description");
@@ -450,32 +426,25 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
+      {/* Relative container so ExitIcon stays inside */}
       <motion.div
-        className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden w-full max-w-3xl max-h-full"
+        className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden w-full max-w-3xl max-h-full"
         initial={{ scale: 0.8 }}
         animate={{ scale: 1 }}
         exit={{ scale: 0.8 }}
       >
-        {/* Modal Header with Large Image */}
+        <ExitIcon onClose={onClose} isDarkMode={isDark} />
+        {/* Modal Header with Pinterest image */}
         <div className="relative">
           <div className="relative h-64">
-            <Image
-              src={recipe.imageUrl}
+            <PinterestImage
+              query={`${recipe.title} ${recipe.cuisine}`}
               alt={recipe.title}
-              fill
-              className="object-cover"
             />
           </div>
-          <button
-            onClick={onClose}
-            className="absolute top-2 right-2 bg-white dark:bg-gray-700 rounded-full p-2"
-          >
-            <FiX size={20} />
-          </button>
         </div>
         <div className="p-4">
           <h2 className="text-2xl font-bold mb-2">{recipe.title}</h2>
-          {/* Rating in Modal */}
           <div className="flex items-center mb-4">
             <span className="text-xl font-semibold">
               {recipe.rating.toFixed(1)}
@@ -483,20 +452,17 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
             <span className="text-xs text-gray-500 ml-1">NOT YET RATED</span>
             <button
               onClick={() => {
-                if (!isLoggedIn) {
+                if (!isLoggedIn)
                   alert("Please sign in or sign up to rate recipes!");
-                } else {
-                  onRating(recipe.id);
-                }
+                else onRating(recipe.id);
               }}
               className="ml-2 p-1 border rounded"
             >
               <FiStar />
             </button>
           </div>
-          {/* Country Info */}
           <div className="flex items-center mb-4">
-            <Image
+            <img
               src={countryFlags[recipe.country] || countryFlags["Unknown"]}
               alt={recipe.country}
               width={24}
@@ -505,12 +471,12 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
             />
             <span className="ml-2 text-sm">{recipe.country}</span>
           </div>
-          {/* Tabs Navigation */}
+          {/* Tab Navigation */}
           <div className="border-b mb-4">
             <nav className="flex space-x-4">
               <button
                 onClick={() => setActiveTab("description")}
-                className={`pb-2 ${
+                className={`pb-2 transition-colors duration-300 ${
                   activeTab === "description"
                     ? "border-b-2 border-pink-600"
                     : "text-gray-500"
@@ -520,7 +486,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
               </button>
               <button
                 onClick={() => setActiveTab("ingredients")}
-                className={`pb-2 ${
+                className={`pb-2 transition-colors duration-300 ${
                   activeTab === "ingredients"
                     ? "border-b-2 border-pink-600"
                     : "text-gray-500"
@@ -530,7 +496,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
               </button>
               <button
                 onClick={() => setActiveTab("instructions")}
-                className={`pb-2 ${
+                className={`pb-2 transition-colors duration-300 ${
                   activeTab === "instructions"
                     ? "border-b-2 border-pink-600"
                     : "text-gray-500"
@@ -540,34 +506,61 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
               </button>
             </nav>
           </div>
-          {/* Tab Content */}
-          <div className="overflow-y-auto max-h-64">
-            {activeTab === "description" && (
-              <div>
-                <p className="text-sm">{recipe.description}</p>
-              </div>
-            )}
-            {activeTab === "ingredients" && (
-              <div className="grid grid-cols-1 gap-2">
-                {recipe.ingredients.map((ingredient, index) => (
-                  <div key={index} className="flex items-center">
-                    <div className="p-2 rounded-full bg-gradient-to-r from-pink-500 to-blue-500 text-white mr-2">
-                      <GiFoodChain size={16} />
-                    </div>
-                    <span className="text-sm">{ingredient}</span>
+          {/* Fixed-size tab content container with smooth transitions */}
+          <div className="relative h-64 overflow-y-auto">
+            <AnimatePresence mode="wait">
+              {activeTab === "description" && (
+                <motion.div
+                  key="description"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0"
+                >
+                  <p className="text-sm">{recipe.description}</p>
+                </motion.div>
+              )}
+              {activeTab === "ingredients" && (
+                <motion.div
+                  key="ingredients"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0"
+                >
+                  <div className="grid grid-cols-1 gap-2">
+                    {recipe.ingredients.map((ingredient, index) => (
+                      <div key={index} className="flex items-center">
+                        <div className="p-2 rounded-full bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text mr-2">
+                          {getIngredientIcon(ingredient)}
+                        </div>
+                        <span className="text-sm">{ingredient}</span>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-            )}
-            {activeTab === "instructions" && (
-              <div className="list-decimal pl-5">
-                {recipe.instructions.map((step, index) => (
-                  <p key={index} className="text-sm mb-2">
-                    {step}
-                  </p>
-                ))}
-              </div>
-            )}
+                </motion.div>
+              )}
+              {activeTab === "instructions" && (
+                <motion.div
+                  key="instructions"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute inset-0"
+                >
+                  <div className="list-decimal pl-5">
+                    {recipe.instructions.map((step, index) => (
+                      <p key={index} className="text-sm mb-2">
+                        {step}
+                      </p>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </motion.div>

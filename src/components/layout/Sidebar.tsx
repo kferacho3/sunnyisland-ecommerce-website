@@ -1,4 +1,5 @@
 "use client";
+import ExitIcon from "@/components/globalComponents/ExitIcon";
 
 import { useTheme } from "@/context/ThemeContext";
 import { motion } from "framer-motion";
@@ -52,12 +53,7 @@ export default function Sidebar({ closeSidebar }: SidebarProps) {
               />
             </Link>
           </div>
-          <button
-            onClick={closeSidebar}
-            className="absolute right-0 top-0 text-2xl font-bold"
-          >
-            &times;
-          </button>
+          <ExitIcon onClose={closeSidebar} isDarkMode={isDark} />
         </div>
 
         <hr className="border-gray-300 dark:border-gray-700 mb-4" />

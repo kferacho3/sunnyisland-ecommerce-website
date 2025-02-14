@@ -89,17 +89,13 @@ function getRandomFiveShapePositions3x8(): Tile[] {
    2) SPECIAL HANDLING FOR PAGE=0 WITH 5 WIDGETS (Desktop)
 ============================================================================ */
 function getFiveWidgetLayoutPage0(
+  products: Widget,
   scoville: Widget,
   foods: Widget,
   secondaries: Widget[],
 ): Tile[] {
   const tiles = getRandomFiveShapePositions3x8();
-  tiles[0].widget = {
-    id: 101,
-    title: "Products",
-    route: "/explore/products",
-    image: "https://picsum.photos/id/101/500/500",
-  };
+  tiles[0].widget = products;
   tiles[1].widget = scoville;
   tiles[2].widget = foods;
   tiles[3].widget = secondaries[0];
@@ -243,12 +239,13 @@ function generateLayout(
 ): Tile[] {
   if (widgetCount === 5) {
     if (pageIndex === 0) {
+      const products = widgets.find((w) => w.id === 101)!;
       const scoville = widgets.find((w) => w.id === 102)!;
       const foods = widgets.find((w) => w.id === 103)!;
       const secondaries = widgets.filter(
         (w) => w.id !== 101 && w.id !== 102 && w.id !== 103,
       );
-      return getFiveWidgetLayoutPage0(scoville, foods, secondaries);
+      return getFiveWidgetLayoutPage0(products, scoville, foods, secondaries);
     } else {
       return getFiveWidgetLayoutPageOther(widgets);
     }
