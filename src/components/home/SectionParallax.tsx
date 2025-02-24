@@ -14,18 +14,13 @@ export default function SectionParallax() {
     offset: ["start end", "end start"],
   });
 
-  // Parallax effect values (do not adjust these)
-  // Image 2 moves upward from 0 to -100px.
-  const translateYImage2 = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  // Image 3 moves upward from 0 to -120px.
-  const translateYImage3 = useTransform(scrollYProgress, [0, 1], [0, -120]);
+  // Parallax effect values
+  const translateYImage2 = useTransform(scrollYProgress, [0, 1], [0, 100]);
+  const translateYImage3 = useTransform(scrollYProgress, [0, 1], [-500, 0]);
 
-  // Header text moves upward more noticeably.
-  const translateYHeader = useTransform(scrollYProgress, [0, 1], [0, -70]);
+  // Header text motion
+  const translateYHeader = useTransform(scrollYProgress, [0, 1], [-200, 0]);
   const scaleHeader = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
-
-  // Rotation for decorative triangles around the rising sun.
-  const rotateTriangles = useTransform(scrollYProgress, [0, 1], [0, 360]);
 
   return (
     <section
@@ -34,42 +29,117 @@ export default function SectionParallax() {
       style={{
         background:
           "linear-gradient(to bottom, white 0%, #87CEEB 30%, #F4A460 70%, #FAEBD7 100%)",
+        fontFamily: "'ZelioonWild', sans-serif",
       }}
     >
+      {/* Custom Font for Parallax Page */}
+      <style jsx>{`
+        @font-face {
+          font-family: "ZelioonWild";
+          src: url("/ZelioonWild-BLOm5.otf") format("opentype");
+          font-weight: normal;
+          font-style: normal;
+        }
+        .custom-sun {
+          font-family: "ZelioonWild", sans-serif;
+        }
+        .beach-header {
+          color: white;
+          -webkit-text-stroke: 0.01px black;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+      `}</style>
+
+      {/* Sun Animation Styles */}
+      <style jsx>{`
+        .sun {
+          //position: absolute;
+          margin-left: 7%;
+          top: 1%;
+          animation: rotate 4s linear infinite;
+          --color: yellow;
+          --scale: 0.5;
+        }
+        .center {
+          height: calc(var(--scale) * 10em);
+          width: calc(var(--scale) * 10em);
+          transition:
+            background-color 2s linear,
+            box-shadow 2s linear;
+          background-color: var(--color);
+          border-radius: 50%;
+          box-shadow: 0 0 calc(var(--scale) * 3em) var(--color);
+        }
+        .ray {
+          position: absolute;
+          height: calc(var(--scale) * 3em);
+          width: calc(var(--scale) * 0.5em);
+          transition:
+            background-color 2s ease-in-out,
+            box-shadow 2s ease-in-out;
+          box-shadow: 0 0 calc(var(--scale) * 1em) var(--color);
+          background-color: var(--color);
+        }
+        .r-1 {
+          margin-left: calc(var(--scale) * 4.75em);
+          margin-top: calc(var(--scale) * 1em);
+        }
+        .r-2 {
+          margin-left: calc(var(--scale) * 12.25em);
+          margin-top: calc(var(--scale) * -6.25em);
+          transform: rotate(90deg);
+        }
+        .r-3 {
+          margin-left: calc(var(--scale) * 4.75em);
+          margin-top: calc(var(--scale) * -14em);
+        }
+        .r-4 {
+          margin-left: calc(var(--scale) * -2.75em);
+          margin-top: calc(var(--scale) * -6.25em);
+          transform: rotate(90deg);
+        }
+        .r-5 {
+          margin-left: calc(var(--scale) * -0.5em);
+          margin-top: calc(var(--scale) * -1em);
+          transform: rotate(45deg);
+        }
+        .r-6 {
+          margin-left: calc(var(--scale) * 9.75em);
+          margin-top: calc(var(--scale) * -1em);
+          transform: rotate(-45deg);
+        }
+        .r-7 {
+          margin-left: calc(var(--scale) * 10.25em);
+          margin-top: calc(var(--scale) * -11.75em);
+          transform: rotate(45deg);
+        }
+        .r-8 {
+          margin-left: calc(var(--scale) * -0.5em);
+          margin-top: calc(var(--scale) * -11.75em);
+          transform: rotate(-45deg);
+        }
+        @keyframes rotate {
+          0% {
+            transform: rotate(0deg);
+            --color: yellow;
+          }
+          100% {
+            transform: rotate(360deg);
+            --color: orange;
+          }
+        }
+      `}</style>
+
       {/* Parallax Header with moving text */}
       <motion.div
         style={{ y: translateYHeader, scale: scaleHeader }}
         className="relative z-20 text-center mb-8"
       >
-        <h1 className="beach-header text-4xl sm:text-6xl font-extrabold">
-          TAKE A VISIT TO SUNNY ISLAND!
+        <h1 className="beach-header text-6xl sm:text-8xl ">
+          Grab a bottle of sunshine with
         </h1>
-        <h2 className="beach-header text-2xl sm:text-4xl font-extrabold mt-2">
-          View our products or shop now!
-        </h2>
+        <h2 className="beach-header text-3xl sm:text-6xl mt-2">SUNNY ISLAND</h2>
       </motion.div>
-
-      {/* Animated Clouds and Birds */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        {/* Fancy CSS clouds */}
-        <div
-          className="cloud fancy-cloud"
-          style={{ top: "10%", left: "20%" }}
-        ></div>
-        <div
-          className="cloud fancy-cloud"
-          style={{ top: "15%", left: "70%" }}
-        ></div>
-        {/* Fancy animated birds */}
-        <div
-          className="bird fancy-bird"
-          style={{ top: "20%", left: "30%" }}
-        ></div>
-        <div
-          className="bird fancy-bird"
-          style={{ top: "25%", left: "80%" }}
-        ></div>
-      </div>
 
       {/* Image Container */}
       <div className="relative w-full flex items-center justify-center">
@@ -100,34 +170,62 @@ export default function SectionParallax() {
           }}
         />
 
-        {/* Parallax Image 3 (Front layer – Rising Sun) */}
-        <div
+        {/* Parallax Image 3 with Rotating Sun Rays */}
+
+        <motion.div
           style={{
+            filter: "drop-shadow(0 0 20px #3490dc)",
             position: "absolute",
-            left: "50%",
-            transform: "translateX(-50%)",
+            y: translateYImage3,
+
             zIndex: 1,
           }}
         >
-          <motion.img
-            src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/parallax/SunnyIslandPepperSauceParallax3.png"
-            alt="Parallax 3"
-            className="absolute object-cover h-auto"
+          <div className="sun">
+            <motion.img
+              src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/parallax/SunnyIslandPepperSauceParallax3.png"
+              alt="Parallax 3"
+              className="object-cover w-full h-full"
+              style={{
+                filter: "drop-shadow(0 0 20px #3490dc)",
+                position: "absolute",
+                top: "127.5px", // reduced top position
+                transform: "scale(4.5)", // quadruple the size
+              }}
+            />
+            <div className="center"></div>
+            <div className="ray r-1"></div>
+            <div className="ray r-2"></div>
+            <div className="ray r-3"></div>
+            <div className="ray r-4"></div>
+            <div className="ray r-5"></div>
+            <div className="ray r-6"></div>
+            <div className="ray r-7"></div>
+            <div className="ray r-8"></div>
+          </div>
+
+          {/* Sun glow effect */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true, amount: 0.75 }}
+            transition={{ delay: 1.5, duration: 1 }}
             style={{
-              y: translateYImage3,
-              scale: 1.25,
-              filter: "drop-shadow(0 0 20px #3490dc)", // Primary color glow
+              position: "absolute",
+              left: "50%",
+              top: "20%",
+              transform: "translate(-50%, -50%)",
+              width: "220px",
+              height: "220px",
+              borderRadius: "50%",
+              background: "rgba(255, 223, 0, 0.4)",
+              filter: "blur(20px)",
+              zIndex: 0,
             }}
           />
-          {/* Decorative rotating triangles simulating sun rays */}
-          <motion.div
-            style={{ rotate: rotateTriangles }}
-            className="sun-triangles"
-          ></motion.div>
-        </div>
+        </motion.div>
       </div>
-
-      {/* Buttons container, centered below the images */}
+      {/* Buttons container */}
       <div className="relative z-20 mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
         <Link href="/explore/products">
           <button className="px-6 py-3 bg-primary text-white font-bold rounded transition-all duration-500 hover:opacity-90">
@@ -141,95 +239,7 @@ export default function SectionParallax() {
         </Link>
       </div>
 
-      {/* Styled JSX for custom styles */}
-      <style jsx>{`
-        .beach-header {
-          color: white;
-          -webkit-text-stroke: 0.01px black;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-          font-family: "Anton", sans-serif;
-        }
-        /* Fancy Cloud Styling */
-        .fancy-cloud {
-          width: 100px;
-          height: 60px;
-          background: #fff;
-          border-radius: 50%;
-          box-shadow: 20px 10px 30px rgba(255, 255, 255, 0.5);
-          opacity: 0.8;
-          animation: floatCloud 20s linear infinite;
-        }
-        @keyframes floatCloud {
-          0% {
-            transform: translateX(0);
-          }
-          50% {
-            transform: translateX(30px);
-          }
-          100% {
-            transform: translateX(0);
-          }
-        }
-        /* Fancy Bird Styling */
-        .fancy-bird {
-          font-size: 2rem;
-          animation: flyBird 8s linear infinite;
-        }
-        @keyframes flyBird {
-          0% {
-            transform: translateX(0);
-          }
-          50% {
-            transform: translateX(50px) translateY(-20px);
-          }
-          100% {
-            transform: translateX(0);
-          }
-        }
-        /* Decorative sun triangles */
-        .sun-triangles {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          width: 150px;
-          height: 150px;
-          transform: translate(-50%, -50%);
-          pointer-events: none;
-        }
-        .sun-triangles::before,
-        .sun-triangles::after {
-          content: "";
-          position: absolute;
-          width: 0;
-          height: 0;
-          border-style: solid;
-        }
-        .sun-triangles::before {
-          border-width: 0 75px 130px 75px;
-          border-color: transparent transparent #3490dc transparent;
-          top: 0;
-          left: 0;
-          transform-origin: center;
-          animation: rotateTriangle 10s linear infinite;
-        }
-        .sun-triangles::after {
-          border-width: 130px 75px 0 75px;
-          border-color: #3490dc transparent transparent transparent;
-          bottom: 0;
-          left: 0;
-          transform-origin: center;
-          animation: rotateTriangle 10s linear infinite reverse;
-        }
-        @keyframes rotateTriangle {
-          0% {
-            transform: rotate(0deg);
-          }
-          100% {
-            transform: rotate(360deg);
-          }
-        }
-      `}</style>
-      {/* Google Font Link for Anton (Bold, thick font) */}
+      {/* Google Font Link for Anton (used only for the first header line) */}
       <link
         href="https://fonts.googleapis.com/css2?family=Anton&display=swap"
         rel="stylesheet"

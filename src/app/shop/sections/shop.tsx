@@ -136,12 +136,12 @@ export default function ShopSection() {
         </div>
 
         {/* Right Column: Large Product Image */}
-        <div className="relative w-full h-96">
+        <div className="relative w-auto h-96">
           <Image
-            src="/images/pepper-sauce.jpg" // replace with the real image if available
+            src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/shop/SunnyIslandPepperSaucePNGNoBackground.webp" // replace with the real image if available
             alt={selectedProduct?.name || "Pepper Sauce"}
             fill
-            className="object-cover rounded shadow-lg"
+            className="object-contain rounded shadow-lg"
           />
         </div>
       </div>

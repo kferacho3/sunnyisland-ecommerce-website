@@ -71,6 +71,9 @@ function SectionDisplay({
     "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about3.webp",
     "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about4.webp",
     "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about5.webp",
+    "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about6.webp",
+    "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about7.webp",
+    "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about8.webp",
   ];
   const imageSrc =
     section.imageUrl || placeholderImages[index % placeholderImages.length];

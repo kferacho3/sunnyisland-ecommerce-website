@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { FaFacebookF, FaInstagram, FaTiktok, FaYoutube } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
 
 export default function SectionSocial() {
   return (
@@ -18,39 +20,106 @@ export default function SectionSocial() {
             className="mx-auto w-16 h-16 mb-2"
           />
           <p className="text-sm sm:text-base">
-            Connect and tag us @SunnyIslandPepperSauce!
+            Connect and tag us @SunnyIslandPepper!
           </p>
         </div>
 
-        {/* Thumbnails (just placeholders) */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-          {/* Video 1 */}
-          <div className="bg-white dark:bg-black rounded shadow p-4 flex justify-center items-center min-h-[150px]">
-            <p>Video / IG Reel 1</p>
-          </div>
-          {/* Video 2 */}
-          <div className="bg-white dark:bg-black rounded shadow p-4 flex justify-center items-center min-h-[150px]">
-            <p>Video / IG Reel 2</p>
-          </div>
-          {/* Video 3 */}
-          <div className="bg-white dark:bg-black rounded shadow p-4 flex justify-center items-center min-h-[150px]">
-            <p>Video / IG Reel 3</p>
-          </div>
-        </div>
+        {/* Social Media Containers */}
+        <div className="grid grid-cols-1 sm:grid-cols-5 gap-4 mb-8">
+          {/* Facebook */}
+          <Link
+            href="https://www.facebook.com/SunnyIslandPepper"
+            target="_blank"
+            className="block"
+          >
+            <div className="rounded-lg p-3 flex flex-col items-center justify-center transition transform duration-300 hover:scale-105 hover:brightness-110 bg-gradient-to-r from-[#006fff] to-[#00acff] shadow-[0px_20px_20px_-17px_rgba(0,111,255,0.53)] hover:shadow-[0px_20px_35px_-16px_rgba(0,111,255,0.65)]">
+              <img
+                src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/social/SunnyIslandFacebook.webp"
+                alt="Facebook"
+                className="w-[370px] h-[370px] object-contain mb-2"
+              />
+              <div className="flex items-center space-x-2">
+                <FaFacebookF size={32} className="text-white" />
+                <span className="text-white font-bold uppercase">Facebook</span>
+              </div>
+            </div>
+          </Link>
+          {/* TikTok */}
+          <Link
+            href="https://www.tiktok.com/@SunnyIslandPepper"
+            target="_blank"
+            className="block"
+          >
+            <div className="rounded-lg p-3 flex flex-col items-center justify-center transition transform duration-300 hover:scale-105 hover:brightness-110 bg-white shadow-[0px_20px_20px_-17px_rgba(255,255,255,0.5)] hover:shadow-[0px_20px_35px_-16px_rgba(255,255,255,0.57)]">
+              <img
+                src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/social/SunnyIslandTikTok.webp"
+                alt="TikTok"
+                className="w-[370px] h-[370px] object-contain mb-2"
+              />
+              <div className="flex items-center space-x-2">
+                <FaTiktok size={32} className="text-black" />
+                <span className="text-black font-bold uppercase">TikTok</span>
+              </div>
+            </div>
+          </Link>
 
-        {/* Social Media Links */}
-        <div className="text-center space-x-4">
-          <Link href="#" className="underline hover:text-secondary">
-            Instagram
+          {/* Instagram */}
+          <Link
+            href="https://www.instagram.com/SunnyIslandPepper"
+            target="_blank"
+            className="block"
+          >
+            <div className="rounded-lg p-3 flex flex-col items-center justify-center transition transform duration-300 hover:scale-105 hover:brightness-110 bg-gradient-to-r from-[#833ab4] to-[#fd1d1d] shadow-[0px_20px_20px_-17px_rgba(255,16,39,0.5)] hover:shadow-[0px_20px_35px_-16px_rgba(255,16,39,0.57)]">
+              <img
+                src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/social/SunnyIslandInstagram.webp"
+                alt="Instagram"
+                className="w-[370px] h-[370px] object-contain mb-2"
+              />
+              <div className="flex items-center space-x-2">
+                <FaInstagram size={32} className="text-white" />
+                <span className="text-white font-bold uppercase">
+                  Instagram
+                </span>
+              </div>
+            </div>
           </Link>
-          <Link href="#" className="underline hover:text-secondary">
-            TikTok
+
+          {/* X */}
+          <Link
+            href="https://x.com/SunnyIslandPepper"
+            target="_blank"
+            className="block"
+          >
+            <div className="rounded-lg p-3 flex flex-col items-center justify-center transition transform duration-300 hover:scale-105 hover:brightness-110 bg-white shadow-[0px_20px_20px_-17px_rgba(255,255,255,0.5)] hover:shadow-[0px_20px_35px_-16px_rgba(255,255,255,0.57)]">
+              <img
+                src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/social/SunnyIslandX.webp"
+                alt="X"
+                className="w-[370px] h-[370px] object-contain mb-2"
+              />
+              <div className="flex items-center space-x-2">
+                <FaXTwitter size={32} className="text-black" />
+                <span className="text-black font-bold uppercase">X</span>
+              </div>
+            </div>
           </Link>
-          <Link href="#" className="underline hover:text-secondary">
-            Facebook
-          </Link>
-          <Link href="#" className="underline hover:text-secondary">
-            YouTube
+
+          {/* YouTube */}
+          <Link
+            href="https://www.youtube.com/SunnyIslandPepper"
+            target="_blank"
+            className="block"
+          >
+            <div className="rounded-lg p-3 flex flex-col items-center justify-center transition transform duration-300 hover:scale-105 hover:brightness-110 bg-gradient-to-r from-[#ff1027] to-[#ff4f06] shadow-[0px_20px_20px_-17px_rgba(255,16,39,0.5)] hover:shadow-[0px_20px_35px_-16px_rgba(255,16,39,0.57)]">
+              <img
+                src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/social/SunnyIslandYoutube.webp"
+                alt="YouTube"
+                className="w-[370px] h-[370px] object-contain mb-2"
+              />
+              <div className="flex items-center space-x-2">
+                <FaYoutube size={32} className="text-white" />
+                <span className="text-white font-bold uppercase">YouTube</span>
+              </div>
+            </div>
           </Link>
         </div>
       </div>

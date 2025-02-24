@@ -433,7 +433,7 @@ export default function SectionExploreGrid() {
   return (
     <section
       id="section-explore-grid"
-      className="w-full min-h-screen p-4 sm:p-8 bg-[#FAEBD7] text-black flex flex-col items-center justify-center"
+      className="w-full min-h-screen p-4 sm:p-8 bg-gray-100 dark:bg-gray-900 text-white flex flex-col items-center justify-center"
     >
       <h2 className="text-2xl sm:text-4xl font-bold mb-6">Quick Explore</h2>
       <p className="mb-8 text-center text-sm sm:text-base">

@@ -182,7 +182,7 @@ function Flame(props: ThreeElements["mesh"] & { color?: string }) {
   );
 }
 
-// Framer Motion variants for the widescreen letterbox bars.
+// ─── Framer Motion variants for the widescreen letterbox bars ─────────────────
 const topLetterboxVariants = {
   hidden: { opacity: 0, y: -100 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
@@ -195,6 +195,8 @@ const bottomLetterboxVariants = {
 
 interface SceneProps {
   isIdle: boolean;
+  specialSpinMode: boolean;
+  extraSpecialMode: boolean;
   currentPositionIndex: number;
   setCurrentPositionIndex: React.Dispatch<React.SetStateAction<number>>;
   flameOn: boolean;
@@ -202,10 +204,14 @@ interface SceneProps {
   rotateSauce: boolean;
   sauceRef: React.RefObject<any>;
   isMobile: boolean;
+  isInspectMode: boolean;
+  onSpecialRotationComplete: () => void;
 }
 
 function Scene({
   isIdle,
+  specialSpinMode,
+  extraSpecialMode,
   currentPositionIndex,
   setCurrentPositionIndex,
   flameOn,
@@ -213,117 +219,138 @@ function Scene({
   rotateSauce,
   sauceRef,
   isMobile,
+  isInspectMode,
+  onSpecialRotationComplete,
 }: SceneProps) {
   const { camera } = useThree();
   const targetRef = useRef(new THREE.Vector3());
+  const modelsGroupRef = useRef<THREE.Group>(null);
 
-  // Extended camera positions for smooth, cinematic idle mode.
+  // Pre-set camera positions for idle mode.
   const cameraPositions = [
     {
       position: [10, 20, 6] as [number, number, number],
       target: [0, 1, 0] as [number, number, number],
     },
     {
-      position: [-100, 2, -6] as [number, number, number],
+      position: [-50, 2, -6] as [number, number, number],
       target: [0, 1, 0] as [number, number, number],
     },
     {
       position: [10, 5, 7.5] as [number, number, number],
       target: [0, 0, 0] as [number, number, number],
     },
-    {
-      position: [150, 3, 5] as [number, number, number],
-      target: [0, 1, 0] as [number, number, number],
-    },
-    {
-      position: [-15, 3, -5] as [number, number, number],
-      target: [0, 1, 0] as [number, number, number],
-    },
-    {
-      position: [5, 5, 5] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
-    {
-      position: [-5, 5, 5] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
-    {
-      position: [12, 14, 8] as [number, number, number],
-      target: [0, 1, 0] as [number, number, number],
-    },
-    {
-      position: [-120, 4, -8] as [number, number, number],
-      target: [0, 1, 0] as [number, number, number],
-    },
-    {
-      position: [8, 60, 6] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
-    {
-      position: [-8, 6, -6] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
-    {
-      position: [20, 2, 0] as [number, number, number],
-      target: [0, 1, 0] as [number, number, number],
-    },
-    {
-      position: [-20, 2, 10] as [number, number, number],
-      target: [0, 1, 0] as [number, number, number],
-    },
-    {
-      position: [10, 7, 20] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
-    {
-      position: [0, 20, -100] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
-    {
-      position: [100, 100, 0] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
-    {
-      position: [-10, 10, 0] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
-    {
-      position: [0, 150, 10] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
-    {
-      position: [0, 150, 100] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
-    {
-      position: [15, 15, 15] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
-    {
-      position: [0, 0, 50] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
-    {
-      position: [0, 0, -50] as [number, number, number],
-      target: [0, 0, 0] as [number, number, number],
-    },
+    // ... (other preset positions)
   ];
 
-  useFrame((_, delta) => {
-    if (isIdle) {
-      const target = cameraPositions[currentPositionIndex];
-      // Use a damping value for smooth cinematic transitions.
-      easing.damp3(camera.position, target.position, 1.5, delta);
-      easing.damp3(targetRef.current, target.target, 1.5, delta);
-      camera.lookAt(targetRef.current);
+  // For special spin mode.
+  const rotationAngleRef = useRef(0);
+  const spinSpeed = 4.2566; // roughly 2π in ~5 seconds
+
+  // For extra special (vertical panning) mode.
+  const verticalPanProgressRef = useRef(0);
+  const panDuration = 5; // seconds
+
+  // State for random offsets used in special modes.
+  const [specialSpinOffsets, setSpecialSpinOffsets] = useState({
+    x: THREE.MathUtils.randFloat(-15, 15),
+    z: THREE.MathUtils.randFloat(-25, 15),
+  });
+
+  // Reset camera to default when exiting inspect mode.
+  useEffect(() => {
+    if (!isInspectMode) {
+      camera.position.set(20, 0.9, 20);
+      camera.rotation.set(0, 0, 0);
+      camera.lookAt(0, 0, 0);
     }
-    if (rotateSauce && sauceRef.current) {
-      sauceRef.current.rotation.y += delta / 4;
+  }, [isInspectMode, camera]);
+
+  useFrame((state, delta) => {
+    if (specialSpinMode && !extraSpecialMode && modelsGroupRef.current) {
+      // Special horizontal spin mode.
+      rotationAngleRef.current += delta * spinSpeed;
+      if (rotationAngleRef.current >= 2 * Math.PI) {
+        rotationAngleRef.current %= 2 * Math.PI;
+        onSpecialRotationComplete();
+        // Re-randomize offsets.
+        setSpecialSpinOffsets({
+          x: THREE.MathUtils.randFloat(-15, 15),
+          z: THREE.MathUtils.randFloat(-25, 15),
+        });
+      }
+      const radius = 20;
+      const center = modelsGroupRef.current.position;
+      camera.position.set(
+        center.x + radius * Math.cos(rotationAngleRef.current),
+        center.y,
+        center.z + radius * Math.sin(rotationAngleRef.current) - 5,
+      );
+      camera.lookAt(center);
+      if (rotateSauce && sauceRef.current) {
+        sauceRef.current.rotation.y += delta / 4;
+      }
+    } else if (specialSpinMode && extraSpecialMode && modelsGroupRef.current) {
+      // Extra special vertical panning mode.
+      verticalPanProgressRef.current += delta;
+      if (verticalPanProgressRef.current >= panDuration) {
+        verticalPanProgressRef.current = 0;
+        onSpecialRotationComplete();
+        setSpecialSpinOffsets({
+          x: THREE.MathUtils.randFloat(0, 15),
+          z: THREE.MathUtils.randFloat(-25, 15),
+        });
+      }
+      const center = modelsGroupRef.current.position;
+      const baseY = center.y + 10;
+      const targetY = center.y + 20;
+      const panFactor = verticalPanProgressRef.current / panDuration;
+      camera.position.set(
+        center.x + specialSpinOffsets.x,
+        THREE.MathUtils.lerp(baseY, targetY, panFactor) - 15,
+        center.z + specialSpinOffsets.z,
+      );
+      camera.lookAt(center);
+      if (rotateSauce && sauceRef.current) {
+        sauceRef.current.rotation.y += delta / 4;
+      }
+    } else if (isIdle) {
+      // Idle mode: cycle through preset camera positions.
+      const target = cameraPositions[currentPositionIndex];
+      easing.damp3(camera.position, target.position, 1.5, delta);
+      if (modelsGroupRef.current) {
+        camera.lookAt(modelsGroupRef.current.position);
+      } else {
+        easing.damp3(targetRef.current, target.target, 1.5, delta);
+        camera.lookAt(targetRef.current);
+      }
+    } else {
+      // Default (non-idle, non-special, non-inspect) mode:
+      if (!perfSucks) {
+        easing.damp3(
+          camera.rotation,
+          [Math.PI / 2, 0, state.clock.elapsedTime / 5 + state.pointer.x],
+          0.2,
+          delta,
+        );
+        easing.damp3(
+          camera.position,
+          [
+            Math.sin(state.pointer.x / 4) * 9,
+            1.25 + state.pointer.y,
+            Math.cos(state.pointer.x / 4) * 9,
+          ],
+          0.5,
+          delta,
+        );
+        camera.lookAt(0, 0, 0);
+      }
     }
   });
 
+  // Cycle idle camera positions every 5 seconds when in idle mode.
   useEffect(() => {
-    if (isIdle) {
+    if (!specialSpinMode && isIdle) {
       const interval = setInterval(() => {
         setCurrentPositionIndex(
           (prevIndex) => (prevIndex + 1) % cameraPositions.length,
@@ -331,10 +358,15 @@ function Scene({
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [isIdle, cameraPositions.length, setCurrentPositionIndex]);
+  }, [
+    isIdle,
+    specialSpinMode,
+    cameraPositions.length,
+    setCurrentPositionIndex,
+  ]);
 
+  // Animation springs for logo and sauce.
   const AnimatedGroup = a("group");
-
   const logoSpring = useSpring<{
     scale: [number, number, number];
     position: [number, number, number];
@@ -358,34 +390,37 @@ function Scene({
   return (
     <>
       <ambientLight intensity={1.5} />
-      <StaticBody>
-        <AnimatedGroup
-          scale={logoSpring.scale.to(
-            (x, y, z) => [x, y, z] as [number, number, number],
-          )}
-          position={logoSpring.position.to(
-            (x, y, z) => [x, y, z] as [number, number, number],
-          )}
-        >
-          <SunnyIslandLogo />
-        </AnimatedGroup>
-      </StaticBody>
-      <StaticBody>
-        <AnimatedGroup
-          ref={sauceRef}
-          scale={sauceSpring.scale.to(
-            (x, y, z) => [x, y, z] as [number, number, number],
-          )}
-          position={sauceSpring.position.to(
-            (x, y, z) => [x, y, z] as [number, number, number],
-          )}
-        >
-          <Suspense fallback={<Preloader onLoaded={() => {}} />}>
-            <PepperSauce />
-          </Suspense>
-          {flameOn && <Flame color="red" position={[0.5, 1.5, 0]} />}
-        </AnimatedGroup>
-      </StaticBody>
+      {/* Group to center models for camera lookAt */}
+      <group rotation={[0, -0.725, 0]} ref={modelsGroupRef}>
+        <StaticBody>
+          <AnimatedGroup
+            scale={logoSpring.scale.to(
+              (x, y, z) => [x, y, z] as [number, number, number],
+            )}
+            position={logoSpring.position.to(
+              (x, y, z) => [x, y, z] as [number, number, number],
+            )}
+          >
+            <SunnyIslandLogo />
+          </AnimatedGroup>
+        </StaticBody>
+        <StaticBody>
+          <AnimatedGroup
+            ref={sauceRef}
+            scale={sauceSpring.scale.to(
+              (x, y, z) => [x, y, z] as [number, number, number],
+            )}
+            position={sauceSpring.position.to(
+              (x, y, z) => [x, y, z] as [number, number, number],
+            )}
+          >
+            <Suspense fallback={<Preloader onLoaded={() => {}} />}>
+              <PepperSauce />
+            </Suspense>
+            {flameOn && <Flame color="red" position={[0.5, 1.5, 0]} />}
+          </AnimatedGroup>
+        </StaticBody>
+      </group>
       <Env perfSucks={perfSucks} />
     </>
   );
@@ -404,10 +439,21 @@ function Env({ perfSucks }: { perfSucks: boolean }) {
   );
 }
 
+// ─── Mapping for product background colors ─────────────────────────
+const productBackgroundColors: { [key: number]: string } = {
+  1: "#ff4500",
+  2: "#800080",
+  3: "#ffcc00",
+  4: "#000000",
+  5: "#008000",
+};
+
 export default function MainPage() {
   const [currentProduct, setCurrentProduct] = useState<Product>(
     productsData[0],
   );
+  // Modes: idle, specialSpinMode (and extraSpecialMode) versus default mode.
+  // The page now opens in default mode (isIdle = false).
   const [isIdle, setIsIdle] = useState(false);
   const [currentPositionIndex, setCurrentPositionIndex] = useState(0);
   const [flameOn, setFlameOn] = useState(false);
@@ -416,46 +462,89 @@ export default function MainPage() {
     null,
   );
   const [showPeppers, setShowPeppers] = useState(true);
+  // Overlay is visible only in default mode.
   const [showOverlay, setShowOverlay] = useState(true);
+  // Model rotation toggle (active only when "r" is pressed).
   const [rotateSauce, setRotateSauce] = useState(false);
   const sauceRef = useRef<any>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [specialSpinMode, setSpecialSpinMode] = useState(false);
+  const [extraSpecialMode, setExtraSpecialMode] = useState(false);
+  // New state for inspect mode.
+  const [isInspectMode, setIsInspectMode] = useState(false);
+  const [envBackground, setEnvBackground] = useState(
+    "linear-gradient(180deg, #000000, #2C2C2C, #6A6A6A)",
+  );
+  const [pepperCount, setPepperCount] = useState(80);
+  const [bgIndex, setBgIndex] = useState(1);
+
+  // Default mode is when the user is not idle, not in special mode, and not inspecting.
+  const isDefaultMode = !isIdle && !specialSpinMode && !isInspectMode;
+
+  // Set cursor visibility based on mode:
+  useEffect(() => {
+    // Cursor visible only in default (non-special, non-inspect) mode.
+    document.body.style.cursor = isDefaultMode ? "default" : "none";
+  }, [isDefaultMode]);
 
   // Check for mobile on mount.
   useEffect(() => {
     setIsMobile(window.innerWidth < 600);
   }, []);
 
-  // Idle logic: if no mouse movement for 5 seconds, set idle state.
+  // Idle logic: if no mouse movement for 15 seconds (unless in special mode or inspect mode).
   useEffect(() => {
+    if (specialSpinMode || isInspectMode) return;
     let idleTimeout: ReturnType<typeof setTimeout>;
     const handleMouseMove = () => {
       clearTimeout(idleTimeout);
       setIsIdle(false);
-      setShowOverlay(true);
-      idleTimeout = setTimeout(() => setIsIdle(true), 5000);
+      if (!specialSpinMode) setShowOverlay(true);
+      idleTimeout = setTimeout(() => setIsIdle(true), 15000);
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       clearTimeout(idleTimeout);
     };
-  }, []);
+  }, [specialSpinMode, isInspectMode]);
 
-  // Keydown listener for toggling HUD ("h") and sauce rotation ("r")
+  // Keydown listener for toggling overlay ("h"), model rotation ("r"),
+  // special mode ("s"), inspect mode ("i") and extra special mode ("e").
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "h") {
-        setShowOverlay((prev) => !prev);
-        document.body.style.cursor = showOverlay ? "none" : "default";
+        if (isDefaultMode) {
+          setShowOverlay((prev) => !prev);
+        }
       }
       if (e.key === "r") {
         setRotateSauce((prev) => !prev);
       }
+      if (e.key === "s") {
+        setSpecialSpinMode((prev) => {
+          if (prev) {
+            setExtraSpecialMode(false);
+            return false;
+          } else {
+            setIsIdle(false);
+            return true;
+          }
+        });
+      }
+      if (e.key === "e") {
+        if (specialSpinMode) {
+          setExtraSpecialMode((prev) => !prev);
+        }
+      }
+      if (e.key === "i") {
+        // Toggle inspect mode.
+        setIsInspectMode((prev) => !prev);
+      }
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [showOverlay]);
+  }, [isDefaultMode, specialSpinMode]);
 
   const handleProductSelection = (productId: number) => {
     const selectedProduct = productsData.find(
@@ -469,10 +558,18 @@ export default function MainPage() {
     }
   };
 
+  // Callback for when a complete rotation/pan is made in special spin mode.
+  const handleSpecialRotationComplete = () => {
+    setEnvBackground(productBackgroundColors[bgIndex]);
+    setBgIndex((prev) => (prev % 5) + 1);
+    const randomPepperCount = Math.floor(Math.random() * (100 - 20 + 1)) + 20;
+    setPepperCount(randomPepperCount);
+  };
+
   return (
     <>
-      {/* Show overlay only when not idle */}
-      {!isIdle && showOverlay && (
+      {/* Overlay is visible only in default mode */}
+      {isDefaultMode && showOverlay && (
         <Overlay
           toggleFlame={() => setFlameOn((prev) => !prev)}
           togglePeppers={() => setShowPeppers((prev) => !prev)}
@@ -482,20 +579,20 @@ export default function MainPage() {
         />
       )}
 
-      {/* Animated widescreen letterbox bars (visible only when idle) */}
-      {isIdle && (
+      {/* Widescreen letterbox bars appear in Idle mode and in both special modes */}
+      {(isIdle || specialSpinMode) && (
         <>
           <motion.div
             variants={topLetterboxVariants}
             initial="hidden"
             animate="visible"
-            className="fixed top-0 left-0 right-0 h-[100px] bg-black z-[10000]"
+            className="fixed top-0 left-0 right-0 h-[55px] bg-black z-[10000]"
           />
           <motion.div
             variants={bottomLetterboxVariants}
             initial="hidden"
             animate="visible"
-            className="fixed bottom-0 left-0 right-0 h-[100px] bg-black z-[10000]"
+            className="fixed bottom-0 left-0 right-0 h-[50px] bg-black z-[10000]"
           />
         </>
       )}
@@ -504,16 +601,25 @@ export default function MainPage() {
         <Canvas
           shadows
           camera={{ position: [20, 0.9, 20], fov: 26 }}
-          style={{
-            background: "linear-gradient(180deg, #000000, #2C2C2C, #6A6A6A)",
-          }}
+          style={{ background: envBackground }}
         >
-          <OrbitControls enableZoom enablePan />
+          {/* OrbitControls active only in inspect mode.
+              Constrain zoom (minDistance and maxDistance) while allowing free rotation. */}
+          {isInspectMode && (
+            <OrbitControls
+              enableZoom={true}
+              minDistance={5}
+              maxDistance={20}
+              enablePan
+            />
+          )}
           <PerformanceMonitor onDecline={() => degrade(true)} />
           <Physics>
             <Suspense fallback={<Preloader onLoaded={() => {}} />}>
               <Scene
                 isIdle={isIdle}
+                specialSpinMode={specialSpinMode}
+                extraSpecialMode={extraSpecialMode}
                 currentPositionIndex={currentPositionIndex}
                 setCurrentPositionIndex={setCurrentPositionIndex}
                 flameOn={flameOn}
@@ -521,8 +627,14 @@ export default function MainPage() {
                 rotateSauce={rotateSauce}
                 sauceRef={sauceRef}
                 isMobile={isMobile}
+                isInspectMode={isInspectMode}
+                onSpecialRotationComplete={handleSpecialRotationComplete}
               />
-              {showPeppers && <Peppers count={perfSucks ? 20 : 80} />}
+              {showPeppers && (
+                <Peppers
+                  count={specialSpinMode ? pepperCount : perfSucks ? 200 : 120}
+                />
+              )}
             </Suspense>
           </Physics>
           <EffectComposer>

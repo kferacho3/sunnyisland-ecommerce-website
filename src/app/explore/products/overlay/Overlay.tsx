@@ -4,41 +4,7 @@ import { useState } from "react";
 import { FaPepperHot, FaSearch } from "react-icons/fa";
 import { IoIosFlame } from "react-icons/io";
 
-interface OverlayProps {
-  toggleFlame: () => void;
-  togglePeppers: () => void;
-  currentProduct: Product;
-  productsData: Product[];
-  onSelectProduct: (id: number) => void;
-}
-
-const productStyles: { [key: number]: { button: string; header: string } } = {
-  1: {
-    button:
-      "bg-gradient-to-r from-red-700 via-yellow-400 to-black border border-red-900",
-    header: "text-red-700",
-  },
-  2: {
-    button:
-      "bg-gradient-to-r from-purple-600 to-red-600 border border-purple-900",
-    header: "text-purple-600",
-  },
-  3: {
-    button:
-      "bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-500 border border-orange-500",
-    header: "text-yellow-500",
-  },
-  4: {
-    button: "bg-black border border-gray-800",
-    header: "text-black",
-  },
-  5: {
-    button:
-      "bg-gradient-to-r from-green-700 via-green-500 to-green-300 border border-green-700",
-    header: "text-green-700",
-  },
-};
-
+// A simple helper to parse product names.
 function parseProductName(name: string) {
   const match = name.match(/^(.*?)\s*\((.*?)\)$/);
   if (match) {
@@ -47,17 +13,10 @@ function parseProductName(name: string) {
   return { shortName: name, longName: name };
 }
 
+// Framer Motion variants for the info/popups.
 const popupVariants = {
-  hiddenLeft: {
-    x: "-100vw",
-    filter: "blur(15px)",
-    opacity: 0,
-  },
-  hiddenRight: {
-    x: "100vw",
-    filter: "blur(15px)",
-    opacity: 0,
-  },
+  hiddenLeft: { x: "-100vw", filter: "blur(15px)", opacity: 0 },
+  hiddenRight: { x: "100vw", filter: "blur(15px)", opacity: 0 },
   visible: {
     x: 0,
     filter: "blur(0px)",
@@ -65,6 +24,111 @@ const popupVariants = {
     transition: { duration: 0.4, ease: "easeOut" },
   },
 };
+
+// We keep the header (text) styling per product as before.
+const productStyles: { [key: number]: { button: string; header: string } } = {
+  1: {
+    button: "from-red-700 via-yellow-400 to-black border-red-900",
+    header: "text-red-700",
+  },
+  2: {
+    button: "from-purple-600 to-red-600 border-purple-900",
+    header: "text-purple-600",
+  },
+  3: {
+    button: "from-yellow-400 via-orange-400 to-yellow-500 border-orange-500",
+    header: "text-yellow-500",
+  },
+  4: { button: "bg-black border-gray-800", header: "text-black" },
+  5: {
+    button: "from-green-700 via-green-500 to-green-300 border-green-700",
+    header: "text-green-700",
+  },
+};
+
+// For our 3D effect on product selection buttons we define a Tailwind class mapping.
+// (Adjust these classes to fine‑tune the gradient and border colors.)
+const product3DButtonVariants: {
+  [key: number]: { button: string; background: string };
+} = {
+  1: {
+    button:
+      "bg-gradient-to-r from-red-700 via-yellow-400 to-black border-2 border-red-900",
+    background: "bg-gradient-to-r from-red-800 to-red-600",
+  },
+  2: {
+    button:
+      "bg-gradient-to-r from-purple-600 to-red-600 border-2 border-purple-900",
+    background: "bg-gradient-to-r from-purple-700 to-purple-500",
+  },
+  3: {
+    button:
+      "bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-500 border-2 border-orange-500",
+    background: "bg-gradient-to-r from-yellow-500 to-orange-400",
+  },
+  4: {
+    button: "bg-black border-2 border-gray-800",
+    background: "bg-gray-700",
+  },
+  5: {
+    button:
+      "bg-gradient-to-r from-green-700 via-green-500 to-green-300 border-2 border-green-700",
+    background: "bg-gradient-to-r from-green-800 to-green-500",
+  },
+};
+
+// A reusable 3D button component using strictly Tailwind CSS.
+// We use a wrapping <div> with the "group" class so that we can target its active state
+// on the absolutely positioned background layer.
+interface ThreeDButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  children: React.ReactNode;
+  buttonClasses: string;
+  backgroundClasses: string;
+}
+function ThreeDButton({
+  children,
+  buttonClasses,
+  backgroundClasses,
+  ...props
+}: ThreeDButtonProps) {
+  return (
+    <div className="relative inline-block group">
+      {/* Background layer – simulates the 3D shadow/offset.
+          We use an absolute div with a slight downward translation.
+          On active state the translation is removed and the shadow changes. */}
+      <motion.div
+        className={`
+          absolute inset-0 rounded-lg
+          ${backgroundClasses}
+          shadow-[0_0_0_2px] translate-y-3 
+          transition-transform duration-150 ease-out
+          group-active:group-active:shadow-[0_0_0_2px]
+        `}
+      />
+      {/* The front button */}
+      <motion.button
+        {...props}
+        className={`
+          relative rounded-lg border-2
+          ${buttonClasses}
+          transition-transform duration-150 ease-out
+          group hover:translate-y-1 active:translate-y-[0.375rem]
+        `}
+      >
+        {children}
+      </motion.button>
+    </div>
+  );
+}
+
+interface OverlayProps {
+  toggleFlame: () => void;
+  togglePeppers: () => void;
+  currentProduct: Product;
+  productsData: Product[];
+  onSelectProduct: (id: number) => void;
+}
 
 export function Overlay({
   toggleFlame,
@@ -84,83 +148,80 @@ export function Overlay({
   return (
     <div className="relative z-50 pointer-events-auto">
       {/* Main overlay buttons */}
-      <div className="fixed bottom-20 left-1/2 transform -translate-x-1/2 flex flex-wrap justify-center gap-4 transition-all duration-300">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
+      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 flex flex-wrap justify-center gap-4 transition-all duration-300">
+        <ThreeDButton
           onClick={() => togglePanel("scoville")}
-          className="bg-white p-3 sm:p-4 rounded-full shadow-md"
+          buttonClasses="bg-white px-2 py-2 w-auto"
+          backgroundClasses="bg-gray-300"
         >
           <FaPepperHot className="text-red-500 w-5 h-5 sm:w-6 sm:h-6" />
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
-          className="bg-white p-3 sm:p-4 rounded-full shadow-md flex items-center space-x-1"
+        </ThreeDButton>
+        <ThreeDButton
+          buttonClasses="bg-white py-2 px-4 whitespace-nowrap w-auto"
+          backgroundClasses="bg-gray-300"
         >
           <span
-            className="font-bold italic text-black text-sm sm:text-base"
+            className="inline-flex items-center font-bold italic text-black text-sm sm:text-base whitespace-nowrap"
             style={{ textShadow: "0 0 0.2px black" }}
           >
-            INSPECT
+            INSPECT{" "}
+            <FaSearch className="text-black w-5 h-5 sm:w-6 sm:h-6 ml-2" />
           </span>
-          <FaSearch className="text-black w-5 h-5 sm:w-6 sm:h-6" />
-        </motion.button>
-        <motion.button
-          whileHover={{ scale: 1.1 }}
+        </ThreeDButton>
+
+        <ThreeDButton
           onClick={() => togglePanel("info")}
-          className="bg-white p-3 sm:p-4 rounded-full shadow-md"
+          buttonClasses="bg-white px-4 py-2 w-auto"
+          backgroundClasses="bg-gray-300"
         >
           <span
-            className="font-bold italic text-black text-sm sm:text-base"
+            className="font-bold italic text-black text-sm sm:text-base whitespace-nowrap"
             style={{ textShadow: "0 0 0.2px black" }}
           >
             INFO
           </span>
-        </motion.button>
+        </ThreeDButton>
       </div>
 
       {/* Model selection buttons */}
-      <div className="fixed bottom-5 left-1/2 transform -translate-x-1/2 flex flex-wrap justify-center gap-2 transition-all duration-300">
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 flex flex-wrap justify-center gap-2 transition-all duration-300">
         {productsData.map((product) => {
-          const styles = productStyles[product.id];
           const { shortName } = parseProductName(product.name);
           const isSelected = product.id === currentProduct.id;
+          const variants = product3DButtonVariants[product.id];
           return (
-            <motion.button
+            <ThreeDButton
               key={product.id}
-              whileHover={{ scale: 1.1 }}
               onClick={() => onSelectProduct(product.id)}
-              className={`${styles.button} text-white rounded-md px-3 py-1 transition-all duration-300`}
-              style={{
-                fontWeight: "bold",
-                fontSize: "0.8rem",
-                fontStyle: "italic",
-                textShadow: "0 1px 1px black",
-                boxShadow: isSelected
-                  ? "0 0 10px 2px rgba(255,255,0,0.8)"
-                  : "none",
-              }}
+              buttonClasses={variants.button}
+              backgroundClasses={variants.background}
             >
-              {shortName}
-            </motion.button>
+              <span
+                className="font-bold italic text-sm"
+                style={{ textShadow: "0 1px 1px black" }}
+              >
+                {shortName}
+              </span>
+            </ThreeDButton>
           );
         })}
       </div>
 
       {/* Additional toggle buttons */}
       <div className="fixed bottom-5 left-5 flex flex-col space-y-4 transition-all duration-300">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
+        <ThreeDButton
           onClick={toggleFlame}
-          className="bg-white p-3 sm:p-4 rounded-full shadow-md"
+          buttonClasses="bg-white"
+          backgroundClasses="bg-gray-300"
         >
           <IoIosFlame className="text-orange-500 w-5 h-5 sm:w-6 sm:h-6" />
-        </motion.button>
+        </ThreeDButton>
       </div>
       <div className="fixed bottom-5 right-5 flex flex-col space-y-4 transition-all duration-300">
-        <motion.button
-          whileHover={{ scale: 1.1 }}
+        <ThreeDButton
           onClick={togglePeppers}
-          className="bg-white p-3 sm:p-4 rounded-full shadow-md"
+          buttonClasses="bg-white"
+          backgroundClasses="bg-gray-300"
         >
           <span
             className="font-bold italic text-sm sm:text-base"
@@ -172,7 +233,7 @@ export function Overlay({
           >
             <FaPepperHot className="w-5 h-5 sm:w-6 sm:h-6" />
           </span>
-        </motion.button>
+        </ThreeDButton>
       </div>
 
       {/* Info popup (right) */}

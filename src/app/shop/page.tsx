@@ -5,7 +5,7 @@ import UseCaseSection from "./sections/useCase";
 
 export default function ShopPage() {
   return (
-    <main className="bg-black min-h-screen">
+    <main className="bg-black mt-24 min-h-screen">
       {/* Shop Section (purchase UI) */}
       <ShopSection />
 

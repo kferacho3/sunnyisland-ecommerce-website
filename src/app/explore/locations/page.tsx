@@ -1,16 +1,12 @@
 "use client";
-// ^ If using Next.js App Router and want to use client-side logic (e.g. geolocation),
-//   keep this directive. If using Pages Router, it's not strictly necessary.
 
-import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
-/**
- * For SSR-friendliness with geolocation:
- * - We'll gather user location client-side only (after hydration).
- * - The rest of the page is rendered on the server, so search engines can index it,
- *   but the geolocator logic happens in `useEffect`.
- */
+type CollageImage = {
+  src: string;
+  style: React.CSSProperties;
+};
 
 export default function LocationsPage() {
   // State to store user’s latitude & longitude
@@ -19,8 +15,11 @@ export default function LocationsPage() {
     lng: number;
   } | null>(null);
 
-  // Attempt to get the user's geolocation in the browser
+  // State to hold our randomly selected 6 collage images with computed positions
+  const [selectedImages, setSelectedImages] = useState<CollageImage[]>([]);
+
   useEffect(() => {
+    // Attempt to get the user's geolocation in the browser
     if (typeof window !== "undefined" && "geolocation" in navigator) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -37,23 +36,146 @@ export default function LocationsPage() {
         },
       );
     }
+
+    // All 10 collage images
+    const collageImages = [
+      {
+        src: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/locations1.webp",
+      },
+      {
+        src: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/locations2.webp",
+      },
+      {
+        src: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/locations3.webp",
+      },
+      {
+        src: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/locations4.webp",
+      },
+      {
+        src: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/locations5.webp",
+      },
+      {
+        src: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/locations6.webp",
+      },
+      {
+        src: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/locations7.webp",
+      },
+      {
+        src: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/locations8.webp",
+      },
+      {
+        src: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/locations9.webp",
+      },
+      {
+        src: "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/locations10.webp",
+      },
+    ];
+
+    // Shuffle and pick 6 random images
+    const shuffledImages = [...collageImages]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, 6);
+
+    // Define a cluster area for images within the container (percentages relative to the whiteboard)
+    // Reserve the top 25% for the logo and cluster the grid within the next 70% of the container.
+    const clusterLeft = 10; // in percent
+    const clusterTop = 25; // in percent (images start below the logo)
+    const clusterWidth = 80; // in percent of container's width
+    const clusterHeight = 70; // in percent of container's height
+
+    // Use a 2x3 grid (6 cells) within the cluster area.
+    const numCols = 3;
+    const numRows = 2;
+    const cellWidth = clusterWidth / numCols; // e.g., ~26.67%
+    const cellHeight = clusterHeight / numRows; // e.g., ~35%
+
+    // Define image size (as a percentage of the container's width)
+    const imageSizePercent = 24; // slightly smaller than cell width to allow some margin
+
+    // Maximum random offset so that each image stays within its cell.
+    const maxOffsetX = cellWidth - imageSizePercent;
+    const maxOffsetY = cellHeight - imageSizePercent;
+
+    // Generate grid cells for the 2x3 grid.
+    const cells: { col: number; row: number }[] = [];
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < numCols; col++) {
+        cells.push({ col, row });
+      }
+    }
+    // Shuffle the cells and pick all 6 cells.
+    const shuffledCells = cells.sort(() => Math.random() - 0.5).slice(0, 6);
+
+    // Map each selected image to its cell with a slight random offset and rotation.
+    const imagesWithPositions = shuffledImages.map((img, index) => {
+      const cell = shuffledCells[index];
+      const offsetX = Math.random() * maxOffsetX;
+      const offsetY = Math.random() * maxOffsetY;
+      const left = clusterLeft + cell.col * cellWidth + offsetX;
+      const top = clusterTop + cell.row * cellHeight + offsetY;
+      // Random rotation between -8 and 8 degrees.
+      const rotation = (Math.random() * 16 - 8).toFixed(2);
+      return {
+        ...img,
+        style: {
+          position: "absolute",
+          left: `${left}%`,
+          top: `${top}%`,
+          width: `${imageSizePercent}%`,
+          transform: `rotate(${rotation}deg)`,
+        },
+      };
+    });
+
+    setSelectedImages(imagesWithPositions);
   }, []);
 
   return (
     <main className="pt-[100px] min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
-      {/* ========================= Hero Section ========================= */}
+      {/* ========================= Hero Section with Collage ========================= */}
       <section className="max-w-7xl mx-auto px-4 py-10">
         <div className="flex flex-col md:flex-row items-center gap-8">
-          {/* Hero Image (Kitchen) */}
-          <div className="w-full md:w-1/2 h-64 md:h-80 relative">
-            <Image
-              src="/images/kitchen-hero.jpg"
-              // Replace with a relevant image in your `public/images` folder
-              alt="Commercial Kitchen"
-              fill
-              className="object-cover rounded-lg shadow-lg"
-              // Using 'fill' with parent relative to fill the container.
-            />
+          {/* Collage Container */}
+          <div className="w-full md:w-1/2">
+            <div className="relative h-[300px] md:h-[400px] lg:h-[500px] overflow-hidden">
+              {/* Logo at the top center of the collage, ensuring it doesn't overlap images */}
+              <div className="absolute top-2 left-1/2 transform -translate-x-1/2 z-20">
+                <img
+                  src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/UKRblack.webp"
+                  alt="UKR Logo"
+                  className="w-16 h-16"
+                />
+              </div>
+              {/* Whiteboard container for the 2x3 grid */}
+              <div className="absolute inset-0 flex justify-center items-center">
+                <div
+                  className="relative w-[80%] h-[80%] overflow-hidden"
+                  style={{
+                    backgroundColor: "#f2f2f2",
+                    borderRadius: "5px",
+                    border: "10px solid #adb2bd",
+                    boxShadow:
+                      "inset -1px 2px 2px #404040, 6px 9px 1px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  {/* Render each randomly positioned image */}
+                  {selectedImages.map((img, index) => (
+                    <Link
+                      key={index}
+                      href="https://www.ukitchenrental.com/our-kitchen"
+                      target="_blank"
+                    >
+                      <img
+                        src={img.src}
+                        alt={`Location ${index + 1}`}
+                        className="absolute object-cover rounded-lg hover:scale-105 transition-transform duration-300 shadow-md"
+                        style={img.style}
+                      />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
 
           {/* Hero Text */}
@@ -112,7 +234,6 @@ export default function LocationsPage() {
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-6">
           Sunny Island Pepper Sauce Distribution
         </h2>
-
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Atlanta, GA */}
           <div className="p-6 bg-black bg-opacity-30 rounded-lg shadow-lg flex flex-col gap-4">
@@ -124,7 +245,6 @@ export default function LocationsPage() {
               in the Atlanta Metro area. Stay tuned for more info as we finalize
               distribution partnerships.
             </p>
-            {/* Example: Embedded Google Map or static image */}
             <iframe
               className="w-full h-60 rounded-md border-none"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13277.30896430532!2d-84.39218549999999!3d33.7530685!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f504635dbbe0c7%3A0xb273e7c722f6db47!2sAtlanta%2C%20GA!5e0!3m2!1sen!2sus!4v1676580499462!5m2!1sen!2sus"
@@ -132,7 +252,6 @@ export default function LocationsPage() {
               loading="lazy"
             />
           </div>
-
           {/* Ft. Lauderdale, FL */}
           <div className="p-6 bg-black bg-opacity-30 rounded-lg shadow-lg flex flex-col gap-4">
             <h3 className="text-xl font-semibold tracking-wide">

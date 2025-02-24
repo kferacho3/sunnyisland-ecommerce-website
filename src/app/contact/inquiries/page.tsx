@@ -1,13 +1,15 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
-
-// React Icons for social bullet points
 import {
+  FaBriefcase,
+  FaEnvelope,
   FaFacebookF,
+  FaHeart,
   FaInstagram,
+  FaQuestionCircle,
+  FaShareAlt,
   FaTiktok,
   FaTwitter,
   FaYoutube,
@@ -188,20 +190,9 @@ ${message}
           {/* 1. FAQ Card */}
           <div
             onClick={() => router.push("/contact/FAQs")}
-            className="
-              cursor-pointer bg-black bg-opacity-40 rounded-lg shadow-lg p-4 flex flex-col items-center
-              border border-transparent transition-all 
-              hover:scale-105 hover:border-2 hover:border-pink-500
-            "
+            className="cursor-pointer bg-black bg-opacity-40 rounded-lg shadow-lg p-4 flex flex-col items-center border border-transparent transition-all hover:scale-105 hover:border-2 hover:border-pink-500"
           >
-            <Image
-              src="/icons/faq.png"
-              // 30x30 placeholder image
-              alt="FAQ Icon"
-              width={30}
-              height={30}
-              className="mb-3"
-            />
+            <FaQuestionCircle size={30} className="mb-3" />
             <h2 className="font-bold text-xl mb-2">
               Frequently Asked Questions
             </h2>
@@ -214,21 +205,8 @@ ${message}
           </div>
 
           {/* 2. Email & Phone Card */}
-          <div
-            className="
-              bg-black bg-opacity-40 rounded-lg shadow-lg p-4 flex flex-col items-center
-              border border-transparent transition-all 
-              hover:scale-105 hover:border-2 hover:border-pink-500
-            "
-          >
-            <Image
-              src="/icons/contact.png"
-              // 30x30 placeholder
-              alt="Contact Icon"
-              width={30}
-              height={30}
-              className="mb-3"
-            />
+          <div className="bg-black bg-opacity-40 rounded-lg shadow-lg p-4 flex flex-col items-center border border-transparent transition-all hover:scale-105 hover:border-2 hover:border-pink-500">
+            <FaEnvelope size={30} className="mb-3" />
             <h2 className="text-xl font-bold mb-2">Email &amp; Phone</h2>
             <p className="text-center text-sm flex-grow">
               Reach us directly via email or phone.
@@ -252,21 +230,8 @@ ${message}
           </div>
 
           {/* 3. Social Media Card */}
-          <div
-            className="
-              bg-black bg-opacity-40 rounded-lg shadow-lg p-4 flex flex-col items-center
-              border border-transparent transition-all 
-              hover:scale-105 hover:border-2 hover:border-pink-500
-            "
-          >
-            <Image
-              src="/icons/social.png"
-              // 30x30 placeholder
-              alt="Social Icon"
-              width={30}
-              height={30}
-              className="mb-3"
-            />
+          <div className="bg-black bg-opacity-40 rounded-lg shadow-lg p-4 flex flex-col items-center border border-transparent transition-all hover:scale-105 hover:border-2 hover:border-pink-500">
+            <FaShareAlt size={30} className="mb-3" />
             <h2 className="text-xl font-bold mb-2">Social Media</h2>
             <p className="text-center text-sm mb-3">
               Follow <strong>@sunnypepperisland</strong> on:
@@ -290,56 +255,39 @@ ${message}
             </ul>
           </div>
 
-          {/* 4. Careers Card */}
-          <div
-            onClick={() => router.push("/contact/careers")}
-            className="
-              cursor-pointer bg-black bg-opacity-40 rounded-lg shadow-lg p-4 flex flex-col items-center
-              border border-transparent transition-all 
-              hover:scale-105 hover:border-2 hover:border-pink-500
-            "
-          >
-            <Image
-              src="/icons/careers.png"
-              // 30x30 placeholder
-              alt="Careers Icon"
-              width={30}
-              height={30}
-              className="mb-3"
-            />
-            <h2 className="text-xl font-bold mb-2">Careers</h2>
-            <p className="text-center text-sm flex-grow">
-              Want to join our team? Explore the possibilities.
-            </p>
-            <button className="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-white">
-              View Openings
-            </button>
-          </div>
+          {/* Second row wrapper for Careers and Support Us */}
+          <div className="col-span-1 sm:col-span-2 lg:col-span-3">
+            <div className="flex flex-col sm:flex-row justify-center gap-6">
+              {/* 4. Careers Card */}
+              <div
+                onClick={() => router.push("/contact/careers")}
+                className="cursor-pointer bg-black bg-opacity-40 rounded-lg shadow-lg p-4 flex flex-col items-center border border-transparent transition-all hover:scale-105 hover:border-2 hover:border-pink-500"
+              >
+                <FaBriefcase size={30} className="mb-3" />
+                <h2 className="text-xl font-bold mb-2">Careers</h2>
+                <p className="text-center text-sm flex-grow">
+                  Want to join our team? Explore the possibilities.
+                </p>
+                <button className="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-white">
+                  View Openings
+                </button>
+              </div>
 
-          {/* 5. Support Us Card */}
-          <div
-            onClick={() => router.push("/contact/supportUs")}
-            className="
-              cursor-pointer bg-black bg-opacity-40 rounded-lg shadow-lg p-4 flex flex-col items-center
-              border border-transparent transition-all 
-              hover:scale-105 hover:border-2 hover:border-pink-500
-            "
-          >
-            <Image
-              src="/icons/heart.png"
-              // 30x30 placeholder heart icon
-              alt="Support Icon"
-              width={30}
-              height={30}
-              className="mb-3"
-            />
-            <h2 className="text-xl font-bold mb-2">Support Us</h2>
-            <p className="text-center text-sm flex-grow">
-              Love our pepper sauce? See how you can support Sunny Island.
-            </p>
-            <button className="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-white">
-              Learn More
-            </button>
+              {/* 5. Support Us Card */}
+              <div
+                onClick={() => router.push("/contact/supportUs")}
+                className="cursor-pointer bg-black bg-opacity-40 rounded-lg shadow-lg p-4 flex flex-col items-center border border-transparent transition-all hover:scale-105 hover:border-2 hover:border-pink-500"
+              >
+                <FaHeart size={30} className="mb-3" />
+                <h2 className="text-xl font-bold mb-2">Support Us</h2>
+                <p className="text-center text-sm flex-grow">
+                  Love our pepper sauce? See how you can support Sunny Island.
+                </p>
+                <button className="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-white">
+                  Learn More
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </section>

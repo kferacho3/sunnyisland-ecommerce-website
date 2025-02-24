@@ -1,9 +1,9 @@
-import { Detailed, Environment, useGLTF } from "@react-three/drei";
+import { Detailed, useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import {
+  Bloom,
   DepthOfField,
   EffectComposer,
-  ToneMapping,
 } from "@react-three/postprocessing";
 import { useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -40,7 +40,7 @@ function Pepper({ index, z, speed, color }: PepperProps) {
   // Initialize pepper-specific data
   const [data] = useState(() => ({
     y: THREE.MathUtils.randFloatSpread(height * 2),
-    x: THREE.MathUtils.randFloatSpread(2),
+    x: THREE.MathUtils.randFloatSpread(10),
     spin: THREE.MathUtils.randFloat(8, 12),
     rX: Math.random() * Math.PI,
     rZ: Math.random() * Math.PI,
@@ -54,8 +54,6 @@ function Pepper({ index, z, speed, color }: PepperProps) {
       data.y,
       z,
     );
-
-    // (Collision code removed—peppers no longer interact with PepperSauce.)
 
     // Update vertical position.
     data.y += dt * speed * data.direction;
@@ -117,7 +115,7 @@ export default function Peppers({
 
   return (
     <>
-      <color attach="background" args={["#ffbf40"]} />
+      {/* Removed the background color override */}
       <spotLight
         position={[10, 20, 10]}
         penumbra={1}
@@ -135,15 +133,15 @@ export default function Peppers({
           color={pepperColor}
         />
       ))}
-      <Environment preset="sunset" />
+      {/* Removed the <Environment preset="sunset" /> that was forcing a background */}
       <EffectComposer multisampling={0}>
         <DepthOfField
           target={[0, 0, 60]}
           focalLength={0.4}
-          bokehScale={10}
-          height={700}
+          bokehScale={1}
+          height={1000}
         />
-        <ToneMapping />
+        <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={300} />
       </EffectComposer>
     </>
   );

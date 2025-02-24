@@ -64,9 +64,9 @@ export default function NutritionSection() {
         </div>
 
         {/* Right: Product Image or any relevant art */}
-        <div className="relative w-full h-80 md:h-[28rem]">
+        <div className="relative w-full h-80 md:h-[35rem]">
           <Image
-            src="/images/sunny-island-nutrition.jpg" // placeholder
+            src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/shop/PepperSauceBottleShopDisplay.webp" // placeholder
             alt="Nutrition Product Shot"
             fill
             className="object-cover rounded-md shadow-md"

@@ -5,6 +5,14 @@ import { useEffect, useState } from "react";
 
 export default function Header() {
   const [hide, setHide] = useState(false);
+  const [isExploreProducts, setIsExploreProducts] = useState(false);
+
+  useEffect(() => {
+    // Check the current pathname on mount
+    if (window.location.pathname === "/explore/products") {
+      setIsExploreProducts(true);
+    }
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -15,13 +23,14 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Header is fixed immediately below the navbar.
-  // For mobile, navbar height is h-16 so top is 16 (px equivalent); for md and above, top is 20.
+  // Determine the top offset based on the current page.
+  const headerTopClass = isExploreProducts ? "md:top-10" : "md:top-20";
+
   return (
     <AnimatePresence>
       {!hide && (
         <motion.header
-          className="fixed top-16 md:top-20 w-full bg-red-600 text-white dark:bg-red-700 z-40"
+          className={`fixed top-16 ${headerTopClass} w-full bg-red-600 text-white dark:bg-red-700 z-40`}
           initial={{ y: 0 }}
           animate={{ y: 0 }}
           exit={{ y: -100 }}

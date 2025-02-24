@@ -87,7 +87,7 @@ const storyData: IStorySection[] = [
       "Celebrates culinary diversity",
     ],
     imageUrl:
-      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about1.webp",
+      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about6.webp",
   },
   {
     topline: "Event Participation",
@@ -100,7 +100,7 @@ const storyData: IStorySection[] = [
       "Supporting Caribbean heritage initiatives",
     ],
     imageUrl:
-      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about2.webp",
+      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about7.webp",
   },
   {
     topline: "Recipe Submissions",
@@ -113,7 +113,7 @@ const storyData: IStorySection[] = [
       "Join a community of creative cooks",
     ],
     imageUrl:
-      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about3.webp",
+      "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/aboutUs/about8.webp",
   },
 ];
 

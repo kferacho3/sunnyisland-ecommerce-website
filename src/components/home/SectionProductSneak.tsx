@@ -22,6 +22,7 @@ export default function SectionProductSneak() {
     <section
       id="section-product-sneak"
       className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 bg-white dark:bg-black dark:text-white"
+      style={{ position: "relative", zIndex: 10 }} // higher than parallax
     >
       {/* Clever Witty Header */}
       <div className="w-full text-center mb-8">
