@@ -118,7 +118,7 @@ export default function LocationsPage() {
       return {
         ...img,
         style: {
-          position: "absolute",
+          position: "absolute" as "absolute",
           left: `${left}%`,
           top: `${top}%`,
           width: `${imageSizePercent}%`,
