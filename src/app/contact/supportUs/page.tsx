@@ -79,20 +79,20 @@ export default function SupportUsPage() {
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {slides.map((slide, idx) => {
-              // Determine the gradient overlay style:
-              const overlayStyle =
+              // Determine the gradient overlay style with explicit cast for mixBlendMode:
+              const overlayStyle: React.CSSProperties =
                 slide.title === "Give Back"
                   ? {
                       background:
                         "linear-gradient(45deg, rgba(245,245,220,0.3), rgba(210,180,140,0.3), rgba(222,184,135,0.3))",
                       filter: "blur(8px)",
-                      mixBlendMode: "screen",
+                      mixBlendMode: "screen" as "screen",
                     }
                   : {
                       background:
                         "linear-gradient(45deg, rgba(255,0,0,0.3), rgba(255,165,0,0.3), rgba(255,255,0,0.3))",
                       filter: "blur(8px)",
-                      mixBlendMode: "screen",
+                      mixBlendMode: "screen" as "screen",
                     };
 
               return (
