@@ -35,6 +35,7 @@ const Home = () => {
         />
       </Head>
       Impact-Site-Verification: 4b1f6559-7ace-4631-a71a-3b8fbd17f288
+      Impact-Site-Verification: 0700f517-bd93-4c0f-9114-097826144d5d
       <main className="min-h-screen bg-white dark:bg-black dark:text-white">
         {/* Hero Section */}
 
