@@ -34,7 +34,7 @@ const Home = () => {
           content="Welcome to Sunny Island Pepper, your source for authentic Caribbean pepper sauce."
         />
       </Head>
-
+      Impact-Site-Verification: 4b1f6559-7ace-4631-a71a-3b8fbd17f288
       <main className="min-h-screen bg-white dark:bg-black dark:text-white">
         {/* Hero Section */}
 
