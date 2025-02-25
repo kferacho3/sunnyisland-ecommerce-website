@@ -25,7 +25,7 @@ const popupVariants = {
   },
 };
 
-// We keep the header (text) styling per product as before.
+// Header styling per product.
 const productStyles: { [key: number]: { button: string; header: string } } = {
   1: {
     button: "from-red-700 via-yellow-400 to-black border-red-900",
@@ -46,8 +46,7 @@ const productStyles: { [key: number]: { button: string; header: string } } = {
   },
 };
 
-// For our 3D effect on product selection buttons we define a Tailwind class mapping.
-// (Adjust these classes to fine‑tune the gradient and border colors.)
+// Tailwind mapping for 3D button variants.
 const product3DButtonVariants: {
   [key: number]: { button: string; background: string };
 } = {
@@ -66,10 +65,7 @@ const product3DButtonVariants: {
       "bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-500 border-2 border-orange-500",
     background: "bg-gradient-to-r from-yellow-500 to-orange-400",
   },
-  4: {
-    button: "bg-black border-2 border-gray-800",
-    background: "bg-gray-700",
-  },
+  4: { button: "bg-black border-2 border-gray-800", background: "bg-gray-700" },
   5: {
     button:
       "bg-gradient-to-r from-green-700 via-green-500 to-green-300 border-2 border-green-700",
@@ -77,9 +73,7 @@ const product3DButtonVariants: {
   },
 };
 
-// A reusable 3D button component using strictly Tailwind CSS.
-// We use a wrapping <div> with the "group" class so that we can target its active state
-// on the absolutely positioned background layer.
+// A reusable 3D button component using Tailwind CSS.
 interface ThreeDButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
@@ -92,23 +86,22 @@ function ThreeDButton({
   backgroundClasses,
   ...props
 }: ThreeDButtonProps) {
+  // Destructure onDrag props to omit them, which fixes the type errors.
+  const { onDrag, onDragStart, onDragEnd, ...restProps } = props;
   return (
     <div className="relative inline-block group">
-      {/* Background layer – simulates the 3D shadow/offset.
-          We use an absolute div with a slight downward translation.
-          On active state the translation is removed and the shadow changes. */}
+      {/* Background layer simulating the 3D effect */}
       <motion.div
         className={`
           absolute inset-0 rounded-lg
           ${backgroundClasses}
           shadow-[0_0_0_2px] translate-y-3 
           transition-transform duration-150 ease-out
-          group-active:group-active:shadow-[0_0_0_2px]
+          group-active:shadow-[0_0_0_2px]
         `}
       />
-      {/* The front button */}
-      <motion.button
-        {...props}
+      <button
+        {...restProps}
         className={`
           relative rounded-lg border-2
           ${buttonClasses}
@@ -117,7 +110,7 @@ function ThreeDButton({
         `}
       >
         {children}
-      </motion.button>
+      </button>
     </div>
   );
 }
@@ -168,7 +161,6 @@ export function Overlay({
             <FaSearch className="text-black w-5 h-5 sm:w-6 sm:h-6 ml-2" />
           </span>
         </ThreeDButton>
-
         <ThreeDButton
           onClick={() => togglePanel("info")}
           buttonClasses="bg-white px-4 py-2 w-auto"
@@ -187,7 +179,6 @@ export function Overlay({
       <div className="fixed bottom-5 left-1/2 -translate-x-1/2 flex flex-wrap justify-center gap-2 transition-all duration-300">
         {productsData.map((product) => {
           const { shortName } = parseProductName(product.name);
-          const isSelected = product.id === currentProduct.id;
           const variants = product3DButtonVariants[product.id];
           return (
             <ThreeDButton
@@ -352,3 +343,5 @@ export function Overlay({
     </div>
   );
 }
+
+export { ThreeDButton };

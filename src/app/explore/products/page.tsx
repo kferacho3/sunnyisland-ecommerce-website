@@ -40,7 +40,6 @@ import { Overlay } from "./overlay/Overlay";
 import Preloader from "./Preloader";
 
 // ─── Helper: StaticBody ─────────────────────────────────────────────
-// Wraps children in a static physics collider using a box shape.
 function StaticBody({
   children,
   args,
@@ -91,7 +90,6 @@ class FireMaterial extends THREE.ShaderMaterial {
         uniform sampler2D fireTex;
         varying vec3 vWorldPos;
         
-        // A simple pseudo-noise function
         float snoise(vec3 p) {
           return fract(sin(dot(p, vec3(12.9898, 78.233, 37.719))) * 43758.5453);
         }
@@ -182,7 +180,7 @@ function Flame(props: ThreeElements["mesh"] & { color?: string }) {
   );
 }
 
-// ─── Framer Motion variants for the widescreen letterbox bars ─────────────────
+// ─── Framer Motion variants for widescreen letterbox bars ─────────────────
 const topLetterboxVariants = {
   hidden: { opacity: 0, y: -100 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
@@ -268,12 +266,10 @@ function Scene({
 
   useFrame((state, delta) => {
     if (specialSpinMode && !extraSpecialMode && modelsGroupRef.current) {
-      // Special horizontal spin mode.
       rotationAngleRef.current += delta * spinSpeed;
       if (rotationAngleRef.current >= 2 * Math.PI) {
         rotationAngleRef.current %= 2 * Math.PI;
         onSpecialRotationComplete();
-        // Re-randomize offsets.
         setSpecialSpinOffsets({
           x: THREE.MathUtils.randFloat(-15, 15),
           z: THREE.MathUtils.randFloat(-25, 15),
@@ -291,7 +287,6 @@ function Scene({
         sauceRef.current.rotation.y += delta / 4;
       }
     } else if (specialSpinMode && extraSpecialMode && modelsGroupRef.current) {
-      // Extra special vertical panning mode.
       verticalPanProgressRef.current += delta;
       if (verticalPanProgressRef.current >= panDuration) {
         verticalPanProgressRef.current = 0;
@@ -315,7 +310,6 @@ function Scene({
         sauceRef.current.rotation.y += delta / 4;
       }
     } else if (isIdle) {
-      // Idle mode: cycle through preset camera positions.
       const target = cameraPositions[currentPositionIndex];
       easing.damp3(camera.position, target.position, 1.5, delta);
       if (modelsGroupRef.current) {
@@ -325,14 +319,26 @@ function Scene({
         camera.lookAt(targetRef.current);
       }
     } else {
-      // Default (non-idle, non-special, non-inspect) mode:
       if (!perfSucks) {
-        easing.damp3(
-          camera.rotation,
-          [Math.PI / 2, 0, state.clock.elapsedTime / 5 + state.pointer.x],
-          0.2,
-          delta,
-        );
+        {
+          // Fix for Euler rotation damping:
+          const targetRotation = new THREE.Vector3(
+            Math.PI / 2,
+            0,
+            state.clock.elapsedTime / 5 + state.pointer.x,
+          );
+          const currentRotation = new THREE.Vector3(
+            camera.rotation.x,
+            camera.rotation.y,
+            camera.rotation.z,
+          );
+          easing.damp3(currentRotation, targetRotation, 0.2, delta);
+          camera.rotation.set(
+            currentRotation.x,
+            currentRotation.y,
+            currentRotation.z,
+          );
+        }
         easing.damp3(
           camera.position,
           [
@@ -348,7 +354,6 @@ function Scene({
     }
   });
 
-  // Cycle idle camera positions every 5 seconds when in idle mode.
   useEffect(() => {
     if (!specialSpinMode && isIdle) {
       const interval = setInterval(() => {
@@ -358,14 +363,8 @@ function Scene({
       }, 5000);
       return () => clearInterval(interval);
     }
-  }, [
-    isIdle,
-    specialSpinMode,
-    cameraPositions.length,
-    setCurrentPositionIndex,
-  ]);
+  }, [isIdle, specialSpinMode, cameraPositions.length]);
 
-  // Animation springs for logo and sauce.
   const AnimatedGroup = a("group");
   const logoSpring = useSpring<{
     scale: [number, number, number];
@@ -390,7 +389,6 @@ function Scene({
   return (
     <>
       <ambientLight intensity={1.5} />
-      {/* Group to center models for camera lookAt */}
       <group rotation={[0, -0.725, 0]} ref={modelsGroupRef}>
         <StaticBody>
           <AnimatedGroup
@@ -452,8 +450,6 @@ export default function MainPage() {
   const [currentProduct, setCurrentProduct] = useState<Product>(
     productsData[0],
   );
-  // Modes: idle, specialSpinMode (and extraSpecialMode) versus default mode.
-  // The page now opens in default mode (isIdle = false).
   const [isIdle, setIsIdle] = useState(false);
   const [currentPositionIndex, setCurrentPositionIndex] = useState(0);
   const [flameOn, setFlameOn] = useState(false);
@@ -462,15 +458,12 @@ export default function MainPage() {
     null,
   );
   const [showPeppers, setShowPeppers] = useState(true);
-  // Overlay is visible only in default mode.
   const [showOverlay, setShowOverlay] = useState(true);
-  // Model rotation toggle (active only when "r" is pressed).
   const [rotateSauce, setRotateSauce] = useState(false);
   const sauceRef = useRef<any>(null);
   const [isMobile, setIsMobile] = useState(false);
   const [specialSpinMode, setSpecialSpinMode] = useState(false);
   const [extraSpecialMode, setExtraSpecialMode] = useState(false);
-  // New state for inspect mode.
   const [isInspectMode, setIsInspectMode] = useState(false);
   const [envBackground, setEnvBackground] = useState(
     "linear-gradient(180deg, #000000, #2C2C2C, #6A6A6A)",
@@ -478,21 +471,16 @@ export default function MainPage() {
   const [pepperCount, setPepperCount] = useState(80);
   const [bgIndex, setBgIndex] = useState(1);
 
-  // Default mode is when the user is not idle, not in special mode, and not inspecting.
   const isDefaultMode = !isIdle && !specialSpinMode && !isInspectMode;
 
-  // Set cursor visibility based on mode:
   useEffect(() => {
-    // Cursor visible only in default (non-special, non-inspect) mode.
     document.body.style.cursor = isDefaultMode ? "default" : "none";
   }, [isDefaultMode]);
 
-  // Check for mobile on mount.
   useEffect(() => {
     setIsMobile(window.innerWidth < 600);
   }, []);
 
-  // Idle logic: if no mouse movement for 15 seconds (unless in special mode or inspect mode).
   useEffect(() => {
     if (specialSpinMode || isInspectMode) return;
     let idleTimeout: ReturnType<typeof setTimeout>;
@@ -509,18 +497,12 @@ export default function MainPage() {
     };
   }, [specialSpinMode, isInspectMode]);
 
-  // Keydown listener for toggling overlay ("h"), model rotation ("r"),
-  // special mode ("s"), inspect mode ("i") and extra special mode ("e").
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "h") {
-        if (isDefaultMode) {
-          setShowOverlay((prev) => !prev);
-        }
+        if (isDefaultMode) setShowOverlay((prev) => !prev);
       }
-      if (e.key === "r") {
-        setRotateSauce((prev) => !prev);
-      }
+      if (e.key === "r") setRotateSauce((prev) => !prev);
       if (e.key === "s") {
         setSpecialSpinMode((prev) => {
           if (prev) {
@@ -533,14 +515,9 @@ export default function MainPage() {
         });
       }
       if (e.key === "e") {
-        if (specialSpinMode) {
-          setExtraSpecialMode((prev) => !prev);
-        }
+        if (specialSpinMode) setExtraSpecialMode((prev) => !prev);
       }
-      if (e.key === "i") {
-        // Toggle inspect mode.
-        setIsInspectMode((prev) => !prev);
-      }
+      if (e.key === "i") setIsInspectMode((prev) => !prev);
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -558,7 +535,6 @@ export default function MainPage() {
     }
   };
 
-  // Callback for when a complete rotation/pan is made in special spin mode.
   const handleSpecialRotationComplete = () => {
     setEnvBackground(productBackgroundColors[bgIndex]);
     setBgIndex((prev) => (prev % 5) + 1);
@@ -568,7 +544,6 @@ export default function MainPage() {
 
   return (
     <>
-      {/* Overlay is visible only in default mode */}
       {isDefaultMode && showOverlay && (
         <Overlay
           toggleFlame={() => setFlameOn((prev) => !prev)}
@@ -579,7 +554,6 @@ export default function MainPage() {
         />
       )}
 
-      {/* Widescreen letterbox bars appear in Idle mode and in both special modes */}
       {(isIdle || specialSpinMode) && (
         <>
           <motion.div
@@ -603,8 +577,6 @@ export default function MainPage() {
           camera={{ position: [20, 0.9, 20], fov: 26 }}
           style={{ background: envBackground }}
         >
-          {/* OrbitControls active only in inspect mode.
-              Constrain zoom (minDistance and maxDistance) while allowing free rotation. */}
           {isInspectMode && (
             <OrbitControls
               enableZoom={true}
