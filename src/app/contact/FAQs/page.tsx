@@ -21,7 +21,7 @@ export default function FAQPage() {
   };
 
   return (
-    <main className="min-h-screen w-full bg-white dark:bg-black dark:text-white p-4 sm:p-8">
+    <main className="min-h-screen w-full bg-white dark:bg-black dark:text-white p-8 mt-20 sm:p-12">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-3xl sm:text-4xl font-bold mb-8 text-center">
           Frequently Asked Questions

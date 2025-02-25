@@ -23,11 +23,11 @@ export default function CareersPage() {
         {/* Kitchen Workers Card */}
         <div className="bg-black bg-opacity-30 p-6 rounded-xl shadow-lg flex flex-col">
           <Image
-            src="/images/kitchen-worker.jpg" // Replace with real image
+            src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/contact/careers/SunnyIslandCareers.webp"
             alt="Kitchen Worker"
             width={400}
-            height={250}
-            className="w-full h-52 object-cover rounded-md mb-4"
+            height={525}
+            className="w-full h-[350px] object-cover rounded-md mb-4"
           />
           <h2 className="text-xl md:text-2xl font-bold mb-2 uppercase">
             Kitchen Workers
@@ -50,11 +50,11 @@ export default function CareersPage() {
         {/* Brand Ambassadors Card */}
         <div className="bg-black bg-opacity-30 p-6 rounded-xl shadow-lg flex flex-col">
           <Image
-            src="/images/brand-ambassador.jpg" // Replace with real image
+            src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/contact/careers/SunnyIslandCareers2.webp"
             alt="Brand Ambassador"
             width={400}
-            height={250}
-            className="w-full h-52 object-cover rounded-md mb-4"
+            height={525}
+            className="w-full h-[350px] object-cover rounded-md mb-4"
           />
           <h2 className="text-xl md:text-2xl font-bold mb-2 uppercase">
             Brand Ambassadors
@@ -76,11 +76,11 @@ export default function CareersPage() {
         {/* Chef Collaborations Card */}
         <div className="bg-black bg-opacity-30 p-6 rounded-xl shadow-lg flex flex-col">
           <Image
-            src="/images/chef-collab.jpg" // Replace with real image
+            src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/contact/careers/SunnyIslandCareers3.webp"
             alt="Chef Collaboration"
             width={400}
-            height={250}
-            className="w-full h-52 object-cover rounded-md mb-4"
+            height={525}
+            className="w-full h-[350px] object-cover rounded-md mb-4"
           />
           <h2 className="text-xl md:text-2xl font-bold mb-2 uppercase">
             Chef Collaborations
@@ -102,11 +102,11 @@ export default function CareersPage() {
         {/* Wholesale & Restaurants Card */}
         <div className="bg-black bg-opacity-30 p-6 rounded-xl shadow-lg flex flex-col">
           <Image
-            src="/images/wholesale.jpg" // Replace with real image
+            src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/contact/careers/SunnyIslandCareers4.webp"
             alt="Wholesale & Local Restaurants"
             width={400}
-            height={250}
-            className="w-full h-52 object-cover rounded-md mb-4"
+            height={525}
+            className="w-full h-[350px] object-cover rounded-md mb-4"
           />
           <h2 className="text-xl md:text-2xl font-bold mb-2 uppercase">
             Wholesale &amp; Restaurants

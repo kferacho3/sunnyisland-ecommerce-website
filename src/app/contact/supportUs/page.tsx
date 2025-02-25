@@ -12,7 +12,8 @@ export default function SupportUsPage() {
     {
       title: "Buy Our Product",
       subtitle: "Sunny Island Pepper Sauce",
-      image: "/images/placeholder1.jpg", // Replace with your real image
+      image:
+        "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/contact/supportUs/SunnyIslandSupport1.webp",
       content: `
         One of the best ways to support us is to purchase 
         our delicious pepper sauce! Each bottle is made by hand
@@ -23,7 +24,8 @@ export default function SupportUsPage() {
     {
       title: "Share Your Thoughts",
       subtitle: "Social Media Love",
-      image: "/images/placeholder2.jpg", // Replace with your real image
+      image:
+        "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/contact/supportUs/SunnyIslandSupport2.webp",
       content: `
         Love our product? Spread the word on social media!
         Tag us @sunnypepperisland, use our hashtags, and let
@@ -33,7 +35,8 @@ export default function SupportUsPage() {
     {
       title: "Give Back",
       subtitle: "Mental Health Awareness",
-      image: "/images/placeholder3.jpg", // Replace with your real image
+      image:
+        "https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/contact/supportUs/SunnyIslandSupport3.webp",
       content: `
         We believe in supporting mental health causes. 
         Consider donating your time, resources, or funds
@@ -75,40 +78,63 @@ export default function SupportUsPage() {
             className="flex transition-transform duration-700"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
-            {slides.map((slide, idx) => (
-              <div
-                key={idx}
-                className="w-full flex-shrink-0 px-2"
-                style={{ minWidth: "100%" }}
-              >
-                {/* Unique Shape Container */}
+            {slides.map((slide, idx) => {
+              // Determine the gradient overlay style:
+              const overlayStyle =
+                slide.title === "Give Back"
+                  ? {
+                      background:
+                        "linear-gradient(45deg, rgba(245,245,220,0.3), rgba(210,180,140,0.3), rgba(222,184,135,0.3))",
+                      filter: "blur(8px)",
+                      mixBlendMode: "screen",
+                    }
+                  : {
+                      background:
+                        "linear-gradient(45deg, rgba(255,0,0,0.3), rgba(255,165,0,0.3), rgba(255,255,0,0.3))",
+                      filter: "blur(8px)",
+                      mixBlendMode: "screen",
+                    };
+
+              return (
                 <div
-                  className="bg-black bg-opacity-30 rounded-xl shadow-lg p-6 min-h-[400px] flex flex-col items-center justify-center relative overflow-hidden"
-                  style={{
-                    clipPath: "polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%)",
-                  }}
+                  key={idx}
+                  className="w-full flex-shrink-0 px-2"
+                  style={{ minWidth: "100%" }}
                 >
-                  {/* Slide Image */}
-                  <div className="w-full h-40 md:h-60 relative">
-                    <Image
-                      src={slide.image}
-                      alt={slide.title}
-                      fill
-                      className="object-cover"
-                    />
+                  {/* Unique Shape Container */}
+                  <div
+                    className="bg-black bg-opacity-30 rounded-xl shadow-lg p-6 min-h-[400px] flex flex-col items-center justify-center relative overflow-hidden"
+                    style={{
+                      clipPath:
+                        "polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%)",
+                    }}
+                  >
+                    {/* Slide Image with Glowing Overlay */}
+                    <div className="w-full h-40 md:h-60 relative">
+                      <Image
+                        src={slide.image}
+                        alt={slide.title}
+                        fill
+                        className="object-contain"
+                      />
+                      <div
+                        className="absolute inset-0 pointer-events-none"
+                        style={overlayStyle}
+                      />
+                    </div>
+                    <h2 className="text-2xl font-bold mt-4 mb-2">
+                      {slide.title}
+                    </h2>
+                    <h3 className="text-sm md:text-base font-semibold mb-4 text-indigo-400 uppercase tracking-wider">
+                      {slide.subtitle}
+                    </h3>
+                    <p className="text-sm md:text-base max-w-md text-center leading-relaxed">
+                      {slide.content}
+                    </p>
                   </div>
-                  <h2 className="text-2xl font-bold mt-4 mb-2">
-                    {slide.title}
-                  </h2>
-                  <h3 className="text-sm md:text-base font-semibold mb-4 text-indigo-400 uppercase tracking-wider">
-                    {slide.subtitle}
-                  </h3>
-                  <p className="text-sm md:text-base max-w-md text-center leading-relaxed">
-                    {slide.content}
-                  </p>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -161,8 +187,7 @@ export default function SupportUsPage() {
       {/* ====================== CAREER SUPPORT SECTION ====================== */}
       <section className="max-w-5xl mx-auto px-4 py-12">
         <div
-          className="bg-black bg-opacity-30 rounded-xl shadow-lg p-6 relative overflow-hidden
-          flex flex-col items-center text-center"
+          className="bg-black bg-opacity-30 rounded-xl shadow-lg p-6 relative overflow-hidden flex flex-col items-center text-center"
           style={{
             clipPath: "polygon(0 0, 100% 0, 100% 90%, 50% 100%, 0 90%)",
           }}
@@ -188,8 +213,7 @@ export default function SupportUsPage() {
       {/* ================== RECIPE SPONSORSHIP SUPPORT SECTION ================== */}
       <section className="max-w-5xl mx-auto px-4 py-12">
         <div
-          className="bg-black bg-opacity-30 rounded-xl shadow-lg p-6 relative overflow-hidden
-          flex flex-col items-center text-center"
+          className="bg-black bg-opacity-30 rounded-xl shadow-lg p-6 relative overflow-hidden flex flex-col items-center text-center"
           style={{
             clipPath: "polygon(0 0, 100% 0, 100% 90%, 50% 100%, 0 90%)",
           }}

@@ -215,7 +215,7 @@ export default function Navbar() {
                 )}
               </div>
               {/* CONTACT DROPDOWN */}
-              <div className="relative" onMouseLeave={closeDropdown}>
+              <div className="relative">
                 <button
                   className="hover:text-secondary flex items-center"
                   onMouseEnter={() => openDropdown("contact")}
