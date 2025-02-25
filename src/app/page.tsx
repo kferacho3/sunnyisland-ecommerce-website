@@ -20,6 +20,14 @@ const Home = () => {
   return (
     <>
       <Head>
+        <meta
+          name="impact-site-verification"
+          content="4b1f6559-7ace-4631-a71a-3b8fbd17f288"
+        />
+        <meta
+          name="impact-site-verification"
+          content="0700f517-bd93-4c0f-9114-097826144d5d"
+        />
         <title>Sunny Island Pepper | Home</title>
         <meta
           name="description"

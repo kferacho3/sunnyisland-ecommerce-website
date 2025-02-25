@@ -1,11 +1,11 @@
 "use client";
 
 import ExitIcon from "@/components/globalComponents/ExitIcon";
-import PinterestImage from "@/components/globalComponents/PinterestImage";
 import { useTheme } from "@/context/ThemeContext";
 import { recipes as establishedRecipesData } from "@/data/recipes";
 import { AnimatePresence, motion } from "framer-motion";
 import Head from "next/head";
+import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import { FiHeart, FiPlus, FiStar } from "react-icons/fi";
 import {
@@ -248,7 +248,7 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
       {/* Featured Recipe Card */}
       <div className="flex flex-col md:flex-row gap-4 mb-6 bg-white dark:bg-gray-800 rounded shadow overflow-hidden">
         <div className="relative w-full md:w-1/2 h-64">
-          <PinterestImage
+          <PixabayImage
             query={`${featuredRecipe.title} ${featuredRecipe.cuisine}`}
             alt={featuredRecipe.title}
           />
@@ -345,7 +345,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
   return (
     <div className="relative bg-white dark:bg-gray-800 rounded shadow overflow-hidden flex flex-col">
       <div className="relative h-48">
-        <PinterestImage
+        <PixabayImage
           query={`${recipe.title} ${recipe.cuisine}`}
           alt={recipe.title}
         />
@@ -426,7 +426,6 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      {/* Relative container so ExitIcon stays inside */}
       <motion.div
         className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden w-full max-w-3xl max-h-full"
         initial={{ scale: 0.8 }}
@@ -434,10 +433,9 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
         exit={{ scale: 0.8 }}
       >
         <ExitIcon onClose={onClose} isDarkMode={isDark} />
-        {/* Modal Header with Pinterest image */}
         <div className="relative">
           <div className="relative h-64">
-            <PinterestImage
+            <PixabayImage
               query={`${recipe.title} ${recipe.cuisine}`}
               alt={recipe.title}
             />
@@ -471,7 +469,6 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
             />
             <span className="ml-2 text-sm">{recipe.country}</span>
           </div>
-          {/* Tab Navigation */}
           <div className="border-b mb-4">
             <nav className="flex space-x-4">
               <button
@@ -506,7 +503,6 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
               </button>
             </nav>
           </div>
-          {/* Fixed-size tab content container with smooth transitions */}
           <div className="relative h-64 overflow-y-auto">
             <AnimatePresence mode="wait">
               {activeTab === "description" && (
@@ -611,6 +607,89 @@ const OriginalRecipesPlaceholder: React.FC = () => {
           Submit Your Recipe
         </button>
       </section>
+    </div>
+  );
+};
+
+// ─────────────────────────────────────────────
+// Pixabay Image Component
+// ─────────────────────────────────────────────
+
+async function fetchPixabayImages(query: string): Promise<string[]> {
+  try {
+    const apiKey = process.env.NEXT_PUBLIC_PIXABAY_API_KEY;
+    if (!apiKey) {
+      console.error("Pixabay API key not found");
+      return [];
+    }
+    const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(
+      query,
+    )}&image_type=photo&per_page=10`;
+    const res = await fetch(url);
+    if (!res.ok) {
+      console.error("Pixabay search error", res.statusText);
+      return [];
+    }
+    const data = await res.json();
+    console.log("Pixabay data:", data);
+    const images: string[] =
+      data.hits?.map((hit: any) => hit.webformatURL) || [];
+    return images;
+  } catch (error) {
+    console.error("Pixabay search failed", error);
+    return [];
+  }
+}
+
+type PixabayImageProps = {
+  query: string;
+  alt: string;
+  className?: string;
+};
+
+const PixabayImage: React.FC<PixabayImageProps> = ({
+  query,
+  alt,
+  className,
+}) => {
+  const [images, setImages] = useState<string[]>([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  useEffect(() => {
+    fetchPixabayImages(query).then((imgs) => {
+      setImages(imgs);
+      setCurrentIndex(0);
+    });
+  }, [query]);
+
+  const nextImage = () => {
+    if (images.length > 0) {
+      setCurrentIndex((prev) => (prev + 1) % images.length);
+    }
+  };
+
+  if (images.length === 0) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-gray-200">
+        Loading…
+      </div>
+    );
+  }
+
+  return (
+    <div className="relative w-full h-full">
+      <Image
+        src={images[currentIndex]}
+        alt={alt}
+        fill
+        className={className || "object-cover"}
+      />
+      <button
+        onClick={nextImage}
+        className="absolute bottom-2 right-2 bg-white bg-opacity-75 text-xs p-1 rounded shadow"
+      >
+        Next
+      </button>
     </div>
   );
 };
