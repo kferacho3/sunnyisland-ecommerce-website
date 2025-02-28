@@ -190,7 +190,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const listLink = `/explore/blog?view=list${urlParams}`;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto mt-10 px-4 py-10">
       {/* Hero Section */}
       <section className="relative h-96 bg-black text-white flex flex-col items-center justify-center text-center">
         <Image

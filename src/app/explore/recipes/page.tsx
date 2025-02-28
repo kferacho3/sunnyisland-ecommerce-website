@@ -98,7 +98,29 @@ function getIngredientIcon(ingredient: string): React.ReactNode {
 }
 
 // ─────────────────────────────────────────────
-// Main Page Component
+// Helper: Get AWS Image URL by Recipe ID
+// ─────────────────────────────────────────────
+
+function getAWSImageUrl(recipeId: number) {
+  // e.g., for recipe ID 50: "RecipeId50.webp"
+  return `https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/recipes/RecipeId${recipeId}.webp`;
+}
+
+// ─────────────────────────────────────────────
+// Shuffle Utility
+// ─────────────────────────────────────────────
+
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// ─────────────────────────────────────────────
+// Main Recipes Page Component
 // ─────────────────────────────────────────────
 
 const RecipesPage = () => {
@@ -107,8 +129,12 @@ const RecipesPage = () => {
   );
   const [favorites, setFavorites] = useState<number[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-  const [visibleCount, setVisibleCount] = useState(5);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // For pagination
+  const RECIPES_PER_PAGE = 20; // 20 at a time (including the featured recipe)
+  const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
+  const [visibleCount, setVisibleCount] = useState(RECIPES_PER_PAGE);
 
   useEffect(() => {
     const storedFav = localStorage.getItem("favoriteRecipes");
@@ -119,10 +145,16 @@ const RecipesPage = () => {
     localStorage.setItem("favoriteRecipes", JSON.stringify(favorites));
   }, [favorites]);
 
-  const establishedRecipes: Recipe[] = establishedRecipesData.map((r) => ({
-    ...r,
-    rating: 0.0,
-  }));
+  // Initialize and shuffle on mount
+  useEffect(() => {
+    const establishedRecipes: Recipe[] = establishedRecipesData.map((r) => ({
+      ...r,
+      rating: 0.0,
+    }));
+    // Shuffle the recipes so they appear in random order
+    const shuffled = shuffleArray(establishedRecipes);
+    setAllRecipes(shuffled);
+  }, []);
 
   const toggleFavorite = (id: number) => {
     setFavorites((prev) =>
@@ -137,7 +169,23 @@ const RecipesPage = () => {
 
   const openModal = (recipe: Recipe) => setSelectedRecipe(recipe);
   const closeModal = () => setSelectedRecipe(null);
-  const loadMoreRecipes = () => setVisibleCount((prev) => prev + 4);
+
+  // Show more recipes in increments of 20
+  const loadMoreRecipes = () => {
+    setVisibleCount((prev) => prev + RECIPES_PER_PAGE);
+  };
+
+  // Re-randomize the recipes
+  const refreshRecipes = () => {
+    setAllRecipes((prev) => {
+      const shuffled = shuffleArray(prev);
+      return shuffled;
+    });
+    setVisibleCount(RECIPES_PER_PAGE);
+  };
+
+  // We only display up to 'visibleCount' recipes
+  const visibleRecipes = allRecipes.slice(0, visibleCount);
 
   return (
     <>
@@ -148,9 +196,9 @@ const RecipesPage = () => {
           content="Spice up any recipe with Sunny Island Pepper Sauce. Explore our established recipes and submit your own!"
         />
       </Head>
-      <main className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-4 sm:p-8">
+      <main className="min-h-screen mt-20 t-20 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-4 sm:p-8">
         {/* Header */}
-        <header className="mb-6">
+        <header className="mt-10 mb-6">
           <h1 className="text-3xl md:text-4xl font-bold text-center">
             Spice up any recipe below with{" "}
             <span className="text-pink-600">Sunny Island Pepper Sauce</span>
@@ -179,32 +227,47 @@ const RecipesPage = () => {
             Sunny Island Original Recipes
           </button>
         </div>
+
+        {/* Main Content */}
         {activeTab === "established" ? (
-          establishedRecipes.length > 0 && (
-            <div className="space-y-6">
-              <FeaturedLayout
-                featuredRecipe={establishedRecipes[0]}
-                otherRecipes={establishedRecipes.slice(1, visibleCount + 1)}
-                onFavorite={toggleFavorite}
-                onRating={handleRating}
-                favorites={favorites}
-                onOpenModal={openModal}
-              />
-              {visibleCount < establishedRecipes.length - 1 && (
-                <div className="text-center">
+          allRecipes.length > 0 && (
+            <>
+              {/* Buttons for "Refresh" and "Load More" */}
+              <div className="flex justify-center mb-6 gap-4">
+                <button
+                  onClick={refreshRecipes}
+                  className="px-4 py-2 bg-blue-600 text-white rounded"
+                >
+                  Refresh (Re-Randomize)
+                </button>
+                {visibleCount < allRecipes.length && (
                   <button
                     onClick={loadMoreRecipes}
-                    className="mt-4 px-4 py-2 bg-pink-600 text-white rounded"
+                    className="px-4 py-2 bg-pink-600 text-white rounded"
                   >
                     Load More
                   </button>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+
+              <div className="space-y-6">
+                {visibleRecipes.length > 0 && (
+                  <FeaturedLayout
+                    featuredRecipe={visibleRecipes[0]}
+                    otherRecipes={visibleRecipes.slice(1)}
+                    onFavorite={toggleFavorite}
+                    onRating={handleRating}
+                    favorites={favorites}
+                    onOpenModal={openModal}
+                  />
+                )}
+              </div>
+            </>
           )
         ) : (
           <OriginalRecipesPlaceholder />
         )}
+
         <AnimatePresence mode="wait">
           {selectedRecipe && (
             <RecipeModal
@@ -248,9 +311,11 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
       {/* Featured Recipe Card */}
       <div className="flex flex-col md:flex-row gap-4 mb-6 bg-white dark:bg-gray-800 rounded shadow overflow-hidden">
         <div className="relative w-full md:w-1/2 h-64">
-          <PixabayImage
-            query={`${featuredRecipe.title} ${featuredRecipe.cuisine}`}
+          <Image
+            src={getAWSImageUrl(featuredRecipe.id)}
             alt={featuredRecipe.title}
+            fill
+            className="object-cover"
           />
         </div>
         <div className="flex-1 p-4 flex flex-col">
@@ -345,9 +410,11 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
   return (
     <div className="relative bg-white dark:bg-gray-800 rounded shadow overflow-hidden flex flex-col">
       <div className="relative h-48">
-        <PixabayImage
-          query={`${recipe.title} ${recipe.cuisine}`}
+        <Image
+          src={getAWSImageUrl(recipe.id)}
           alt={recipe.title}
+          fill
+          className="object-cover"
         />
       </div>
       <div className="p-4 flex-grow flex flex-col">
@@ -435,9 +502,11 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
         <ExitIcon onClose={onClose} isDarkMode={isDark} />
         <div className="relative">
           <div className="relative h-64">
-            <PixabayImage
-              query={`${recipe.title} ${recipe.cuisine}`}
+            <Image
+              src={getAWSImageUrl(recipe.id)}
               alt={recipe.title}
+              fill
+              className="object-cover"
             />
           </div>
         </div>
@@ -611,85 +680,4 @@ const OriginalRecipesPlaceholder: React.FC = () => {
   );
 };
 
-// ─────────────────────────────────────────────
-// Pixabay Image Component
-// ─────────────────────────────────────────────
-
-async function fetchPixabayImages(query: string): Promise<string[]> {
-  try {
-    const apiKey = process.env.NEXT_PUBLIC_PIXABAY_API_KEY;
-    if (!apiKey) {
-      console.error("Pixabay API key not found");
-      return [];
-    }
-    const url = `https://pixabay.com/api/?key=${apiKey}&q=${encodeURIComponent(
-      query,
-    )}&image_type=photo&per_page=10`;
-    const res = await fetch(url);
-    if (!res.ok) {
-      console.error("Pixabay search error", res.statusText);
-      return [];
-    }
-    const data = await res.json();
-    console.log("Pixabay data:", data);
-    const images: string[] =
-      data.hits?.map((hit: any) => hit.webformatURL) || [];
-    return images;
-  } catch (error) {
-    console.error("Pixabay search failed", error);
-    return [];
-  }
-}
-
-type PixabayImageProps = {
-  query: string;
-  alt: string;
-  className?: string;
-};
-
-const PixabayImage: React.FC<PixabayImageProps> = ({
-  query,
-  alt,
-  className,
-}) => {
-  const [images, setImages] = useState<string[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    fetchPixabayImages(query).then((imgs) => {
-      setImages(imgs);
-      setCurrentIndex(0);
-    });
-  }, [query]);
-
-  const nextImage = () => {
-    if (images.length > 0) {
-      setCurrentIndex((prev) => (prev + 1) % images.length);
-    }
-  };
-
-  if (images.length === 0) {
-    return (
-      <div className="w-full h-full flex items-center justify-center bg-gray-200">
-        Loading…
-      </div>
-    );
-  }
-
-  return (
-    <div className="relative w-full h-full">
-      <Image
-        src={images[currentIndex]}
-        alt={alt}
-        fill
-        className={className || "object-cover"}
-      />
-      <button
-        onClick={nextImage}
-        className="absolute bottom-2 right-2 bg-white bg-opacity-75 text-xs p-1 rounded shadow"
-      >
-        Next
-      </button>
-    </div>
-  );
-};
+export { RecipesPage };

@@ -27,6 +27,9 @@ const nextConfig: NextConfig = {
       "flagsapi.com",
       "www.epicurious.com",
       "pixabay.com",
+      "serpapi.com",
+      "pexels.com",
+      "images.pexels.com",
     ],
   },
 };

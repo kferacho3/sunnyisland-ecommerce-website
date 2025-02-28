@@ -1,19 +1,187 @@
-// src/app/explore/events/ClientEvents.tsx
-
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-import type { EventItem } from "./page";
+import { useEffect, useState } from "react";
+import type { EventItem } from "../../../data/eventsData";
 
-// Export Section interface for use by the server component.
 export interface Section {
   term: string;
   events: EventItem[];
 }
 
-// Modal component for full event details.
+interface ClientEventsProps {
+  sections: Section[];
+  featuredEvent?: EventItem;
+}
+
+/**
+ * Custom hook to fetch a thumbnail image URL using the Pexels API.
+ * It uses the event title as keywords for the search.
+ */
+function useThumbnail(title: string, fallback?: string): string {
+  const [thumbnail, setThumbnail] = useState<string>(
+    fallback || "/media/default-pepper.jpg",
+  );
+
+  useEffect(() => {
+    async function fetchThumbnail() {
+      try {
+        const accessKey =
+          process.env.NEXT_PUBLIC_PEXELS_API_KEY ||
+          "VXlFYUc4IsxVdFQjueP6uClpLLRZqqW4NkAUKT5ZS6EqRz2TGiAvHHtE";
+        const query = encodeURIComponent(title);
+        const res = await fetch(
+          `https://api.pexels.com/v1/search?query=${query}&per_page=1`,
+          {
+            headers: {
+              Authorization: accessKey,
+            },
+          },
+        );
+        const data = await res.json();
+        if (data.photos && data.photos.length > 0) {
+          setThumbnail(data.photos[0].src.medium);
+        } else {
+          setThumbnail("/media/default-pepper.jpg");
+        }
+      } catch (error) {
+        console.error("Error fetching thumbnail for", title, error);
+        setThumbnail("/media/default-pepper.jpg");
+      }
+    }
+    fetchThumbnail();
+  }, [title]);
+
+  return thumbnail;
+}
+
+/**
+ * Helper: returns truncated text (without the plus button).
+ */
+function getTruncatedText(desc: string, maxLength = 100): string {
+  if (desc.length <= maxLength) return desc;
+  return desc.slice(0, maxLength);
+}
+
+/**
+ * Helper to categorize event themes.
+ */
+function normalizeTheme(theme: string): string {
+  const lower = theme.toLowerCase();
+
+  if (lower.includes("latin") || lower.includes("spanish")) {
+    return "Latin Culture & Food";
+  }
+  if (lower.includes("african")) {
+    return "African Culture";
+  }
+  if (lower.includes("caribbean")) {
+    return "Caribbean Culture";
+  }
+  if (
+    lower.includes("asian") ||
+    lower.includes("chinese") ||
+    lower.includes("japanese") ||
+    lower.includes("korean") ||
+    lower.includes("thai")
+  ) {
+    return "Asian Culture";
+  }
+  if (lower.includes("farmers market") || lower.includes("farm-to-table")) {
+    return "Farmers Market";
+  }
+  if (lower.includes("street food") || lower.includes("food truck")) {
+    return "Street Food and Food Trucks";
+  }
+  if (
+    lower.includes("oktoberfest") ||
+    (lower.includes("festival") &&
+      (lower.includes("beer") ||
+        lower.includes("drinks") ||
+        lower.includes("food")))
+  ) {
+    return "Drinks & Food events";
+  }
+  if (
+    lower.includes("festival") ||
+    lower.includes("carnival") ||
+    lower.includes("fair") ||
+    lower.includes("holiday")
+  ) {
+    return "Festival";
+  }
+  return "Miscellaneous";
+}
+
+/**
+ * Renders a single event card.
+ */
+function EventCard({
+  ev,
+  onClick,
+  setModalEvent,
+}: {
+  ev: EventItem;
+  onClick: () => void;
+  setModalEvent: (ev: EventItem) => void;
+}) {
+  const thumb = useThumbnail(ev.title, ev.imageUrl);
+  const truncatedDesc = getTruncatedText(ev.description, 100);
+  const isTruncated = ev.description.length > 100;
+
+  return (
+    <div
+      key={ev.id}
+      className="default-card cursor-pointer w-64 h-[18rem] hover:scale-105 transition-transform duration-300 relative"
+      onClick={onClick}
+    >
+      <div className="card-inner p-4 bg-transparent shadow-lg w-full h-full flex flex-col text-white overflow-hidden border-2 border-black">
+        {/* Top image */}
+        <div className="mb-2 w-full h-24 relative">
+          <Image
+            src={thumb}
+            alt={ev.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 33vw"
+            quality={90}
+            className="object-cover rounded-md"
+          />
+        </div>
+
+        {/* Title & Basic Info */}
+        <h3 className="text-sm font-bold mb-1">{ev.title}</h3>
+        <p className="text-xs mb-1">
+          <strong>Date:</strong> {ev.date}
+        </p>
+        <p className="text-xs mb-1">
+          <strong>Location:</strong> {ev.location}
+        </p>
+
+        {/* Description text */}
+        <p className="text-xs pr-5">{truncatedDesc}</p>
+
+        {/* If the text is truncated, show the plus button in the bottom-right */}
+        {isTruncated && (
+          <div className="group absolute bottom-1 right-1 w-7 h-7 rounded-full bg-gradient-to-r from-black via-gray-800 to-gray-400 flex items-center justify-center transition-colors duration-300 hover:cursor-pointer hover:from-secondary hover:via-secondary hover:to-secondary">
+            <button
+              className="text-white text-sm w-full h-full flex items-center justify-center group-hover:text-primary"
+              onClick={(e) => {
+                e.stopPropagation();
+                setModalEvent(ev);
+              }}
+            >
+              +
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Modal for full event details
 function Modal({ event, onClose }: { event: EventItem; onClose: () => void }) {
+  const thumb = useThumbnail(event.title, event.imageUrl);
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
@@ -32,9 +200,11 @@ function Modal({ event, onClose }: { event: EventItem; onClose: () => void }) {
         <div className="flex flex-col items-center">
           <div className="relative w-full h-64 mb-4">
             <Image
-              src={event.imageUrl}
+              src={thumb}
               alt={event.title}
               fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              quality={90}
               className="object-cover rounded-md"
             />
           </div>
@@ -66,222 +236,194 @@ function Modal({ event, onClose }: { event: EventItem; onClose: () => void }) {
   );
 }
 
-export default function ClientEvents({ sections }: { sections: Section[] }) {
-  // const [filterDate, setFilterDate] = useState("");
-  //const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+export default function ClientEvents({
+  sections,
+  featuredEvent,
+}: ClientEventsProps) {
   const [modalEvent, setModalEvent] = useState<EventItem | null>(null);
   const [visibleCount, setVisibleCount] = useState(5);
 
-  // Helper: Truncate description with fade overlay and a "+" button.
-  const renderTruncatedDescription = (desc: string, ev: EventItem) => {
-    const maxLength = 100;
-    if (desc.length <= maxLength) {
-      return <p className="text-xs">{desc}</p>;
-    }
-    const truncated = desc.slice(0, maxLength);
-    return (
-      <div className="relative">
-        <p className="text-xs">{truncated}</p>
-        <div className="absolute bottom-0 right-0 w-10 h-6 bg-gradient-to-l from-black via-transparent to-transparent flex items-center justify-center">
-          <button
-            className="text-white text-xs"
-            onClick={(e) => {
-              e.stopPropagation();
-              setModalEvent(ev);
-            }}
-          >
-            +
-          </button>
-        </div>
-      </div>
-    );
-  };
+  // Filter states
+  const [filterLocation, setFilterLocation] = useState("All");
+  const [filterDate, setFilterDate] = useState("");
+  const [filterTheme, setFilterTheme] = useState("");
 
-  // Render all sections.
+  // Combine all events from all sections
+  const allEvents = sections.flatMap((section) => section.events);
+
+  // Apply filters
+  const filteredEvents = allEvents.filter((ev) => {
+    const matchesLocation =
+      filterLocation === "All"
+        ? true
+        : ev.location.toLowerCase() === filterLocation.toLowerCase();
+    const matchesTheme = filterTheme
+      ? ev.theme.toLowerCase().includes(filterTheme.toLowerCase()) ||
+        ev.title.toLowerCase().includes(filterTheme.toLowerCase())
+      : true;
+    const matchesDate = filterDate
+      ? new Date(ev.date) >= new Date(filterDate)
+      : true;
+    return matchesLocation && matchesTheme && matchesDate;
+  });
+
+  // Sort from soonest to furthest date
+  const sortedEvents = filteredEvents.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+  );
+
+  // Group by normalized theme
+  const groupedByTheme = sortedEvents.reduce(
+    (acc: Record<string, EventItem[]>, ev) => {
+      const normalized = normalizeTheme(ev.theme);
+      if (!acc[normalized]) acc[normalized] = [];
+      acc[normalized].push(ev);
+      return acc;
+    },
+    {},
+  );
+
+  const filteredSections = Object.keys(groupedByTheme).map((theme) => ({
+    term: theme,
+    events: groupedByTheme[theme],
+  }));
+
   return (
     <div>
       {modalEvent && (
         <Modal event={modalEvent} onClose={() => setModalEvent(null)} />
       )}
 
-      {sections.map((section, idx) => (
-        <section key={section.term} className="mb-16">
-          <h2 className="text-3xl font-extrabold mb-4 uppercase tracking-wide">
-            {section.term.charAt(0).toUpperCase() + section.term.slice(1)}
-          </h2>
-          {idx === 0 && section.events.length > 0 ? (
-            <>
-              {/* Hero Section: Main Event */}
-              <div
-                className="main-card mx-auto w-full max-w-5xl cursor-pointer hover:scale-105 transition-transform duration-300 mb-12"
-                onClick={() => setModalEvent(section.events[0])}
-              >
-                <div className="card-inner p-10 bg-black bg-opacity-60 rounded-lg shadow-2xl">
-                  <div className="mb-6 w-full h-80 relative">
-                    <Image
-                      src={section.events[0].imageUrl}
-                      alt={section.events[0].title}
-                      fill
-                      className="object-cover rounded-md"
-                    />
-                  </div>
-                  <h2 className="text-4xl font-bold mb-4">
-                    {section.events[0].title}
-                  </h2>
-                  <p className="mb-2">
-                    <strong>Date:</strong> {section.events[0].date}
-                  </p>
-                  <p className="mb-2">
-                    <strong>Location:</strong> {section.events[0].location}
-                  </p>
-                  <div
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setModalEvent(section.events[0]);
-                    }}
-                  >
-                    {renderTruncatedDescription(
-                      section.events[0].description,
-                      section.events[0],
-                    )}
-                  </div>
-                </div>
-              </div>
+      {/* Filter Bar */}
+      <div className="mb-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <div>
+          <label htmlFor="location" className="mr-2 text-white">
+            Location:
+          </label>
+          <select
+            id="location"
+            value={filterLocation}
+            onChange={(e) => setFilterLocation(e.target.value)}
+            className="p-2 rounded"
+          >
+            <option value="All">All</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Florida">Florida</option>
+          </select>
+        </div>
+        <div>
+          <label htmlFor="date" className="mr-2 text-white">
+            Date from:
+          </label>
+          <input
+            id="date"
+            type="date"
+            value={filterDate}
+            onChange={(e) => setFilterDate(e.target.value)}
+            className="p-2 rounded"
+          />
+        </div>
+        <div>
+          <label htmlFor="theme" className="mr-2 text-white">
+            Theme/Keyword:
+          </label>
+          <input
+            id="theme"
+            type="text"
+            value={filterTheme}
+            onChange={(e) => setFilterTheme(e.target.value)}
+            placeholder="e.g., food, arts, festival"
+            className="p-2 rounded"
+          />
+        </div>
+      </div>
 
-              {/* Featured Section: Next 3 Events */}
-              {section.events.length > 1 && (
-                <div className="mb-12">
-                  <h3 className="text-2xl font-bold mb-4">Featured</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {section.events.slice(1, 4).map((ev) => (
-                      <div
-                        key={ev.id}
-                        className="featured-card cursor-pointer hover:scale-105 transition-transform duration-300"
-                        onClick={() => setModalEvent(ev)}
-                      >
-                        <div className="card-inner p-6 bg-black bg-opacity-60 rounded-lg shadow-lg h-full flex flex-col">
-                          <div className="mb-4 w-full h-40 relative">
-                            <Image
-                              src={ev.imageUrl}
-                              alt={ev.title}
-                              fill
-                              className="object-cover rounded-md"
-                            />
-                          </div>
-                          <h3 className="text-xl font-bold mb-2">{ev.title}</h3>
-                          <p className="text-sm mb-1">
-                            <strong>Date:</strong> {ev.date}
-                          </p>
-                          <p className="text-sm mb-1">
-                            <strong>Location:</strong> {ev.location}
-                          </p>
-                          <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setModalEvent(ev);
-                            }}
-                          >
-                            {renderTruncatedDescription(ev.description, ev)}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Default Grid for Remaining Events with Chunking */}
-              {section.events.length > 4 && (
-                <div>
-                  <h3 className="text-2xl font-bold mb-4">More Events</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 justify-items-center">
-                    {section.events.slice(4, 4 + visibleCount).map((ev) => (
-                      <div
-                        key={ev.id}
-                        className="default-card cursor-pointer w-64 h-[18rem] hover:scale-105 transition-transform duration-300"
-                        onClick={() => setModalEvent(ev)}
-                      >
-                        <div className="card-inner p-4 bg-transparent shadow-lg w-full h-full flex flex-col text-white overflow-hidden border-2 border-black">
-                          <div className="mb-2 w-full h-24 relative">
-                            <Image
-                              src={ev.imageUrl}
-                              alt={ev.title}
-                              fill
-                              className="object-cover rounded-md"
-                            />
-                          </div>
-                          <h3 className="text-sm font-bold mb-1">{ev.title}</h3>
-                          <p className="text-xs mb-1">
-                            <strong>Date:</strong> {ev.date}
-                          </p>
-                          <p className="text-xs mb-1">
-                            <strong>Location:</strong> {ev.location}
-                          </p>
-                          <div
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setModalEvent(ev);
-                            }}
-                          >
-                            {renderTruncatedDescription(ev.description, ev)}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  {section.events.length > 4 + visibleCount && (
-                    <div className="flex justify-center mt-4">
-                      <button
-                        className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition"
-                        onClick={() => setVisibleCount(visibleCount + 5)}
-                      >
-                        Load More
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-            </>
-          ) : (
-            // For non-first sections, render a 5-column grid.
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 justify-items-center">
-              {section.events.map((ev) => (
-                <div
-                  key={ev.id}
-                  className="default-card cursor-pointer w-64 h-[18rem] hover:scale-105 transition-transform duration-300"
-                  onClick={() => setModalEvent(ev)}
+      {/* Global Featured Event (Hero Component) */}
+      {featuredEvent && (
+        <div
+          className="main-card mx-auto w-full max-w-5xl cursor-pointer hover:scale-105 transition-transform duration-300 mb-12"
+          onClick={() => setModalEvent(featuredEvent)}
+        >
+          <div className="card-inner p-10 bg-black bg-opacity-60 rounded-lg shadow-2xl">
+            <div className="mb-6 w-full h-80 relative">
+              <Image
+                src={useThumbnail(featuredEvent.title, featuredEvent.imageUrl)}
+                alt={featuredEvent.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                quality={100}
+                className="object-cover rounded-md"
+              />
+            </div>
+            <h2 className="text-4xl font-bold mb-4">{featuredEvent.title}</h2>
+            <p className="mb-2">
+              <strong>Date:</strong> {featuredEvent.date}
+            </p>
+            <p className="mb-2">
+              <strong>Location:</strong> {featuredEvent.location}
+            </p>
+            <p className="mb-2 text-xs pr-5">
+              {getTruncatedText(featuredEvent.description)}
+            </p>
+            {/* If the featured event text is truncated, show a plus button in the corner */}
+            {featuredEvent.description.length > 100 && (
+              <div className="group absolute bottom-6 right-6 w-8 h-8 rounded-full bg-gradient-to-r from-black via-gray-800 to-gray-400 flex items-center justify-center transition-colors duration-300 hover:cursor-pointer hover:from-secondary hover:via-secondary hover:to-secondary">
+                <button
+                  className="text-white text-sm w-full h-full flex items-center justify-center group-hover:text-primary"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setModalEvent(featuredEvent);
+                  }}
                 >
-                  <div className="card-inner p-4 bg-transparent shadow-lg w-full h-full flex flex-col text-white overflow-hidden border-2 border-black">
-                    <div className="mb-2 w-full h-24 relative">
-                      <Image
-                        src={ev.imageUrl}
-                        alt={ev.title}
-                        fill
-                        className="object-cover rounded-md"
-                      />
-                    </div>
-                    <h3 className="text-sm font-bold mb-1">{ev.title}</h3>
-                    <p className="text-xs mb-1">
-                      <strong>Date:</strong> {ev.date}
-                    </p>
-                    <p className="text-xs mb-1">
-                      <strong>Location:</strong> {ev.location}
-                    </p>
-                    <div
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setModalEvent(ev);
-                      }}
-                    >
-                      {renderTruncatedDescription(ev.description, ev)}
-                    </div>
-                  </div>
-                </div>
+                  +
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Render Filtered Sections (grouped by theme) */}
+      {filteredSections.length === 0 ? (
+        <p className="text-center text-white">
+          No events found matching the selected filters.
+        </p>
+      ) : (
+        filteredSections.map((section) => (
+          <section key={section.term} className="p-20 mb-26">
+            <h2 className="text-3xl font-extrabold mb-4 uppercase tracking-wide">
+              {section.term}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 justify-items-center">
+              {section.events.slice(0, visibleCount).map((ev) => (
+                <EventCard
+                  key={ev.id}
+                  ev={ev}
+                  onClick={() => setModalEvent(ev)}
+                  setModalEvent={setModalEvent}
+                />
               ))}
             </div>
-          )}
-        </section>
-      ))}
+            {section.events.length > visibleCount && (
+              <div className="flex justify-center mt-4">
+                <button
+                  className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition"
+                  onClick={() => setVisibleCount(visibleCount + 5)}
+                >
+                  Load More
+                </button>
+              </div>
+            )}
+          </section>
+        ))
+      )}
+
+      {/* Global Font Update */}
+      <style jsx global>{`
+        body {
+          font-family: "Poppins", sans-serif;
+        }
+      `}</style>
 
       {/* Custom Border Styles via JSX */}
       <style jsx>{`
@@ -347,70 +489,6 @@ export default function ClientEvents({ sections }: { sections: Section[] }) {
           border: 2px solid transparent;
           border-image: linear-gradient(to right, #800080, #ff0000, #ffc0cb) 1;
         }
-
-        /* ================== Featured Card Styles ================== */
-        .featured-card {
-          position: relative;
-          border: 2px solid transparent;
-          background-clip: padding-box;
-        }
-        .featured-card::before,
-        .featured-card::after {
-          content: "•";
-          position: absolute;
-          width: 14px;
-          height: 14px;
-          font-size: 14px;
-          line-height: 12px;
-          text-align: center;
-          top: 5px;
-        }
-        .featured-card::before {
-          left: 5px;
-          color: #ffd700;
-          border: 2px solid #ffd700;
-        }
-        .featured-card::after {
-          right: 5px;
-          color: #ffd700;
-          border: 2px solid #ffd700;
-        }
-        .featured-card .card-inner {
-          position: relative;
-          border: 2px solid transparent;
-          background-clip: padding-box;
-          padding: 40px;
-        }
-        .featured-card .card-inner::before,
-        .featured-card .card-inner::after {
-          content: "•";
-          position: absolute;
-          width: 14px;
-          height: 14px;
-          font-size: 14px;
-          line-height: 12px;
-          text-align: center;
-          bottom: -2px;
-        }
-        .featured-card .card-inner::before {
-          left: -2px;
-          color: #ffd700;
-          border: 2px solid #ffd700;
-        }
-        .featured-card .card-inner::after {
-          right: -2px;
-          color: #ffd700;
-          border: 2px solid #ffd700;
-        }
-        .featured-card {
-          border: 2px solid transparent;
-          border-image: linear-gradient(to right, #ffd700, #ffc107, #ffb300) 1;
-        }
-        .featured-card .card-inner {
-          border: 2px solid transparent;
-          border-image: linear-gradient(to right, #ffd700, #ffc107, #ffb300) 1;
-        }
-
         /* ================== Default Card Styles (Black Borders) ================== */
         .default-card {
           position: relative;
