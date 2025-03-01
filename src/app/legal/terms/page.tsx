@@ -51,9 +51,8 @@ export default function TermsOfServicePage() {
         />
       </Head>
       {/* Wrap TOC and article in a container that ends before the footer */}
-      <div className="ml-7 relative pb-40">
+      <div className="ml-7 relative pb-20">
         {/* Shift header to the right on desktop */}
-
         <div className="flex flex-col md:flex-row">
           {/* Desktop TOC – sticky within the container */}
           <nav
@@ -95,13 +94,13 @@ export default function TermsOfServicePage() {
               </ul>
             </div>
           </nav>
-          {/* Mobile TOC – appears in normal flow */}
-          <nav className="md:hidden mb-8">
-            <div className="bg-white dark:bg-gray-900 p-4 rounded-lg shadow-xl">
-              <h2 className="text-xl font-bold mb-4 text-primary uppercase">
+          {/* Mobile TOC – fixed at bottom */}
+          <nav className="md:hidden">
+            <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 p-4 rounded-t-lg shadow-xl z-50">
+              <h2 className="text-xl font-bold mb-2 text-primary uppercase text-center">
                 Contents
               </h2>
-              <ul className="flex flex-wrap gap-2">
+              <ul className="flex justify-center gap-2">
                 {tocItems.map((item, idx) => (
                   <li key={item.id}>
                     <a
@@ -131,8 +130,8 @@ export default function TermsOfServicePage() {
           </nav>
           {/* Terms Content – shifted to the right */}
           <article className="mt-8 md:ml-10 md:w-3/4 pl-4 space-y-4">
-            <header className="mb-8 md:ml-0">
-              <h1 className="text-3xl md:text-4xl font-bold mb-2">
+            <header className="mb-4 md:ml-0">
+              <h1 className="text-3xl md:text-4xl font-bold mb-1">
                 Sunny Island Pepper Sauce Terms of Service
               </h1>
               <p className="text-sm md:text-base">

@@ -51,10 +51,9 @@ export default function PrivacyPolicyPage() {
         />
       </Head>
       {/* Wrap the TOC and article in a container that ends before the footer */}
-      <div className="ml-7 relative pb-40">
+      <div className="ml-7 relative pb-60">
         {/* Shift header to the right on desktop */}
-
-        <div className="flex flex-col  md:flex-row">
+        <div className="flex flex-col md:flex-row">
           {/* Desktop TOC – sticky within the parent container */}
           <nav
             className="hidden md:block sticky top-32 w-64 pr-6 border-r border-gray-300 max-h-[calc(100vh-120px)] overflow-y-auto"
@@ -95,13 +94,13 @@ export default function PrivacyPolicyPage() {
               </ul>
             </div>
           </nav>
-          {/* Mobile TOC – appears in flow */}
-          <nav className="md:hidden mb-8">
-            <div className="bg-white dark:bg-gray-900 p-4 rounded-lg shadow-xl">
-              <h2 className="text-xl font-bold mb-4 text-primary uppercase">
+          {/* Mobile TOC – fixed at bottom */}
+          <nav className="md:hidden">
+            <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 p-4 rounded-t-lg shadow-xl z-50">
+              <h2 className="text-xl font-bold mb-2 text-primary uppercase text-center">
                 Contents
               </h2>
-              <ul className="flex flex-wrap gap-2">
+              <ul className="flex justify-center gap-2">
                 {tocItems.map((item, idx) => (
                   <li key={item.id}>
                     <a

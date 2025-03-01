@@ -69,7 +69,7 @@ export default function NutritionSection() {
             src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/shop/PepperSauceBottleShopDisplay.webp" // placeholder
             alt="Nutrition Product Shot"
             fill
-            className="object-cover rounded-md shadow-md"
+            className="object-contain rounded-md shadow-md"
           />
         </div>
       </div>

@@ -77,10 +77,18 @@ export default function UseCaseSection() {
   let hexSize = "70px";
   let itemsPerPage = 9; // Mobile: 3 columns x 3 rows
   let columns = 3;
-  if (breakpoint === "tablet") {
-    hexSize = "112px";
-    itemsPerPage = 10; // e.g. 5 columns x 2 rows
-    columns = 5;
+  if (breakpoint === "mobile") {
+    // Increase hexagon container size by 1.2x for mobile.
+    hexSize = "125px";
+  } else if (breakpoint === "tablet") {
+    // For tablet view, use the same hexagon size as mobile portrait.
+    hexSize = "125px";
+    // Determine tablet orientation:
+    const isTabletLandscape =
+      typeof window !== "undefined" && window.innerWidth > window.innerHeight;
+    // For portrait: mobile base of 3 columns plus 1 extra; for landscape: 3 plus 2 extra.
+    columns = isTabletLandscape ? 5 : 4;
+    itemsPerPage = columns * 3; // 3 rows
   } else if (breakpoint === "desktop") {
     hexSize = "150px";
     itemsPerPage = 14; // e.g. 7 columns x 2 rows
@@ -117,12 +125,9 @@ export default function UseCaseSection() {
   };
 
   // Colors & gradients:
-  const hoverGradient = "linear-gradient(to right, #FFB300, #FFC107, #FFA000)"; // primary gradient on hover
-  // For pepperData items (scoville facts), use a green gradient.
+  const hoverGradient = "linear-gradient(to right, #FFB300, #FFC107, #FFA000)";
   const pepperBg = "linear-gradient(45deg, #32CD32, #008000)";
-  // For useCaseData items, use a blue gradient.
   const useCaseBg = "linear-gradient(45deg, #1D4ED8, #3B82F6)";
-  // Outline is always black.
   const outlineColor = "#000";
 
   return (
@@ -135,23 +140,37 @@ export default function UseCaseSection() {
           className={styles.main}
           style={
             {
-              "--s": hexSize, // hexagon width
+              "--s": hexSize, // hexagon container width
               "--m": "4px", // margin between hexagons
               "--f": `calc(${hexSize} * 1.732 + 16px - 1px)`,
             } as React.CSSProperties
           }
         >
-          <div className={styles.container}>
+          {/* Rotate the grid container 90° left for mobile only */}
+          <div
+            className={styles.container}
+            style={
+              breakpoint === "mobile"
+                ? { transform: "rotate(-90deg)" }
+                : undefined
+            }
+          >
             {rows.map((rowItems, rowIndex) => (
               <div
                 key={`row-${rowIndex}`}
                 className={`${styles.gridRow} ${
                   rowIndex % 2 === 0 ? styles.odd : styles.even
                 }`}
-                style={{ gridTemplateColumns: `repeat(${columns}, var(--s))` }}
+                style={{
+                  gridTemplateColumns: `repeat(${columns}, var(--s))`,
+                  // For desktop only, shift first row right and second row left.
+                  ...(breakpoint === "desktop" &&
+                    rowIndex === 0 && { transform: "translateX(10px)" }),
+                  ...(breakpoint === "desktop" &&
+                    rowIndex === 1 && { transform: "translateX(-10px)" }),
+                }}
               >
                 {rowItems.map((item) => {
-                  // Choose background based on the item type.
                   const contentBg =
                     item.type === "pepper" ? pepperBg : useCaseBg;
                   return (
@@ -164,7 +183,6 @@ export default function UseCaseSection() {
                       transition={{ duration: 0.3 }}
                       style={{ position: "relative" }}
                     >
-                      {/* Outline layer: always starts with black, transitions to the hover gradient */}
                       <motion.div
                         className={styles.outlineHexagon}
                         initial={{ scale: 1.15, background: outlineColor }}
@@ -181,7 +199,6 @@ export default function UseCaseSection() {
                           zIndex: 1,
                         }}
                       />
-                      {/* Main hexagon content */}
                       <motion.div
                         className={styles.hexagon}
                         variants={{
@@ -199,38 +216,74 @@ export default function UseCaseSection() {
                           zIndex: 2,
                         }}
                       >
-                        <AnimatePresence mode="wait">
-                          <motion.div
-                            key={item.id}
-                            className={styles.hexContent}
-                            variants={contentVariants}
-                            initial="initial"
-                            animate="animate"
-                            exit="exit"
-                            style={{
-                              position: "absolute",
-                              top: 0,
-                              left: 0,
-                              width: "100%",
-                              height: "100%",
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              padding: "4px",
-                              boxSizing: "border-box",
-                              textAlign: "center",
-                            }}
-                          >
-                            <div className={styles.icon}>{item.icon}</div>
-                            <h3 className="text-sm md:text-base font-bold">
-                              {item.title}
-                            </h3>
-                            <p className="text-[0.375rem] md:text-[0.4375rem]">
-                              {item.desc}
-                            </p>
-                          </motion.div>
-                        </AnimatePresence>
+                        <div
+                          style={{
+                            transform:
+                              breakpoint === "mobile"
+                                ? "rotate(90deg)"
+                                : undefined,
+                            transformOrigin:
+                              breakpoint === "mobile" ? "center" : undefined,
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                          }}
+                        >
+                          <AnimatePresence mode="wait">
+                            <motion.div
+                              key={item.id}
+                              className={styles.hexContent}
+                              variants={contentVariants}
+                              initial="initial"
+                              animate="animate"
+                              exit="exit"
+                              style={{
+                                transform:
+                                  breakpoint === "mobile"
+                                    ? "rotate(90deg)"
+                                    : undefined,
+                                transformOrigin:
+                                  breakpoint === "mobile"
+                                    ? "center"
+                                    : undefined,
+                                position: "absolute",
+                                top: 0,
+                                left: 0,
+                                width: "100%",
+                                height: "100%",
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                padding: "4px",
+                                boxSizing: "border-box",
+                                textAlign: "center",
+                              }}
+                            >
+                              <div className={styles.icon}>{item.icon}</div>
+                              <h3
+                                className={`font-bold ${
+                                  breakpoint === "mobile"
+                                    ? "text-xs leading-none"
+                                    : "text-sm md:text-base"
+                                }`}
+                              >
+                                {item.title}
+                              </h3>
+                              <p
+                                className={`${
+                                  breakpoint === "mobile"
+                                    ? "text-[0.25rem] leading-tight"
+                                    : "text-[0.375rem] md:text-[0.4375rem]"
+                                }`}
+                              >
+                                {item.desc}
+                              </p>
+                            </motion.div>
+                          </AnimatePresence>
+                        </div>
                       </motion.div>
                     </motion.div>
                   );
@@ -242,7 +295,7 @@ export default function UseCaseSection() {
         <div className="mt-6">
           <button
             onClick={handleShake}
-            className="px-6 py-3 bg-orange-500 hover:bg-orange-400 rounded uppercase font-bold tracking-wider"
+            className="mt-4 px-6 py-3 bg-orange-500 hover:bg-orange-400 rounded uppercase font-bold tracking-wider"
           >
             SHAKE
           </button>

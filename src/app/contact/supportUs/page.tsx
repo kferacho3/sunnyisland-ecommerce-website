@@ -60,10 +60,10 @@ export default function SupportUsPage() {
     <main className="pt-[100px] min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
       {/* Hero / Intro */}
       <section className="max-w-5xl mx-auto px-4 py-8 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold mb-4 uppercase tracking-widest">
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 uppercase tracking-widest">
           Support Us
         </h1>
-        <p className="text-sm md:text-base">
+        <p className="text-sm md:text-base mb-2">
           We appreciate your support in any shape or form! Explore the ways you
           can help Sunny Island Pepper Sauce continue to grow and impact the
           community.
@@ -80,19 +80,21 @@ export default function SupportUsPage() {
           >
             {slides.map((slide, idx) => {
               // Determine the gradient overlay style with explicit cast for mixBlendMode:
-              const overlayStyle: React.CSSProperties =
+              const overlayStyle =
                 slide.title === "Give Back"
                   ? {
                       background:
                         "linear-gradient(45deg, rgba(245,245,220,0.3), rgba(210,180,140,0.3), rgba(222,184,135,0.3))",
                       filter: "blur(8px)",
-                      mixBlendMode: "screen" as "screen",
+                      mixBlendMode:
+                        "screen" as React.CSSProperties["mixBlendMode"],
                     }
                   : {
                       background:
                         "linear-gradient(45deg, rgba(255,0,0,0.3), rgba(255,165,0,0.3), rgba(255,255,0,0.3))",
                       filter: "blur(8px)",
-                      mixBlendMode: "screen" as "screen",
+                      mixBlendMode:
+                        "screen" as React.CSSProperties["mixBlendMode"],
                     };
 
               return (
@@ -107,6 +109,10 @@ export default function SupportUsPage() {
                     style={{
                       clipPath:
                         "polygon(0 0, 100% 0, 100% 85%, 50% 100%, 0 85%)",
+                      // Increase container size by 1.05
+                      transform: "scale(1.05)",
+                      // Reduce spacing between title, subtitle, and content
+                      gap: "0.5rem",
                     }}
                   >
                     {/* Slide Image with Glowing Overlay */}
@@ -122,13 +128,13 @@ export default function SupportUsPage() {
                         style={overlayStyle}
                       />
                     </div>
-                    <h2 className="text-2xl font-bold mt-4 mb-2">
+                    <h2 className="text-2xl font-bold mt-1 mb-1 leading-tight">
                       {slide.title}
                     </h2>
-                    <h3 className="text-sm md:text-base font-semibold mb-4 text-indigo-400 uppercase tracking-wider">
+                    <h3 className="text-sm md:text-base font-semibold mb-1 text-indigo-400 uppercase tracking-wider leading-tight">
                       {slide.subtitle}
                     </h3>
-                    <p className="text-sm md:text-base max-w-md text-center leading-relaxed">
+                    <p className="text-xs md:text-sm max-w-md text-center leading-snug">
                       {slide.content}
                     </p>
                   </div>
@@ -171,7 +177,7 @@ export default function SupportUsPage() {
       {/* Additional Info / CTA */}
       <section className="max-w-5xl mx-auto px-4 py-8 text-center">
         <h2 className="text-2xl font-bold mb-2">Join Our Journey</h2>
-        <p className="text-sm md:text-base mb-4">
+        <p className="text-sm md:text-base mb-2">
           Whether you buy a bottle, share a post, or donate to a mental health
           cause, every act of support matters. Thank you for being part of the
           Sunny Island family!

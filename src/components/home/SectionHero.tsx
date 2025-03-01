@@ -22,7 +22,7 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
         loop
         playsInline
         className="absolute inset-0 w-full h-full object-cover opacity-70"
-        src="https://www.w3schools.com/html/mov_bbb.mp4" // Replace with your promotional video
+        src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/hero/SunnyIslandPepperSauceHero.mp4" // Replace with your promotional video
       />
 
       {/* Overlay for darkening or coloring the video */}
