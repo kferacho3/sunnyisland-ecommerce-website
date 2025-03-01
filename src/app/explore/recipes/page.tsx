@@ -679,5 +679,3 @@ const OriginalRecipesPlaceholder: React.FC = () => {
     </div>
   );
 };
-
-export { RecipesPage };
