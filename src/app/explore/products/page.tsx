@@ -320,37 +320,34 @@ function Scene({
       }
     } else {
       if (!perfSucks) {
-        {
-          // Fix for Euler rotation damping:
-          const targetRotation = new THREE.Vector3(
-            Math.PI / 2,
-            0,
-            state.clock.elapsedTime / 5 + state.pointer.x,
-          );
-          const currentRotation = new THREE.Vector3(
-            camera.rotation.x,
-            camera.rotation.y,
-            camera.rotation.z,
-          );
-          easing.damp3(currentRotation, targetRotation, 0.2, delta);
-          camera.rotation.set(
-            currentRotation.x,
-            currentRotation.y,
-            currentRotation.z,
-          );
-        }
-        easing.damp3(
-          camera.position,
-          [
-            Math.sin(state.pointer.x / 4) * 9,
-            1.25 + state.pointer.y,
-            Math.cos(state.pointer.x / 4) * 9,
-          ],
-          0.5,
-          delta,
+        const targetRotation = new THREE.Vector3(
+          Math.PI / 2,
+          0,
+          state.clock.elapsedTime / 5 + state.pointer.x,
         );
-        camera.lookAt(0, 0, 0);
+        const currentRotation = new THREE.Vector3(
+          camera.rotation.x,
+          camera.rotation.y,
+          camera.rotation.z,
+        );
+        easing.damp3(currentRotation, targetRotation, 0.2, delta);
+        camera.rotation.set(
+          currentRotation.x,
+          currentRotation.y,
+          currentRotation.z,
+        );
       }
+      easing.damp3(
+        camera.position,
+        [
+          Math.sin(state.pointer.x / 4) * 9,
+          1.25 + state.pointer.y,
+          Math.cos(state.pointer.x / 4) * 9,
+        ],
+        0.5,
+        delta,
+      );
+      camera.lookAt(0, 0, 0);
     }
   });
 
@@ -374,7 +371,10 @@ function Scene({
       scale: [0, 0, 0],
       position: [isMobile ? -0.82 + 2 : -0.82, -1.25, 0],
     },
-    to: { scale: [1, 1, 1], position: [isMobile ? -0.82 + 2 : -0.82, 0.75, 0] },
+    to: {
+      scale: [1, 1, 1],
+      position: [isMobile ? -0.82 + 2 : -0.82, 0.75, 0],
+    },
     config: { mass: 1, tension: 170, friction: 26 },
   });
   const sauceSpring = useSpring<{
@@ -391,7 +391,6 @@ function Scene({
       <ambientLight intensity={1.5} />
       <group rotation={[0, -0.725, 0]} ref={modelsGroupRef}>
         <StaticBody>
-          {/* Wrap the animated SunnyIslandLogo in a group that applies a mobile-only position change */}
           <group position={isMobile ? [-1.6, 0, 0] : [0, 0, 0]}>
             <AnimatedGroup
               scale={logoSpring.scale.to(
@@ -415,7 +414,6 @@ function Scene({
               (x, y, z) => [x, y, z] as [number, number, number],
             )}
           >
-            {/* Removed nested Suspense for PepperSauce so the outer Suspense ensures both models are loaded */}
             <PepperSauce />
             {flameOn && <Flame color="red" position={[0.5, 1.5, 0]} />}
           </AnimatedGroup>
@@ -472,6 +470,7 @@ export default function MainPage() {
   );
   const [pepperCount, setPepperCount] = useState(80);
   const [bgIndex, setBgIndex] = useState(1);
+  const [preloaderDone, setPreloaderDone] = useState(false);
 
   const isDefaultMode = !isIdle && !specialSpinMode && !isInspectMode;
 
@@ -589,7 +588,7 @@ export default function MainPage() {
           )}
           <PerformanceMonitor onDecline={() => degrade(true)} />
           <Physics>
-            <Suspense fallback={<Preloader onLoaded={() => {}} />}>
+            <Suspense fallback={null}>
               <Scene
                 isIdle={isIdle}
                 specialSpinMode={specialSpinMode}
@@ -618,6 +617,10 @@ export default function MainPage() {
               height={300}
             />
           </EffectComposer>
+          {/* Render the Preloader inside the Canvas so its useProgress hook works */}
+          {!preloaderDone && (
+            <Preloader onLoaded={() => setPreloaderDone(true)} />
+          )}
         </Canvas>
       </div>
       {comingSoonProduct && (
