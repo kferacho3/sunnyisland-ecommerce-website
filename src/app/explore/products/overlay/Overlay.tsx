@@ -2,6 +2,7 @@ import { Product } from "@/data/productsData";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { FaPepperHot, FaSearch } from "react-icons/fa";
+import { GiBellPepper } from "react-icons/gi";
 import { IoIosFlame } from "react-icons/io";
 
 // A simple helper to parse product names.
@@ -65,7 +66,10 @@ const product3DButtonVariants: {
       "bg-gradient-to-r from-yellow-400 via-orange-400 to-yellow-500 border-2 border-orange-500",
     background: "bg-gradient-to-r from-yellow-500 to-orange-400",
   },
-  4: { button: "bg-black border-2 border-gray-800", background: "bg-gray-700" },
+  4: {
+    button: "bg-black border-2 border-gray-800",
+    background: "bg-gray-700",
+  },
   5: {
     button:
       "bg-gradient-to-r from-green-700 via-green-500 to-green-300 border-2 border-green-700",
@@ -86,16 +90,15 @@ function ThreeDButton({
   backgroundClasses,
   ...props
 }: ThreeDButtonProps) {
-  // Destructure onDrag props to omit them, which fixes the type errors.
   const { onDrag, onDragStart, onDragEnd, ...restProps } = props;
   return (
     <div className="relative inline-block group">
-      {/* Background layer simulating the 3D effect */}
+      {/* Background layer: mobile uses translate-y-1; sm: translate-y-3 */}
       <motion.div
         className={`
           absolute inset-0 rounded-lg
           ${backgroundClasses}
-          shadow-[0_0_0_2px] translate-y-3 
+          shadow-[0_0_0_2px] translate-y-1 sm:translate-y-3
           transition-transform duration-150 ease-out
           group-active:shadow-[0_0_0_2px]
         `}
@@ -140,94 +143,164 @@ export function Overlay({
 
   return (
     <div className="relative z-50 pointer-events-auto">
-      {/* Main overlay buttons */}
-      <div className="fixed bottom-20 left-1/2 -translate-x-1/2 flex flex-wrap justify-center gap-4 transition-all duration-300">
-        <ThreeDButton
-          onClick={() => togglePanel("scoville")}
-          buttonClasses="bg-white px-2 py-2 w-auto"
-          backgroundClasses="bg-gray-300"
-        >
-          <FaPepperHot className="text-red-500 w-5 h-5 sm:w-6 sm:h-6" />
-        </ThreeDButton>
-        <ThreeDButton
-          buttonClasses="bg-white py-2 px-4 whitespace-nowrap w-auto"
-          backgroundClasses="bg-gray-300"
-        >
-          <span
-            className="inline-flex items-center font-bold italic text-black text-sm sm:text-base whitespace-nowrap"
-            style={{ textShadow: "0 0 0.2px black" }}
+      {/* MOBILE VIEW */}
+      <div className="sm:hidden">
+        {/* Main overlay buttons – all 5 in one fixed row (scaled to 75%) */}
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 flex flex-nowrap justify-center gap-4 transition-all duration-300 scale-75">
+          <ThreeDButton
+            onClick={toggleFlame}
+            buttonClasses="bg-white px-2 py-2 w-auto"
+            backgroundClasses="bg-gray-300"
           >
-            INSPECT{" "}
-            <FaSearch className="text-black w-5 h-5 sm:w-6 sm:h-6 ml-2" />
-          </span>
-        </ThreeDButton>
-        <ThreeDButton
-          onClick={() => togglePanel("info")}
-          buttonClasses="bg-white px-4 py-2 w-auto"
-          backgroundClasses="bg-gray-300"
-        >
-          <span
-            className="font-bold italic text-black text-sm sm:text-base whitespace-nowrap"
-            style={{ textShadow: "0 0 0.2px black" }}
+            <IoIosFlame className="text-orange-500 w-5 h-5" />
+          </ThreeDButton>
+          <ThreeDButton
+            onClick={() => togglePanel("scoville")}
+            buttonClasses="bg-white px-2 py-2 w-auto"
+            backgroundClasses="bg-gray-300"
           >
-            INFO
-          </span>
-        </ThreeDButton>
-      </div>
-
-      {/* Model selection buttons */}
-      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 flex flex-wrap justify-center gap-2 transition-all duration-300">
-        {productsData.map((product) => {
-          const { shortName } = parseProductName(product.name);
-          const variants = product3DButtonVariants[product.id];
-          return (
-            <ThreeDButton
-              key={product.id}
-              onClick={() => onSelectProduct(product.id)}
-              buttonClasses={variants.button}
-              backgroundClasses={variants.background}
+            <FaPepperHot className="text-red-500 w-5 h-5" />
+          </ThreeDButton>
+          <ThreeDButton
+            buttonClasses="bg-white py-2 px-4 whitespace-nowrap w-auto"
+            backgroundClasses="bg-gray-300"
+          >
+            <span
+              className="inline-flex items-center font-bold italic text-black text-sm whitespace-nowrap"
+              style={{ textShadow: "0 0 0.2px black" }}
             >
-              <span
-                className="font-bold italic text-sm"
-                style={{ textShadow: "0 1px 1px black" }}
-              >
-                {shortName}
-              </span>
-            </ThreeDButton>
-          );
-        })}
-      </div>
-
-      {/* Additional toggle buttons */}
-      <div className="fixed bottom-5 left-5 flex flex-col space-y-4 transition-all duration-300">
-        <ThreeDButton
-          onClick={toggleFlame}
-          buttonClasses="bg-white"
-          backgroundClasses="bg-gray-300"
-        >
-          <IoIosFlame className="text-orange-500 w-5 h-5 sm:w-6 sm:h-6" />
-        </ThreeDButton>
-      </div>
-      <div className="fixed bottom-5 right-5 flex flex-col space-y-4 transition-all duration-300">
-        <ThreeDButton
-          onClick={togglePeppers}
-          buttonClasses="bg-white"
-          backgroundClasses="bg-gray-300"
-        >
-          <span
-            className="font-bold italic text-sm sm:text-base"
-            style={{
-              background: "linear-gradient(45deg, red, orange, yellow)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-            }}
+              INSPECT <FaSearch className="text-black w-5 h-5 ml-2" />
+            </span>
+          </ThreeDButton>
+          <ThreeDButton
+            onClick={() => togglePanel("info")}
+            buttonClasses="bg-white px-4 py-2 w-auto"
+            backgroundClasses="bg-gray-300"
           >
-            <FaPepperHot className="w-5 h-5 sm:w-6 sm:h-6" />
-          </span>
-        </ThreeDButton>
+            <span
+              className="font-bold italic text-black text-sm whitespace-nowrap"
+              style={{ textShadow: "0 0 0.2px black" }}
+            >
+              INFO
+            </span>
+          </ThreeDButton>
+          <ThreeDButton
+            onClick={togglePeppers}
+            buttonClasses="bg-white px-2 py-2 w-auto"
+            backgroundClasses="bg-gray-300"
+          >
+            <GiBellPepper className="text-black w-5 h-5" />
+          </ThreeDButton>
+        </div>
+
+        {/* Mobile Model Selection Buttons – product name rendered outside the button */}
+        <div className="fixed bottom-3 left-1/2 -translate-x-1/2 flex flex-nowrap justify-center gap-2 transition-all duration-300 scale-[1.35]">
+          {productsData.map((product) => {
+            const { shortName } = parseProductName(product.name);
+            const variants = product3DButtonVariants[product.id];
+            return (
+              <div key={product.id} className="flex flex-col items-center">
+                <ThreeDButton
+                  onClick={() => onSelectProduct(product.id)}
+                  buttonClasses={variants.button}
+                  backgroundClasses={variants.background}
+                >
+                  <FaPepperHot className="w-7 h-5" />
+                </ThreeDButton>
+                <span
+                  className="mt-2 text-[8px] font-bold italic leading-none text-center"
+                  style={{ textShadow: "0 1px 1px black" }}
+                >
+                  {shortName}
+                </span>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* Info popup (right) */}
+      {/* DESKTOP / TABLET VIEW */}
+      <div className="hidden sm:block">
+        {/* Main overlay buttons – 3 buttons in one row */}
+        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 flex flex-nowrap justify-center gap-4 transition-all duration-300">
+          <ThreeDButton
+            onClick={() => togglePanel("scoville")}
+            buttonClasses="bg-white px-2 py-2 w-auto"
+            backgroundClasses="bg-gray-300"
+          >
+            <FaPepperHot className="text-red-500 w-6 h-6" />
+          </ThreeDButton>
+          <ThreeDButton
+            buttonClasses="bg-white py-2 px-4 whitespace-nowrap w-auto"
+            backgroundClasses="bg-gray-300"
+          >
+            <span
+              className="inline-flex items-center font-bold italic text-black text-base whitespace-nowrap"
+              style={{ textShadow: "0 0 0.2px black" }}
+            >
+              INSPECT <FaSearch className="text-black w-6 h-6 ml-2" />
+            </span>
+          </ThreeDButton>
+          <ThreeDButton
+            onClick={() => togglePanel("info")}
+            buttonClasses="bg-white px-4 py-2 w-auto"
+            backgroundClasses="bg-gray-300"
+          >
+            <span
+              className="font-bold italic text-black text-base whitespace-nowrap"
+              style={{ textShadow: "0 0 0.2px black" }}
+            >
+              INFO
+            </span>
+          </ThreeDButton>
+        </div>
+
+        {/* Additional toggle buttons */}
+        <div className="fixed bottom-5 left-5 flex flex-col space-y-4 transition-all duration-300">
+          <ThreeDButton
+            onClick={toggleFlame}
+            buttonClasses="bg-white"
+            backgroundClasses="bg-gray-300"
+          >
+            <IoIosFlame className="text-orange-500 w-6 h-6" />
+          </ThreeDButton>
+        </div>
+        <div className="fixed bottom-5 right-5 flex flex-col space-y-4 transition-all duration-300">
+          <ThreeDButton
+            onClick={togglePeppers}
+            buttonClasses="bg-white"
+            backgroundClasses="bg-gray-300"
+          >
+            <GiBellPepper className="text-black w-6 h-6" />
+          </ThreeDButton>
+        </div>
+
+        {/* Desktop Model Selection Buttons – product name rendered inside the button */}
+        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 flex flex-nowrap items-center justify-center gap-2 transition-all duration-300 h-auto">
+          {productsData.map((product) => {
+            const { shortName } = parseProductName(product.name);
+            const variants = product3DButtonVariants[product.id];
+            return (
+              <div key={product.id} className="flex-shrink-0">
+                <ThreeDButton
+                  onClick={() => onSelectProduct(product.id)}
+                  buttonClasses={variants.button}
+                  backgroundClasses={variants.background}
+                >
+                  <span
+                    className="font-bold italic text-sm"
+                    style={{ textShadow: "0 1px 1px black" }}
+                  >
+                    {shortName}
+                  </span>
+                </ThreeDButton>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Info popup (common to both views) */}
       {activePanel === "info" && (
         <motion.div
           className="fixed top-1/2 right-4 sm:right-10 bg-white p-4 sm:p-6 rounded-lg shadow-lg max-w-xs transition-all duration-300 z-50"
@@ -284,7 +357,7 @@ export function Overlay({
         </motion.div>
       )}
 
-      {/* Scoville popup (left) */}
+      {/* Scoville popup (common to both views) */}
       {activePanel === "scoville" && (
         <motion.div
           className="fixed top-1/2 left-4 sm:left-10 bg-white p-4 sm:p-6 rounded-lg shadow-lg max-w-xs transition-all duration-300 z-50"

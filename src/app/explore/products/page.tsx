@@ -391,16 +391,19 @@ function Scene({
       <ambientLight intensity={1.5} />
       <group rotation={[0, -0.725, 0]} ref={modelsGroupRef}>
         <StaticBody>
-          <AnimatedGroup
-            scale={logoSpring.scale.to(
-              (x, y, z) => [x, y, z] as [number, number, number],
-            )}
-            position={logoSpring.position.to(
-              (x, y, z) => [x, y, z] as [number, number, number],
-            )}
-          >
-            <SunnyIslandLogo />
-          </AnimatedGroup>
+          {/* Wrap the animated SunnyIslandLogo in a group that applies a mobile-only position change */}
+          <group position={isMobile ? [-1.6, 0, 0] : [0, 0, 0]}>
+            <AnimatedGroup
+              scale={logoSpring.scale.to(
+                (x, y, z) => [x, y, z] as [number, number, number],
+              )}
+              position={logoSpring.position.to(
+                (x, y, z) => [x, y, z] as [number, number, number],
+              )}
+            >
+              <SunnyIslandLogo />
+            </AnimatedGroup>
+          </group>
         </StaticBody>
         <StaticBody>
           <AnimatedGroup
@@ -412,9 +415,8 @@ function Scene({
               (x, y, z) => [x, y, z] as [number, number, number],
             )}
           >
-            <Suspense fallback={<Preloader onLoaded={() => {}} />}>
-              <PepperSauce />
-            </Suspense>
+            {/* Removed nested Suspense for PepperSauce so the outer Suspense ensures both models are loaded */}
+            <PepperSauce />
             {flameOn && <Flame color="red" position={[0.5, 1.5, 0]} />}
           </AnimatedGroup>
         </StaticBody>

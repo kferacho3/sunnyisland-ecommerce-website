@@ -50,9 +50,8 @@ export default function TermsOfServicePage() {
           content="Read the Sunny Island Pepper Sauce Terms of Service to learn the rules governing your use of our website."
         />
       </Head>
-      {/* Wrap TOC and article in a container that ends before the footer */}
-      <div className="ml-7 relative pb-20">
-        {/* Shift header to the right on desktop */}
+      {/* Outer container with increased top padding */}
+      <div className="ml-7 relative pt-20 pb-20 md:pb-40">
         <div className="flex flex-col md:flex-row">
           {/* Desktop TOC – sticky within the container */}
           <nav
@@ -94,13 +93,16 @@ export default function TermsOfServicePage() {
               </ul>
             </div>
           </nav>
-          {/* Mobile TOC – fixed at bottom */}
+          {/* Mobile TOC – fixed at bottom, 15% of viewport height with horizontal scrolling */}
           <nav className="md:hidden">
-            <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 p-4 rounded-t-lg shadow-xl z-50">
+            <div
+              className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 p-4 rounded-t-lg shadow-xl z-50 overflow-x-auto"
+              style={{ height: "15vh" }}
+            >
               <h2 className="text-xl font-bold mb-2 text-primary uppercase text-center">
                 Contents
               </h2>
-              <ul className="flex justify-center gap-2">
+              <ul className="flex gap-2 whitespace-nowrap">
                 {tocItems.map((item, idx) => (
                   <li key={item.id}>
                     <a
@@ -129,7 +131,7 @@ export default function TermsOfServicePage() {
             </div>
           </nav>
           {/* Terms Content – shifted to the right */}
-          <article className="mt-8 md:ml-10 md:w-3/4 pl-4 space-y-4">
+          <article className="mt-8 md:ml-10 md:w-3/4 pl-4 space-y-4 p-10 md:p-20">
             <header className="mb-4 md:ml-0">
               <h1 className="text-3xl md:text-4xl font-bold mb-1">
                 Sunny Island Pepper Sauce Terms of Service
