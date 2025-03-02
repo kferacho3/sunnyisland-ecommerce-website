@@ -9,6 +9,7 @@ import {
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { FiArrowLeft, FiArrowRight, FiRefreshCw } from "react-icons/fi";
 
 /* ---------------------------------------------------------------------------
    Disable no-unused-vars for helper functions (they’re used internally)
@@ -326,7 +327,7 @@ function WidgetCard({ widget }: WidgetCardProps) {
           }}
         >
           <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-            <span className="text-white font-bold text-xl px-2">
+            <span className="uppercase whitespace-normal break-words text-white font-bold text-xl px-2 transition-colors hover:text-red-500 hover:[text-shadow:2px_2px_4px_black,_-2px_-2px_4px_white]">
               {widget.title}
             </span>
           </div>
@@ -482,23 +483,26 @@ export default function SectionExploreGrid() {
         {secondaryPage > 0 ? (
           <button
             onClick={handlePrevPage}
-            className="px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition"
+            className="group flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition"
           >
-            ← Previous Section
+            <FiArrowLeft className="transition-transform duration-300 group-hover:-translate-x-2" />
+            <span>Previous Section</span>
           </button>
         ) : (
           <button
             onClick={handleRefresh}
-            className="px-4 py-2 bg-primary text-white rounded hover:bg-primary transition"
+            className="group flex items-center gap-2 px-4 py-2 bg-primary text-white rounded hover:bg-primary transition"
           >
-            Refresh Dashboard
+            <FiRefreshCw className="transition-transform duration-300 group-hover:rotate-90" />
+            <span>Refresh Dashboard</span>
           </button>
         )}
         <button
           onClick={handleNextPage}
-          className="px-4 py-2 bg-secondary text-white rounded hover: opacity-80 transition"
+          className="group flex items-center gap-2 px-4 py-2 bg-secondary text-white rounded hover:bg-secondary transition"
         >
-          Next Section →
+          <span>Next Section</span>
+          <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-2" />
         </button>
       </div>
     </section>

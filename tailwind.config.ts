@@ -5,12 +5,13 @@ module.exports = {
     extend: {
       colors: {
         primary: {
-          // primary: yellow-orange gradient (you can adjust the shades)
-          DEFAULT: "#FFB300", // base gold-ish yellow/orange
+          DEFAULT: "#FFB300",
           light: "#FFC107",
           dark: "#FFA000",
         },
-        secondary: "#DA1A35", // your secondary color
+        secondary: {
+          DEFAULT: "#DA1A35",
+        },
       },
       backgroundImage: {
         "primary-gradient":

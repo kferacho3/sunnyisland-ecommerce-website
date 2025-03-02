@@ -4200,7 +4200,7 @@ export const recipes: Recipe[] = [
       "A savory one-pot dish typical of Trinidad, featuring tender beef, rice, pigeon peas, and caramelized flavors.",
     imageUrl: "https://www.epicurious.com/photos/trinidad-beef-palau.jpg",
     link: "https://www.example.com/trinidad-beef-palau",
-    country: "Trinidad and Tobago",
+    country: "Trinidad & Tobago",
     cuisine: "Caribbean",
     ingredients: [
       "2 tablespoons vegetable oil",
@@ -4232,7 +4232,7 @@ export const recipes: Recipe[] = [
       "A beloved Trinidadian one-pot meal featuring chicken, rice, pigeon peas, and aromatic spices.",
     imageUrl: "https://www.epicurious.com/photos/trinidad-chicken-palau.jpg",
     link: "https://www.example.com/trinidad-chicken-palau",
-    country: "Trinidad and Tobago",
+    country: "Trinidad & Tobago",
     cuisine: "Caribbean",
     ingredients: [
       "2 tablespoons vegetable oil",
@@ -4327,7 +4327,7 @@ export const recipes: Recipe[] = [
     imageUrl:
       "https://www.epicurious.com/photos/trinidad-stewed-pigeon-peas.jpg",
     link: "https://www.example.com/trinidad-stewed-pigeon-peas",
-    country: "Trinidad and Tobago",
+    country: "Trinidad & Tobago",
     cuisine: "Caribbean",
     ingredients: [
       "2 tablespoons vegetable oil",
@@ -4357,7 +4357,7 @@ export const recipes: Recipe[] = [
       "A hearty and comforting soup from Trinidad made with fresh corn, split peas, and a mix of vegetables, often enjoyed as a street food or festive dish.",
     imageUrl: "https://www.epicurious.com/photos/trinidadian-corn-soup.jpg",
     link: "https://www.example.com/trinidadian-corn-soup",
-    country: "Trinidad and Tobago",
+    country: "Trinidad & Tobago",
     cuisine: "Caribbean",
     ingredients: [
       "1 cup yellow split peas, rinsed",

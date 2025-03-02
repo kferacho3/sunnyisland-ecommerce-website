@@ -7,7 +7,13 @@ import { AnimatePresence, motion } from "framer-motion";
 import Head from "next/head";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { FiHeart, FiPlus, FiStar } from "react-icons/fi";
+import {
+  FiArrowRight,
+  FiHeart,
+  FiPlus,
+  FiRefreshCw,
+  FiStar,
+} from "react-icons/fi";
 import {
   GiCheeseWedge,
   GiChiliPepper,
@@ -16,9 +22,10 @@ import {
   GiHerbsBundle,
   GiMeat,
   GiOni,
+  GiStabbedNote,
   GiTomato,
 } from "react-icons/gi";
-
+import { PiIslandFill } from "react-icons/pi";
 // ─────────────────────────────────────────────
 // Type Definitions
 // ─────────────────────────────────────────────
@@ -102,7 +109,6 @@ function getIngredientIcon(ingredient: string): React.ReactNode {
 // ─────────────────────────────────────────────
 
 function getAWSImageUrl(recipeId: number) {
-  // e.g., for recipe ID 50: "RecipeId50.webp"
   return `https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/recipes/RecipeId${recipeId}.webp`;
 }
 
@@ -132,7 +138,7 @@ const RecipesPage = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // For pagination
-  const RECIPES_PER_PAGE = 20; // 20 at a time (including the featured recipe)
+  const RECIPES_PER_PAGE = 20;
   const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
   const [visibleCount, setVisibleCount] = useState(RECIPES_PER_PAGE);
 
@@ -151,7 +157,6 @@ const RecipesPage = () => {
       ...r,
       rating: 0.0,
     }));
-    // Shuffle the recipes so they appear in random order
     const shuffled = shuffleArray(establishedRecipes);
     setAllRecipes(shuffled);
   }, []);
@@ -177,14 +182,10 @@ const RecipesPage = () => {
 
   // Re-randomize the recipes
   const refreshRecipes = () => {
-    setAllRecipes((prev) => {
-      const shuffled = shuffleArray(prev);
-      return shuffled;
-    });
+    setAllRecipes((prev) => shuffleArray(prev));
     setVisibleCount(RECIPES_PER_PAGE);
   };
 
-  // We only display up to 'visibleCount' recipes
   const visibleRecipes = allRecipes.slice(0, visibleCount);
 
   return (
@@ -196,60 +197,77 @@ const RecipesPage = () => {
           content="Spice up any recipe with Sunny Island Pepper Sauce. Explore our established recipes and submit your own!"
         />
       </Head>
-      <main className="min-h-screen mt-20 t-20 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-4 sm:p-8">
+      <main className="min-h-screen mt-20 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 p-4 sm:p-8">
         {/* Header */}
         <header className="mt-10 mb-6">
           <h1 className="text-3xl md:text-4xl font-bold text-center">
             Spice up any recipe below with{" "}
-            <span className="text-pink-600">Sunny Island Pepper Sauce</span>
+            <span className="text-secondary">Sunny Island Pepper Sauce</span>
           </h1>
         </header>
-        {/* Tabs */}
+
+        <svg width="0" height="0" className="absolute">
+          <defs>
+            <linearGradient
+              id="established-gradient"
+              x1="0%"
+              y1="0%"
+              x2="0%"
+              y2="100%"
+            >
+              <stop offset="0%" stopColor="#FFB300" />
+              <stop offset="50%" stopColor="#FFC107" />
+              <stop offset="100%" stopColor="#FFA000" />
+            </linearGradient>
+            <linearGradient
+              id="original-gradient"
+              x1="0%"
+              y1="0%"
+              x2="0%"
+              y2="100%"
+            >
+              <stop offset="0%" stopColor="#006400" />
+              <stop offset="80%" stopColor="#8B4513" />
+              <stop offset="100%" stopColor="#FFB300" />
+            </linearGradient>
+          </defs>
+        </svg>
+
         <div className="flex justify-center mb-6 space-x-4">
           <button
             onClick={() => setActiveTab("established")}
-            className={`px-4 py-2 rounded ${
-              activeTab === "established"
-                ? "bg-pink-600 text-white"
-                : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-            }`}
+            className="group px-4 py-2 rounded flex items-center gap-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-secondary hover:text-white transition-colors duration-300"
           >
-            Established Recipes
+            <GiStabbedNote className="established-icon" />
+            <span>Established Recipes</span>
           </button>
           <button
             onClick={() => setActiveTab("original")}
-            className={`px-4 py-2 rounded ${
-              activeTab === "original"
-                ? "bg-pink-600 text-white"
-                : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-            }`}
+            className="group px-4 py-2 rounded flex items-center gap-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-primary hover:text-white transition-colors duration-300"
           >
-            Sunny Island Original Recipes
+            <PiIslandFill className="original-icon" />
+            <span>Sunny Island Original Recipes</span>
           </button>
         </div>
+
+        <style jsx>{`
+          :global(.established-icon),
+          :global(.original-icon) {
+            transition: fill 0.3s;
+            fill: currentColor;
+          }
+          :global(.group:hover .established-icon) {
+            fill: url(#established-gradient);
+          }
+          :global(.group:hover .original-icon) {
+            fill: url(#original-gradient);
+          }
+        `}</style>
 
         {/* Main Content */}
         {activeTab === "established" ? (
           allRecipes.length > 0 && (
             <>
-              {/* Buttons for "Refresh" and "Load More" */}
-              <div className="flex justify-center mb-6 gap-4">
-                <button
-                  onClick={refreshRecipes}
-                  className="px-4 py-2 bg-blue-600 text-white rounded"
-                >
-                  Refresh (Re-Randomize)
-                </button>
-                {visibleCount < allRecipes.length && (
-                  <button
-                    onClick={loadMoreRecipes}
-                    className="px-4 py-2 bg-pink-600 text-white rounded"
-                  >
-                    Load More
-                  </button>
-                )}
-              </div>
-
               <div className="space-y-6">
                 {visibleRecipes.length > 0 && (
                   <FeaturedLayout
@@ -262,12 +280,30 @@ const RecipesPage = () => {
                   />
                 )}
               </div>
+              {/* Moved Pagination/Refresh Buttons Below the Horizontal Cards */}
+              <div className="flex justify-center mt-6 gap-4">
+                <button
+                  onClick={refreshRecipes}
+                  className="group flex items-center gap-2 px-4 py-2 bg-primary text-white rounded transition-all duration-300 hover:opacity-90"
+                >
+                  <FiRefreshCw className="transition-transform duration-300 group-hover:rotate-90" />
+                  <span>Refresh</span>
+                </button>
+                {visibleCount < allRecipes.length && (
+                  <button
+                    onClick={loadMoreRecipes}
+                    className="group flex items-center gap-2 px-4 py-2 bg-secondary text-white rounded transition-all duration-300 hover:opacity-90"
+                  >
+                    <span>Load More</span>
+                    <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-2" />
+                  </button>
+                )}
+              </div>
             </>
           )
         ) : (
           <OriginalRecipesPlaceholder />
         )}
-
         <AnimatePresence mode="wait">
           {selectedRecipe && (
             <RecipeModal
@@ -408,7 +444,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
   onOpenModal,
 }) => {
   return (
-    <div className="relative bg-white dark:bg-gray-800 rounded shadow overflow-hidden flex flex-col">
+    <div className="relative bg-white dark:bg-gray-800 rounded shadow overflow-hidden flex flex-col h-70">
       <div className="relative h-48">
         <Image
           src={getAWSImageUrl(recipe.id)}
@@ -418,7 +454,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
         />
       </div>
       <div className="p-4 flex-grow flex flex-col">
-        <h3 className="text-lg font-bold mb-1">{recipe.title}</h3>
+        <h3 className="text-md font-bold mb-1 leading-tight">{recipe.title}</h3>
         <div className="flex items-center mb-2">
           <span className="text-xl font-semibold">
             {recipe.rating.toFixed(1)}

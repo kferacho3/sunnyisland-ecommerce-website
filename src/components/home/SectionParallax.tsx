@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import { useRef } from "react";
 import { FiArrowRight } from "react-icons/fi";
+import { GiHeartBottle } from "react-icons/gi";
 
 export default function SectionParallax() {
   const containerRef = useRef(null);
@@ -14,13 +15,13 @@ export default function SectionParallax() {
     offset: ["start end", "end start"],
   });
 
-  // Parallax effect values
-  const translateYImage2 = useTransform(scrollYProgress, [0, 1], [0, 100]);
-  const translateYImage3 = useTransform(scrollYProgress, [0, 1], [-500, 0]);
+  // Adjusted parallax effect values for a smoother scroll
+  const translateYImage2 = useTransform(scrollYProgress, [0, 1], [0, 50]);
+  const translateYImage3 = useTransform(scrollYProgress, [0, 1], [0, -650]);
 
-  // Header text motion
-  const translateYHeader = useTransform(scrollYProgress, [0, 1], [-200, 0]);
-  const scaleHeader = useTransform(scrollYProgress, [0, 1], [1, 0.95]);
+  // Header text motion (reduced range for smoother transition)
+  const translateYHeader = useTransform(scrollYProgress, [0, 1], [-100, 0]);
+  const scaleHeader = useTransform(scrollYProgress, [0, 1], [1, 0.98]);
 
   return (
     <section
@@ -53,7 +54,6 @@ export default function SectionParallax() {
       {/* Sun Animation Styles */}
       <style jsx>{`
         .sun {
-          //position: absolute;
           margin-left: 7%;
           top: 1%;
           animation: rotate 4s linear infinite;
@@ -171,13 +171,11 @@ export default function SectionParallax() {
         />
 
         {/* Parallax Image 3 with Rotating Sun Rays */}
-
         <motion.div
           style={{
             filter: "drop-shadow(0 0 20px #3490dc)",
             position: "absolute",
             y: translateYImage3,
-
             zIndex: 1,
           }}
         >
@@ -189,8 +187,8 @@ export default function SectionParallax() {
               style={{
                 filter: "drop-shadow(0 0 20px #3490dc)",
                 position: "absolute",
-                top: "127.5px", // reduced top position
-                transform: "scale(4.5)", // quadruple the size
+                top: "127.5px",
+                transform: "scale(4.5)",
               }}
             />
             <div className="center"></div>
@@ -225,16 +223,19 @@ export default function SectionParallax() {
           />
         </motion.div>
       </div>
-      {/* Buttons container */}
+
+      {/* Buttons Container */}
       <div className="relative z-20 mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
         <Link href="/explore/products">
-          <button className="px-6 py-3 bg-primary text-white font-bold rounded transition-all duration-500 hover:opacity-90">
+          <button className="group flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[#FFB300] via-[#FFC107] to-[#FFA000] text-black font-bold rounded-lg shadow-lg border border-transparent transition-all duration-300 transform hover:scale-105 hover:border-white">
             View Our Products
+            <GiHeartBottle className="transition-transform duration-300 group-hover:animate-shake" />
           </button>
         </Link>
         <Link href="/shop">
-          <button className="px-6 py-3 bg-secondary text-white font-bold rounded flex items-center gap-2 transition-all duration-500 hover:opacity-90">
-            Shop Now <FiArrowRight />
+          <button className="group flex items-center gap-2 px-8 py-3 bg-secondary text-white font-bold rounded-lg shadow-lg border border-transparent transition-all duration-300 transform hover:scale-105 hover:border-white">
+            Shop Now{" "}
+            <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-2" />
           </button>
         </Link>
       </div>
@@ -244,6 +245,30 @@ export default function SectionParallax() {
         href="https://fonts.googleapis.com/css2?family=Anton&display=swap"
         rel="stylesheet"
       />
+
+      {/* Shake Animation for the bottle icon */}
+      <style jsx>{`
+        @keyframes shake {
+          0% {
+            transform: translateX(0);
+          }
+          25% {
+            transform: translateX(-5px);
+          }
+          50% {
+            transform: translateX(5px);
+          }
+          75% {
+            transform: translateX(-5px);
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
+        .animate-shake {
+          animation: shake 0.5s ease-in-out;
+        }
+      `}</style>
     </section>
   );
 }

@@ -9,7 +9,16 @@ interface SectionHeroProps {
 
 export default function SectionHero({ onExploreClick }: SectionHeroProps) {
   return (
-    <section className="group relative w-full h-screen flex flex-col items-center justify-center text-white bg-black overflow-hidden">
+    <section className="relative w-full h-screen flex flex-col items-center justify-center text-white bg-black overflow-hidden">
+      {/* SVG gradient definition for the spicy pepper icon with 65% red */}
+      <svg width="0" height="0">
+        <linearGradient id="pepper-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#DA1A35" />
+          <stop offset="65%" stopColor="#DA1A35" />
+          <stop offset="100%" stopColor="#FFB300" />
+        </linearGradient>
+      </svg>
+
       {/* Video background */}
       <video
         autoPlay
@@ -24,22 +33,19 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
 
       {/* Title and Buttons Container */}
       <div className="relative z-10 flex flex-col items-center gap-8 p-4 sm:p-8">
-        {/* Title Overlay (visible by default; fades out on hover/touch) */}
-        <div className="text-center transition-opacity duration-500 group-hover:opacity-0 group-active:opacity-0">
-          <h1 className="text-5xl sm:text-6xl font-extrabold mb-4">
+        {/* Title Overlay (fades out on section hover) */}
+        <div className="title-overlay text-center transition-opacity duration-500">
+          <h1 className="text-4xl sm:text-6xl font-extrabold mb-4">
             GET THE SPICE THAT'S RIGHT{" "}
             <GiChiliPepper
               className="inline-block"
               style={{
-                animation: "gradientShift 5s linear infinite",
-                background: "linear-gradient(90deg, red, orange, yellow)",
-                backgroundSize: "200%",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
+                stroke: "url(#pepper-gradient)",
+                fill: "url(#pepper-gradient)",
               }}
             />
           </h1>
-          <h2 className="text-4xl sm:text-5xl font-bold">
+          <h2 className="text-2xl sm:text-5xl font-bold">
             SUNNY ISLAND IS HERE!
           </h2>
         </div>
@@ -62,25 +68,7 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
               className="group inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-300 to-green-300 text-black font-bold rounded-lg shadow-lg border border-transparent transition-all duration-300 transform hover:scale-105 hover:border-white relative overflow-hidden"
             >
               <span className="transition-colors duration-300">Shop</span>
-              {/* Default Arrow Icon */}
-              <AiOutlineArrowRight className="transition-transform duration-300 group-hover:translate-x-1 group-hover:opacity-0" />
-              {/* Hover Arrow Icon (more defined right arrow) */}
-              <svg
-                className="absolute right-4 transition-opacity duration-300 opacity-0 group-hover:opacity-100"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M8 4L16 12L8 20"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+              <AiOutlineArrowRight className="transition-transform duration-300 group-hover:translate-x-2 group-hover:scale-110" />
             </a>
           </div>
           {/* Explore Button */}
@@ -96,8 +84,12 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
         </div>
       </div>
 
-      {/* Keyframes for gradient animation */}
+      {/* Scoped styles */}
       <style jsx>{`
+        /* Fades out the title overlay when hovering over the entire section */
+        section:hover .title-overlay {
+          opacity: 0;
+        }
         @keyframes gradientShift {
           0% {
             background-position: 0%;

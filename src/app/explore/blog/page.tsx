@@ -1,9 +1,10 @@
-// src/app/explore/blog/page.tsx
-
-import ArticleGrid from "@/components/blog/ArticleGrid";
-import ArticleList from "@/components/blog/ArticleList";
 import Image from "next/image";
 import Link from "next/link";
+import { BsFillGrid3X3GapFill } from "react-icons/bs";
+import { FaSearch } from "react-icons/fa";
+import { MdViewList } from "react-icons/md";
+import { blogData, enrichArticle } from "../../../data/blogData";
+import BlogPostsSection from "./components/BlogPostsSection";
 
 // Extend Article type to include an image.
 interface Article {
@@ -66,10 +67,32 @@ function shuffleArray<T>(array: T[]): T[] {
 
 /**
  * Uses the Pexels API to fetch an image for the given keyword.
+ *
+ * Quality Types Available (from Pexels API):
+ *  - original
+ *  - large2x
+ *  - large
+ *  - medium
+ *  - small
+ *  - portrait
+ *  - landscape
+ *  - tiny
+ *
+ * This function fetches up to 5 photos and cycles through them checking for duplicates.
+ * If no non-duplicate image is found, it cycles through fallback keywords.
  */
 async function fetchImageForKeyword(
   keyword: string,
   usedImages: Set<string>,
+  quality:
+    | "original"
+    | "large2x"
+    | "large"
+    | "medium"
+    | "small"
+    | "portrait"
+    | "landscape"
+    | "tiny" = "original",
 ): Promise<string> {
   try {
     const accessKey =
@@ -79,27 +102,70 @@ async function fetchImageForKeyword(
     const res = await fetch(
       `https://api.pexels.com/v1/search?query=${encodeURIComponent(
         keyword,
-      )}&per_page=1`,
+      )}&per_page=5`,
       {
-        headers: {
-          Authorization: accessKey,
-        },
+        headers: { Authorization: accessKey },
       },
     );
     const data = await res.json();
     console.log(`Pexels API response for "${keyword}":`, data);
     if (data.photos && data.photos.length > 0) {
-      const imageUrl = data.photos[0].src.medium;
-      console.log(`Fetched image URL for "${keyword}": ${imageUrl}`);
-      if (usedImages.has(imageUrl)) {
-        console.log(`Duplicate image detected for keyword: ${keyword}`);
-        return "/media/default-pepper.jpg";
-      } else {
-        usedImages.add(imageUrl);
-        return imageUrl;
+      for (const photo of data.photos) {
+        const imageUrl = photo.src[quality];
+        if (!usedImages.has(imageUrl)) {
+          usedImages.add(imageUrl);
+          console.log(
+            `Fetched image URL for "${keyword}" using quality "${quality}": ${imageUrl}`,
+          );
+          return imageUrl;
+        }
       }
     }
-    console.log(`No image found for keyword: ${keyword}`);
+    console.log(
+      `No non-duplicate image found for keyword: ${keyword}, trying fallback keywords.`,
+    );
+    const fallbackKeywords = [
+      "spicy",
+      "pepper",
+      "pepper sauce",
+      "sauce",
+      "peppers",
+      "culture",
+      "trinidad",
+      "caribbean",
+      "hot sauce",
+      "spicy sauce",
+      "heat sauce",
+      "scoville",
+      "sunny",
+      "sunny island",
+    ];
+    for (const fallback of fallbackKeywords) {
+      if (fallback.toLowerCase() !== keyword.toLowerCase()) {
+        const resFallback = await fetch(
+          `https://api.pexels.com/v1/search?query=${encodeURIComponent(
+            fallback,
+          )}&per_page=5`,
+          {
+            headers: { Authorization: accessKey },
+          },
+        );
+        const dataFallback = await resFallback.json();
+        if (dataFallback.photos && dataFallback.photos.length > 0) {
+          for (const photo of dataFallback.photos) {
+            const imageUrl = photo.src[quality];
+            if (!usedImages.has(imageUrl)) {
+              usedImages.add(imageUrl);
+              console.log(
+                `Fetched fallback image URL for "${fallback}" using quality "${quality}": ${imageUrl}`,
+              );
+              return imageUrl;
+            }
+          }
+        }
+      }
+    }
+    console.log(`No image found after fallback, using default image.`);
     return "/media/default-pepper.jpg";
   } catch (error) {
     console.error("Error fetching image for keyword:", keyword, error);
@@ -108,47 +174,59 @@ async function fetchImageForKeyword(
 }
 
 export default async function BlogPage({ searchParams }: BlogPageProps) {
-  // Await searchParams because it's now a Promise.
   const { view, q, filter } = await searchParams;
   const viewMode = view === "list" ? "list" : "grid";
   const query = q || "";
   const filterParam = filter || "";
 
-  // Use an absolute URL (set in environment variables) to avoid URL parsing issues.
+  // Fetch aggregator data.
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   const res = await fetch(`${baseUrl}/api/aggregator`, {
     next: { revalidate: 60 },
   });
   const aggregatedData: AggregatedData = await res.json();
 
-  // Combine media items into a flat array.
-  const combinedAggregated = [
+  // Combine aggregator data into a flat array.
+  const aggregatorArticles: Article[] = [
     ...aggregatedData.wikipedia,
     ...aggregatedData.crossref,
     ...aggregatedData.openAlex,
     ...aggregatedData.archive,
     ...aggregatedData.podcasts.map((podcast) => ({
-      ...podcast,
+      id: 0,
       title: `[Podcast] ${podcast.title}`,
+      description: podcast.description,
+      url: podcast.url,
+      association: podcast.source,
+      image: "",
     })),
+    {
+      id: 0,
+      title: `Did You Know? (${aggregatedData.fact.number})`,
+      description: aggregatedData.fact.text,
+      url: "",
+      association: aggregatedData.fact.source,
+      image: "",
+    },
   ];
 
-  combinedAggregated.push({
-    title: `Did You Know? (${aggregatedData.fact.number})`,
-    description: aggregatedData.fact.text,
-    url: "",
-    source: aggregatedData.fact.source,
-  });
+  // Enrich our collected blog data.
+  const enrichedBlogData: Article[] = blogData.map(enrichArticle);
 
-  let combinedArticles: Article[] = combinedAggregated.map((item, index) => ({
+  // Combine both sets.
+  let combinedArticles: Article[] = [
+    ...aggregatorArticles,
+    ...enrichedBlogData,
+  ].map((item, index) => ({
     id: index + 1,
     title: item.title,
     description: item.description,
     url: item.url,
-    association: item.source,
-    image: "",
+    association: item.association,
+    image: item.image || "",
   }));
 
+  // Filter articles to those related to "pepper" or "sauce".
   combinedArticles = combinedArticles.filter(
     (article) =>
       article.title.toLowerCase().includes("pepper") ||
@@ -158,11 +236,19 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   );
 
   const usedImages = new Set<string>();
-
   const articlesWithImages: Article[] = await Promise.all(
     combinedArticles.map(async (article) => {
-      const image = await fetchImageForKeyword(article.title, usedImages);
-      return { ...article, image };
+      if (article.image && article.image.trim() !== "") {
+        usedImages.add(article.image);
+        return article;
+      } else {
+        const image = await fetchImageForKeyword(
+          article.title,
+          usedImages,
+          "original",
+        );
+        return { ...article, image };
+      }
     }),
   );
 
@@ -182,7 +268,6 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   }
 
   const articlesToDisplay = shuffleArray(filteredArticles);
-
   const urlParams =
     (query ? `&q=${encodeURIComponent(query)}` : "") +
     (filterParam ? `&filter=${encodeURIComponent(filterParam)}` : "");
@@ -215,42 +300,31 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
         </Link>
       </section>
 
-      {/* Navbar for Articles */}
+      {/* Combined Search & Filter + View Toggle */}
       <section className="my-6">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex items-center justify-between flex-wrap">
+          {/* Combined Search & Filter */}
           <form
             method="GET"
             action="/explore/blog"
-            className="flex items-center space-x-2"
+            className="flex flex-1 items-center bg-gray-100 bg-opacity-50 rounded px-4 py-2"
           >
+            <FaSearch className="text-gray-500 mr-2" />
             <input
               type="text"
               name="q"
               placeholder="Search articles..."
               defaultValue={query}
-              className="px-4 py-2 border rounded focus:outline-none"
+              className="flex-1 bg-transparent outline-none text-black"
             />
-            <input type="hidden" name="view" value={viewMode} />
-            {filterParam && (
-              <input type="hidden" name="filter" value={filterParam} />
-            )}
-            <button
-              type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
-            >
-              Search
-            </button>
-          </form>
-          <form
-            method="GET"
-            action="/explore/blog"
-            className="flex items-center space-x-2"
-          >
             <select
               name="filter"
-              defaultValue={filterParam}
-              className="px-4 py-2 border rounded focus:outline-none"
+              defaultValue={filterParam || ""}
+              className="ml-4 bg-transparent outline-none text-black"
             >
+              <option value="" disabled hidden>
+                What's the hottest pepper?
+              </option>
               <option value="">All Sources</option>
               <option value="Wikipedia">Wikipedia</option>
               <option value="Crossref">Crossref</option>
@@ -260,62 +334,32 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               <option value="Numbers API">Numbers API</option>
             </select>
             <input type="hidden" name="view" value={viewMode} />
-            {query && <input type="hidden" name="q" value={query} />}
             <button
               type="submit"
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+              className="flex items-center bg-secondary text-white px-4 py-2 rounded hover:bg-secondary-dark transition ml-4"
             >
-              Filter
+              <FaSearch className="mr-2" />
+              Search
             </button>
           </form>
-        </div>
 
-        {/* View Toggle Icons */}
-        <div className="mt-4 flex flex-col items-center">
-          <Link href={gridLink}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8 mb-2"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </Link>
-          <span className="text-sm mb-2">or</span>
-          <Link href={listLink}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-8 w-8"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-          </Link>
+          {/* View Toggle Icons */}
+          <div className="ml-4">
+            <div className="flex items-center bg-white bg-opacity-80 p-2 rounded">
+              <Link href={gridLink}>
+                <BsFillGrid3X3GapFill className="h-6 w-6 text-black" />
+              </Link>
+              <div className="w-px h-6 bg-gray-400 mx-2"></div>
+              <Link href={listLink}>
+                <MdViewList className="h-6 w-6 text-black" />
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Articles Section */}
-      <section>
-        {viewMode === "grid" ? (
-          <ArticleGrid articles={articlesToDisplay} />
-        ) : (
-          <ArticleList articles={articlesToDisplay} />
-        )}
-      </section>
+      {/* Articles Section with Load More functionality via a client component */}
+      <BlogPostsSection articles={articlesToDisplay} viewMode={viewMode} />
     </div>
   );
 }
