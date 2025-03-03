@@ -1,22 +1,15 @@
 // eventData.ts
 
-// eventsData.ts
 export interface EventItem {
-  id: number; // Updated to number
+  id: string;
   title: string;
-  description: string;
-  imageUrl: string;
-  link: string; // Added property
-  url: string;
   date: string;
   location: string;
-  theme: string;
+  description: string;
   price: string;
-  rating: number;
-  country: string;
-  cuisine: string;
-  ingredients: any[];
-  instructions: any[];
+  url: string;
+  imageUrl: string;
+  theme: string;
 }
 
 /**
