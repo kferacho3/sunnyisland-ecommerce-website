@@ -187,11 +187,40 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const aggregatedData: AggregatedData = await res.json();
 
   // Combine aggregator data into a flat array.
+  // Combine aggregator data into a flat array.
   const aggregatorArticles: Article[] = [
-    ...aggregatedData.wikipedia,
-    ...aggregatedData.crossref,
-    ...aggregatedData.openAlex,
-    ...aggregatedData.archive,
+    ...aggregatedData.wikipedia.map((article) => ({
+      id: 0,
+      title: article.title,
+      description: article.description,
+      url: article.url,
+      association: article.source,
+      image: "",
+    })),
+    ...aggregatedData.crossref.map((article) => ({
+      id: 0,
+      title: article.title,
+      description: article.description,
+      url: article.url,
+      association: article.source,
+      image: "",
+    })),
+    ...aggregatedData.openAlex.map((article) => ({
+      id: 0,
+      title: article.title,
+      description: article.description,
+      url: article.url,
+      association: article.source,
+      image: "",
+    })),
+    ...aggregatedData.archive.map((article) => ({
+      id: 0,
+      title: article.title,
+      description: article.description,
+      url: article.url,
+      association: article.source,
+      image: "",
+    })),
     ...aggregatedData.podcasts.map((podcast) => ({
       id: 0,
       title: `[Podcast] ${podcast.title}`,
@@ -211,7 +240,14 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   ];
 
   // Enrich our collected blog data.
-  const enrichedBlogData: Article[] = blogData.map(enrichArticle);
+  // Enrich our collected blog data and add a default image property.
+  const enrichedBlogData: Article[] = blogData.map((article) => {
+    const enriched = enrichArticle(article);
+    return {
+      ...enriched,
+      image: "", // Provide a default empty string for image.
+    };
+  });
 
   // Combine both sets.
   let combinedArticles: Article[] = [
