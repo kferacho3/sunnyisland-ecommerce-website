@@ -1,6 +1,11 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 import Link from "next/link";
 import { useRef } from "react";
 import { FiArrowRight } from "react-icons/fi";
@@ -8,6 +13,7 @@ import { GiHeartBottle } from "react-icons/gi";
 
 export default function SectionParallax() {
   const containerRef = useRef(null);
+  const shouldReduceMotion = useReducedMotion();
 
   // useScroll with the container as the target
   const { scrollYProgress } = useScroll({
@@ -15,13 +21,27 @@ export default function SectionParallax() {
     offset: ["start end", "end start"],
   });
 
-  // Adjusted parallax effect values for a smoother scroll
-  const translateYImage2 = useTransform(scrollYProgress, [0, 1], [0, 50]);
-  const translateYImage3 = useTransform(scrollYProgress, [0, 1], [0, -650]);
-
-  // Header text motion (reduced range for smoother transition)
-  const translateYHeader = useTransform(scrollYProgress, [0, 1], [-100, 0]);
-  const scaleHeader = useTransform(scrollYProgress, [0, 1], [1, 0.98]);
+  // Use reduced motion values on mobile/low-performance devices
+  const translateYImage2 = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, shouldReduceMotion ? 0 : 50],
+  );
+  const translateYImage3 = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [0, shouldReduceMotion ? 0 : -650],
+  );
+  const translateYHeader = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [shouldReduceMotion ? 0 : -100, 0],
+  );
+  const scaleHeader = useTransform(
+    scrollYProgress,
+    [0, 1],
+    [1, shouldReduceMotion ? 1 : 0.98],
+  );
 
   return (
     <section
@@ -56,7 +76,9 @@ export default function SectionParallax() {
         .sun {
           margin-left: 7%;
           top: 1%;
-          animation: rotate 4s linear infinite;
+          animation: ${shouldReduceMotion
+            ? "none"
+            : "rotate 4s linear infinite"};
           --color: yellow;
           --scale: 0.5;
         }
@@ -148,6 +170,7 @@ export default function SectionParallax() {
           src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/parallax/SunnyIslandPepperSauceParallax1.png"
           alt="Parallax 1"
           className="absolute object-cover h-auto"
+          loading="lazy"
           style={{
             left: "50%",
             x: "-50%",
@@ -161,6 +184,7 @@ export default function SectionParallax() {
           src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/parallax/SunnyIslandPepperSauceParallax2.png"
           alt="Parallax 2"
           className="absolute object-cover h-auto"
+          loading="lazy"
           style={{
             left: "50%",
             x: "-50%",
@@ -184,6 +208,7 @@ export default function SectionParallax() {
               src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/parallax/SunnyIslandPepperSauceParallax3.png"
               alt="Parallax 3"
               className="object-cover w-full h-full"
+              loading="lazy"
               style={{
                 filter: "drop-shadow(0 0 20px #3490dc)",
                 position: "absolute",
@@ -232,9 +257,9 @@ export default function SectionParallax() {
             <GiHeartBottle className="transition-transform duration-300 group-hover:animate-shake" />
           </button>
         </Link>
-        <Link href="/shop">
+        <Link href="https://sunnyislandpepper.myshopify.com/products/sunny-island-pepper-sauce-classic-gold">
           <button className="group flex items-center gap-2 px-8 py-3 bg-secondary text-white font-bold rounded-lg shadow-lg border border-transparent transition-all duration-300 transform hover:scale-105 hover:border-white">
-            Shop Now{" "}
+            Shop Now
             <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-2" />
           </button>
         </Link>

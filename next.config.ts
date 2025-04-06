@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
       "serpapi.com",
       "pexels.com",
       "images.pexels.com",
+      "cdn.shopify.com",
     ],
   },
 };

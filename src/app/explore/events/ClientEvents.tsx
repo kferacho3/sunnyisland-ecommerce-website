@@ -276,50 +276,80 @@ function EventCard({
     <RegularBorder>
       <div
         key={ev.id}
-        className="default-card cursor-pointer gap-2  w-[11.5rem] h-56 sm:w-64 sm:h-[18rem] hover:scale-105 transition-transform duration-300 relative"
+        className="default-card cursor-pointer gap-2 w-[11.5rem] h-56 sm:w-64 sm:h-[18rem] hover:scale-105 transition-transform duration-300 relative"
         onClick={onClick}
       >
-        <div className="card-inner p-4 bg-transparent w-full h-full flex flex-col text-white overflow-hidden">
-          {/* Top image */}
-          <div className="mb-2 w-full h-16 sm:h-24 relative">
+        {/* Card content with an opaque background + padding */}
+        <div className="card-inner bg-black/80 shadow-lg w-full h-full flex flex-col text-white overflow-hidden p-3 sm:p-4 relative">
+          {/* Top image occupies 65% of the card */}
+          <div className="w-full h-[65%] relative rounded-md overflow-hidden mb-2">
             <Image
               src={thumb}
               alt={ev.title}
               fill
               sizes="(max-width: 768px) 100vw, 33vw"
               quality={90}
-              className="object-cover rounded-md"
+              className="object-cover"
             />
           </div>
 
-          {/* Title & Basic Info */}
-          <h3 className="text-sm font-bold mb-1">{ev.title}</h3>
-          <p className="text-xs mb-1">
-            <strong>Date:</strong> {ev.date}
-          </p>
-          <p className="text-xs mb-1">
-            <strong>Location:</strong> {ev.location}
-          </p>
+          {/* Text content occupies the remaining 35% */}
+          <div className="flex flex-col justify-start h-[35%] relative">
+            <h3 className="text-xs sm:text-sm font-bold mb-1">{ev.title}</h3>
+            <p className="text-[0.65rem] sm:text-xs mb-1">
+              <strong>Date:</strong> {ev.date}
+            </p>
+            <p className="text-[0.65rem] sm:text-xs mb-1">
+              <strong>Location:</strong> {ev.location}
+            </p>
 
-          {/* Description text – hidden on mobile */}
-          <p className="text-xs pr-5 hidden sm:block">{truncatedDesc}</p>
-
-          {/* If the text is truncated, show the plus button in the bottom-right */}
-          {isTruncated && (
-            <div className="group absolute bottom-1 right-1 w-7 h-7 rounded-full bg-gradient-to-r from-black via-gray-800 to-gray-400 flex items-center justify-center transition-colors duration-300 hover:cursor-pointer hover:from-secondary hover:via-secondary hover:to-secondary">
-              <button
-                className="text-white text-sm w-full h-full flex items-center justify-center group-hover:text-primary"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setModalEvent(ev);
-                }}
-              >
-                +
-              </button>
+            {/* On larger screens, show truncated text with fade effect */}
+            <div className="hidden sm:block relative fade-container">
+              <p className="text-[0.6rem] sm:text-xs fade-content">
+                {truncatedDesc}
+              </p>
+              {isTruncated && (
+                <div className="fade-overlay pointer-events-none"></div>
+              )}
             </div>
-          )}
+
+            {/* Plus Button if text is truncated */}
+            {isTruncated && (
+              <div className="group absolute bottom-0 right-0 w-5 h-5 rounded-full bg-gradient-to-r from-gray-500 via-gray-400 to-gray-300 flex items-center justify-center transition-colors duration-300 hover:cursor-pointer hover:from-gray-400 hover:via-gray-300 hover:to-gray-200">
+                <button
+                  className="text-white text-sm w-full h-full flex items-center justify-center group-hover:text-gray-900"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setModalEvent(ev);
+                  }}
+                >
+                  +
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* Fade-out styles for truncated text */}
+      <style jsx>{`
+        .fade-container {
+          max-height: 2.8em; /* roughly ~2 lines of text */
+          overflow: hidden;
+        }
+        .fade-overlay {
+          position: absolute;
+          bottom: 0;
+          right: 0;
+          left: 0;
+          height: 1.5em;
+          background: linear-gradient(
+            to top,
+            rgba(0, 0, 0, 0.8),
+            rgba(0, 0, 0, 0)
+          );
+        }
+      `}</style>
     </RegularBorder>
   );
 }
@@ -456,7 +486,7 @@ export default function ClientEvents({
             id="location"
             value={filterLocation}
             onChange={(e) => setFilterLocation(e.target.value)}
-            className="p-2 rounded"
+            className="p-2 rounded text-black"
           >
             <option value="All">All</option>
             <option value="Georgia">Georgia</option>
@@ -472,7 +502,7 @@ export default function ClientEvents({
             type="date"
             value={filterDate}
             onChange={(e) => setFilterDate(e.target.value)}
-            className="p-2 rounded"
+            className="p-2 rounded text-black"
           />
         </div>
         <div>
@@ -485,7 +515,7 @@ export default function ClientEvents({
             value={filterTheme}
             onChange={(e) => setFilterTheme(e.target.value)}
             placeholder="e.g., food, arts, festival"
-            className="p-2 rounded"
+            className="p-2 rounded text-black"
           />
         </div>
       </div>
@@ -499,36 +529,7 @@ export default function ClientEvents({
           <div className="outer-border relative">
             <div className="mid-border relative">
               <div className="inner-border relative">
-                <img
-                  className="corner-decoration corner-left-top"
-                  src="https://i.ibb.co/4mKvK3N/corner-decoration.jpg"
-                  alt="decoration"
-                />
-                <img
-                  className="corner-decoration corner-right-top"
-                  src="https://i.ibb.co/4mKvK3N/corner-decoration.jpg"
-                  alt="decoration"
-                />
-                <img
-                  className="corner-decoration corner-right-bottom"
-                  src="https://i.ibb.co/4mKvK3N/corner-decoration.jpg"
-                  alt="decoration"
-                />
-                <img
-                  className="corner-decoration corner-left-bottom"
-                  src="https://i.ibb.co/4mKvK3N/corner-decoration.jpg"
-                  alt="decoration"
-                />
-                <img
-                  className="vertical-decoration top"
-                  src="https://i.ibb.co/JRTK9z4/horizontally-centered-vertical-decoration.png"
-                  alt="vertical decoration"
-                />
-                <img
-                  className="vertical-decoration bottom"
-                  src="https://i.ibb.co/JRTK9z4/horizontally-centered-vertical-decoration.png"
-                  alt="vertical decoration"
-                />
+                {/* Display the full description now */}
                 <div className="card-inner p-10 bg-black bg-opacity-60 rounded-lg shadow-2xl relative">
                   <div className="mb-6 w-full h-80 relative">
                     <Image
@@ -553,12 +554,15 @@ export default function ClientEvents({
                     <strong>Location:</strong> {featuredEvent.location}
                   </p>
                   <p className="mb-2 text-xs pr-5">
-                    {getTruncatedText(featuredEvent.description)}
+                    {featuredEvent.description}
                   </p>
+
+                  {/* We can keep the plus button if you still want to open the modal,
+                      but removing the truncation means we always see the full text. */}
                   {featuredEvent.description.length > 100 && (
-                    <div className="group absolute bottom-6 right-6 w-8 h-8 rounded-full bg-gradient-to-r from-black via-gray-800 to-gray-400 flex items-center justify-center transition-colors duration-300 hover:cursor-pointer hover:from-secondary hover:via-secondary hover:to-secondary">
+                    <div className="group absolute bottom-6 right-6 w-8 h-8 rounded-full bg-gradient-to-r from-gray-500 via-gray-400 to-gray-300 flex items-center justify-center transition-colors duration-300 hover:cursor-pointer hover:from-gray-400 hover:via-gray-300 hover:to-gray-200">
                       <button
-                        className="text-white text-sm w-full h-full flex items-center justify-center group-hover:text-primary"
+                        className="text-white text-sm w-full h-full flex items-center justify-center group-hover:text-gray-900"
                         onClick={(e) => {
                           e.stopPropagation();
                           setModalEvent(featuredEvent);
@@ -632,7 +636,7 @@ export default function ClientEvents({
         }
       `}</style>
 
-      {/* Custom Border & Decoration Styles for main and featured cards remain unchanged */}
+      {/* Custom Border & Decoration Styles remain largely unchanged */}
       <style jsx>{`
         /* ---------------- Main Card (Hero) Styles (Unchanged) ---------------- */
         .main-card {
@@ -698,14 +702,14 @@ export default function ClientEvents({
         }
         /* ---------------- Featured (Hero) Component Borders ---------------- */
         .outer-border {
-          border: 2px solid #de9b72;
-          height: 99%;
-          width: 98%;
-          padding: 6px;
+          border: 3px solid #de9b72;
+          height: 100%;
+          width: 100%;
+          padding: 10px;
           margin: 0 auto;
         }
         .mid-border {
-          border: 6px solid #de9b72;
+          border: 4px solid #de9b72;
           height: 100%;
           width: 100%;
           padding: 6px;

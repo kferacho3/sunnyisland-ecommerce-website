@@ -67,19 +67,6 @@ function shuffleArray<T>(array: T[]): T[] {
 
 /**
  * Uses the Pexels API to fetch an image for the given keyword.
- *
- * Quality Types Available (from Pexels API):
- *  - original
- *  - large2x
- *  - large
- *  - medium
- *  - small
- *  - portrait
- *  - landscape
- *  - tiny
- *
- * This function fetches up to 5 photos and cycles through them checking for duplicates.
- * If no non-duplicate image is found, it cycles through fallback keywords.
  */
 async function fetchImageForKeyword(
   keyword: string,
@@ -187,7 +174,6 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const aggregatedData: AggregatedData = await res.json();
 
   // Combine aggregator data into a flat array.
-  // Combine aggregator data into a flat array.
   const aggregatorArticles: Article[] = [
     ...aggregatedData.wikipedia.map((article) => ({
       id: 0,
@@ -240,7 +226,6 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   ];
 
   // Enrich our collected blog data.
-  // Enrich our collected blog data and add a default image property.
   const enrichedBlogData: Article[] = blogData.map((article) => {
     const enriched = enrichArticle(article);
     return {
@@ -311,7 +296,7 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
   const listLink = `/explore/blog?view=list${urlParams}`;
 
   return (
-    <div className="container mx-auto mt-10 px-4 py-10">
+    <div className="container mx-auto px-4 py-10">
       {/* Hero Section */}
       <section className="relative h-96 bg-black text-white flex flex-col items-center justify-center text-center">
         <Image
@@ -338,12 +323,12 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
 
       {/* Combined Search & Filter + View Toggle */}
       <section className="my-6">
-        <div className="flex items-center justify-between flex-wrap">
-          {/* Combined Search & Filter */}
+        <div className="flex flex-row items-center justify-between gap-2">
+          {/* Search Input (50% width) */}
           <form
             method="GET"
             action="/explore/blog"
-            className="flex flex-1 items-center bg-gray-100 bg-opacity-50 rounded px-4 py-2"
+            className="flex items-center bg-gray-100 bg-opacity-50 rounded px-2 py-2 w-[50%]"
           >
             <FaSearch className="text-gray-500 mr-2" />
             <input
@@ -353,10 +338,13 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               defaultValue={query}
               className="flex-1 bg-transparent outline-none text-black"
             />
+          </form>
+          {/* Filter Dropdown (40% width) */}
+          <div className="w-[40%]">
             <select
               name="filter"
               defaultValue={filterParam || ""}
-              className="ml-4 bg-transparent outline-none text-black"
+              className="w-full bg-gray-100 bg-opacity-50 outline-none text-black rounded px-2 py-2"
             >
               <option value="" disabled hidden>
                 What's the hottest pepper?
@@ -369,18 +357,21 @@ export default async function BlogPage({ searchParams }: BlogPageProps) {
               <option value="iTunes">iTunes</option>
               <option value="Numbers API">Numbers API</option>
             </select>
-            <input type="hidden" name="view" value={viewMode} />
-            <button
-              type="submit"
-              className="flex items-center bg-secondary text-white px-4 py-2 rounded hover:bg-secondary-dark transition ml-4"
-            >
-              <FaSearch className="mr-2" />
-              Search
-            </button>
-          </form>
-
+          </div>
+          {/* Search Button (10% width) */}
+          <div className="w-[10%]">
+            <form method="GET" action="/explore/blog">
+              <input type="hidden" name="view" value={viewMode} />
+              <button
+                type="submit"
+                className="flex items-center bg-secondary text-white px-2 py-2 rounded hover:bg-secondary-dark transition w-full"
+              >
+                <FaSearch className="mr-1" />
+              </button>
+            </form>
+          </div>
           {/* View Toggle Icons */}
-          <div className="ml-4">
+          <div className="ml-2">
             <div className="flex items-center bg-white bg-opacity-80 p-2 rounded">
               <Link href={gridLink}>
                 <BsFillGrid3X3GapFill className="h-6 w-6 text-black" />

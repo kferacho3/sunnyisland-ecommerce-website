@@ -8,8 +8,6 @@ import Header from "@/components/layout/Header";
 import Navbar from "@/components/layout/Navbar";
 import { ThemeProvider } from "@/context/ThemeContext";
 
-// Sticky components, etc.
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -24,15 +22,21 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <script
+          src="https://www.google.com/recaptcha/enterprise.js?render=6LdHqQIrAAAAAMqkm7zjtFuiBVWDxKxikPh51C88"
+          async
+          defer
+        ></script>
+      </head>
       <body
         className={`${inter.className} bg-primary-gradient dark:bg-dark-texture dark:text-white`}
       >
         <ThemeProvider>
           <Navbar />
           <Header />
-          {/* Adjust padding to clear the fixed Navbar and Header */}
-          <main className="pt-0 md:pt-0 min-h-screen">{children}</main>
-
+          {/* Ensure main content starts below the fixed Navbar and Header */}
+          <main className="pt-[50px] min-h-screen">{children}</main>
           <Footer />
         </ThemeProvider>
       </body>

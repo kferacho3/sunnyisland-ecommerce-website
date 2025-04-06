@@ -1,16 +1,17 @@
 "use client";
 
+import { getCartId } from "@/app/api/lib/useCart";
 import { useTheme } from "@/context/ThemeContext";
 import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { AiOutlineQuestionCircle } from "react-icons/ai";
+import { useEffect, useState } from "react";
 import {
   FiBook,
   FiBriefcase,
   FiCalendar,
   FiChevronDown,
+  FiDollarSign,
   FiEdit,
   FiHeart,
   FiHelpCircle,
@@ -25,31 +26,54 @@ import {
   FiSun,
   FiUser,
 } from "react-icons/fi";
-import { GiChiliPepper } from "react-icons/gi";
+import { GiBrandyBottle, GiChiliPepper } from "react-icons/gi";
+import CartDrawer from "./CartDrawer";
 import Sidebar from "./Sidebar";
 
 export default function Navbar() {
   const { isDark, toggleTheme } = useTheme();
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [isCartOpen, setCartOpen] = useState(false);
+  const [cartItemCount, setCartItemCount] = useState(0);
 
-  // Toggle mobile sidebar menu
   const handleToggleSidebar = () => {
     setSidebarOpen((prev) => !prev);
   };
 
-  // Generic open/close dropdown logic (for desktop)
   const openDropdown = (menu: string) => setActiveDropdown(menu);
   const closeDropdown = () => setActiveDropdown(null);
+
+  const fetchCartCount = async () => {
+    const cartId = getCartId();
+    if (cartId) {
+      const res = await fetch(`/api/cart/fetch?cartId=${cartId}`);
+      const data = await res.json();
+      const itemCount =
+        data.lines?.edges?.reduce(
+          (acc: number, { node }: any) => acc + node.quantity,
+          0,
+        ) || 0;
+      setCartItemCount(itemCount);
+    } else {
+      setCartItemCount(0);
+    }
+  };
+
+  useEffect(() => {
+    fetchCartCount();
+    window.addEventListener("cartUpdated", fetchCartCount);
+    return () => window.removeEventListener("cartUpdated", fetchCartCount);
+  }, []);
 
   return (
     <>
       <nav
-        className="fixed top-0 w-full h-[64px] md:h-[80px] bg-primary text-white dark:bg-black dark:text-white z-50 shadow-md"
+        className="fixed top-0 w-full h-[64px] md:h-[64px] bg-primary text-white dark:bg-black dark:text-white z-50 shadow-md"
         onMouseLeave={closeDropdown}
       >
         <div className="flex items-center justify-between px-6 py-2 md:py-3 relative">
-          {/* Left Section: Mobile Hamburger on mobile; Desktop nav on md */}
+          {/* Left Section */}
           <div className="w-1/3 flex items-center">
             <div className="md:hidden">
               <button
@@ -81,26 +105,39 @@ export default function Navbar() {
                     className="absolute left-0 top-full mt-2 w-48 bg-black text-white rounded shadow-lg py-2 z-50"
                     onMouseEnter={() => openDropdown("shop")}
                   >
+                    {/* New items under Shop */}
                     <div className="group">
                       <Link
-                        href="/shop"
+                        href="https://sunnyislandpepper.myshopify.com/products/sunny-island-pepper-sauce-classic-gold"
                         className="transition duration-150 group-hover:text-red-500"
                       >
                         <div className="flex justify-between items-center px-4 py-2">
-                          <span>Pepper Sauce</span>
-                          <GiChiliPepper className="group-hover:text-red-500" />
+                          <span>BUY NOW!</span>
+                          <FiDollarSign className="group-hover:text-red-500" />
                         </div>
                       </Link>
                       <hr className="mx-2 my-1 border-white transition-colors duration-150 group-hover:border-red-500" />
                     </div>
                     <div className="group">
                       <Link
-                        href="#"
+                        href="https://sunnyislandpepper.myshopify.com/"
                         className="transition duration-150 group-hover:text-red-500"
                       >
                         <div className="flex justify-between items-center px-4 py-2">
-                          <span>More coming soon!</span>
-                          <AiOutlineQuestionCircle className="group-hover:text-red-500" />
+                          <span>Products</span>
+                          <GiBrandyBottle className="group-hover:text-red-500" />
+                        </div>
+                      </Link>
+                      <hr className="mx-2 my-1 border-white transition-colors duration-150 group-hover:border-red-500" />
+                    </div>
+                    <div className="group">
+                      <Link
+                        href="/shop"
+                        className="transition duration-150 group-hover:text-red-500"
+                      >
+                        <div className="flex justify-between items-center px-4 py-2">
+                          <span>Sauce Info</span>
+                          <GiChiliPepper className="group-hover:text-red-500" />
                         </div>
                       </Link>
                     </div>
@@ -285,6 +322,13 @@ export default function Navbar() {
                   </div>
                 )}
               </div>
+              {/* Standalone BUY NOW! button */}
+              <Link
+                href="https://sunnyislandpepper.myshopify.com/products/sunny-island-pepper-sauce-classic-gold"
+                className="font-bold hover:text-secondary ml-4"
+              >
+                BUY NOW!
+              </Link>
             </div>
           </div>
 
@@ -330,15 +374,30 @@ export default function Navbar() {
             >
               <FiUser className="w-5 h-5" />
             </Link>
-            <button className="relative hover:text-secondary transition duration-200">
+            <button
+              onClick={() => setCartOpen(true)}
+              className="relative hover:text-secondary transition duration-200"
+            >
               <FiShoppingCart className="w-5 h-5" />
-              <span className="absolute -top-1 -right-2 bg-secondary text-black text-xs rounded-full px-1">
-                0
-              </span>
+              {cartItemCount > 0 && (
+                <span className="absolute -top-1 -right-2 bg-secondary text-black text-xs rounded-full px-1">
+                  {cartItemCount}
+                </span>
+              )}
             </button>
           </div>
         </div>
       </nav>
+
+      {/* Cart Drawer */}
+      <AnimatePresence>
+        {isCartOpen && (
+          <CartDrawer
+            isOpen={isCartOpen}
+            closeDrawer={() => setCartOpen(false)}
+          />
+        )}
+      </AnimatePresence>
 
       {/* Mobile Sidebar */}
       <AnimatePresence>

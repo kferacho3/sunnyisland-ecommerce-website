@@ -1,23 +1,17 @@
 "use client";
 
+import { pepperData, UseCase, useCaseData } from "@/data/useCaseData";
+import styles from "@/styles/hexagonGrid.module.css";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 
-// Import your data arrays from your data file.
-// Note: useCaseData already contains items with id, title, desc, icon, etc.
-// For pepperData items, we transform them so that their title is from name and desc is from scoville.
-import { pepperData, UseCase, useCaseData } from "@/data/useCaseData";
-import styles from "@/styles/hexagonGrid.module.css";
-
-// Create a combined array where each item is tagged with its type.
-// For pepperData items, we generate an id and map 'name' -> 'title', 'scoville' -> 'desc'.
+// Create a combined array with each item tagged with its type.
 const combinedData: (UseCase & { type: "useCase" | "pepper" })[] = [
   ...useCaseData.map((item): UseCase & { type: "useCase" } => ({
     ...item,
     type: "useCase",
   })),
   ...pepperData.map((item, index): UseCase & { type: "pepper" } => ({
-    // Generate an id by using the index offset by the length of useCaseData
     id: index + 1 + useCaseData.length,
     title: item.name,
     desc: `Scoville: ${item.scoville}`,
@@ -26,7 +20,7 @@ const combinedData: (UseCase & { type: "useCase" | "pepper" })[] = [
   })),
 ];
 
-// Helper function: Given a maximum value and a count, return an array of random unique indices.
+// Helper: Return an array of random unique indices.
 function getRandomIndices(max: number, count: number): number[] {
   const indices = Array.from({ length: max }, (_, i) => i);
   for (let i = indices.length - 1; i > 0; i--) {
@@ -58,7 +52,7 @@ function useBreakpoint() {
   return breakpoint;
 }
 
-// Variants for the inner content animation.
+// Variants for inner content animation.
 const contentVariants = {
   initial: { opacity: 1, filter: "blur(0px)", rotate: 0, scale: 1 },
   animate: {
@@ -77,16 +71,14 @@ export default function UseCaseSection() {
   let hexSize = "70px";
   let itemsPerPage = 9; // Mobile: 3 columns x 3 rows
   let columns = 3;
+  let marginBetween = "4px";
   if (breakpoint === "mobile") {
-    // Increase hexagon container size by 1.2x for mobile.
-    hexSize = "125px";
+    hexSize = "110px"; // Reduced size for mobile
+    marginBetween = "2px"; // Tighter spacing for mobile
   } else if (breakpoint === "tablet") {
-    // For tablet view, use the same hexagon size as mobile portrait.
     hexSize = "125px";
-    // Determine tablet orientation:
     const isTabletLandscape =
       typeof window !== "undefined" && window.innerWidth > window.innerHeight;
-    // For portrait: mobile base of 3 columns plus 1 extra; for landscape: 3 plus 2 extra.
     columns = isTabletLandscape ? 5 : 4;
     itemsPerPage = columns * 3; // 3 rows
   } else if (breakpoint === "desktop") {
@@ -95,13 +87,14 @@ export default function UseCaseSection() {
     columns = 7;
   }
 
-  // Get a random subset of items from combinedData using random indices.
-  const [displayItems, setDisplayItems] = useState(
-    getRandomIndices(combinedData.length, itemsPerPage).map(
-      (index) => combinedData[index],
-    ),
-  );
+  // Delay randomization until the component mounts.
+  const [displayItems, setDisplayItems] = useState<
+    (UseCase & { type: "useCase" | "pepper" })[]
+  >([]);
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     setDisplayItems(
       getRandomIndices(combinedData.length, itemsPerPage).map(
         (index) => combinedData[index],
@@ -109,7 +102,7 @@ export default function UseCaseSection() {
     );
   }, [breakpoint, itemsPerPage]);
 
-  // Split items into rows for the grid.
+  // Split items into rows.
   const numRows = Math.ceil(displayItems.length / columns);
   const rows = Array.from({ length: numRows }, (_, i) =>
     displayItems.slice(i * columns, i * columns + columns),
@@ -124,11 +117,14 @@ export default function UseCaseSection() {
     );
   };
 
-  // Colors & gradients:
+  // Colors & gradients.
   const hoverGradient = "linear-gradient(to right, #FFB300, #FFC107, #FFA000)";
   const pepperBg = "linear-gradient(45deg, #32CD32, #008000)";
   const useCaseBg = "linear-gradient(45deg, #1D4ED8, #3B82F6)";
   const outlineColor = "#000";
+
+  // Render nothing until mounted to avoid mismatches.
+  if (!mounted) return null;
 
   return (
     <section className="w-full bg-gray-800 text-white py-10 px-4 overflow-hidden">
@@ -141,7 +137,7 @@ export default function UseCaseSection() {
           style={
             {
               "--s": hexSize, // hexagon container width
-              "--m": "4px", // margin between hexagons
+              "--m": marginBetween, // margin between hexagons
               "--f": `calc(${hexSize} * 1.732 + 16px - 1px)`,
             } as React.CSSProperties
           }
@@ -163,7 +159,6 @@ export default function UseCaseSection() {
                 }`}
                 style={{
                   gridTemplateColumns: `repeat(${columns}, var(--s))`,
-                  // For desktop only, shift first row right and second row left.
                   ...(breakpoint === "desktop" &&
                     rowIndex === 0 && { transform: "translateX(10px)" }),
                   ...(breakpoint === "desktop" &&

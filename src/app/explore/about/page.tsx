@@ -201,7 +201,7 @@ export default function AboutPage() {
           content="Discover the journey behind Sunny Island Pepper Sauce, our Caribbean heritage, and our commitment to community and flavor."
         />
       </Head>
-      <main className="min-h-screen bg-white dark:bg-black text-black dark:text-white">
+      <main className="min-h-screen bg-white dark:bg-black mt-10 text-black dark:text-white">
         {/* Header with gradient background */}
         <header className="py-8 bg-primary-gradient text-center text-white">
           <h1 className="text-4xl md:text-6xl font-bold mb-2">Our Story</h1>

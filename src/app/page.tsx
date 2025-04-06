@@ -9,7 +9,8 @@ import SectionProductSneak from "@/components/home/SectionProductSneak";
 import SectionSocial from "@/components/home/SectionSocial";
 import Head from "next/head";
 import { useRef } from "react";
-
+//Impact-Site-Verification: 4b1f6559-7ace-4631-a71a-3b8fbd17f288
+//Impact-Site-Verification: 0700f517-bd93-4c0f-9114-097826144d5d
 const Home = () => {
   const productSectionRef = useRef<HTMLDivElement>(null);
 
@@ -34,8 +35,6 @@ const Home = () => {
           content="Welcome to Sunny Island Pepper, your source for authentic Caribbean pepper sauce."
         />
       </Head>
-      Impact-Site-Verification: 4b1f6559-7ace-4631-a71a-3b8fbd17f288
-      Impact-Site-Verification: 0700f517-bd93-4c0f-9114-097826144d5d
       <main className="min-h-screen bg-white dark:bg-black dark:text-white">
         {/* Hero Section */}
 

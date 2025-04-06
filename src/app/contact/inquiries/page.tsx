@@ -214,7 +214,7 @@ ${message}
             <div className="mt-2 flex flex-col gap-2">
               <button
                 onClick={() =>
-                  (window.location.href = "mailto:sunnyislandpepper@gmail.com")
+                  (window.location.href = "mailto:info@sunnyislandpepper.com")
                 }
                 className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-white"
               >
@@ -224,7 +224,7 @@ ${message}
                 onClick={() => (window.location.href = "tel:877-853-7262")}
                 className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-white"
               >
-                (877) 853-7262
+                (# COMING SOON)
               </button>
             </div>
           </div>
@@ -234,7 +234,7 @@ ${message}
             <FaShareAlt size={30} className="mb-3" />
             <h2 className="text-xl font-bold mb-2">Social Media</h2>
             <p className="text-center text-sm mb-3">
-              Follow <strong>@sunnypepperisland</strong> on:
+              Follow <strong>@sunnyislandpepper</strong> on:
             </p>
             <ul className="text-sm space-y-2">
               <li className="flex items-center gap-2">

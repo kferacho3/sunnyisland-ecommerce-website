@@ -131,7 +131,7 @@ export default function LocationsPage() {
   }, []);
 
   return (
-    <main className="pt-[100px] min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
+    <main className="pt-[50px] min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white">
       {/* ========================= Hero Section with Collage ========================= */}
       <section className="max-w-7xl mx-auto px-4 py-10">
         <div className="flex flex-col md:flex-row items-center gap-8">

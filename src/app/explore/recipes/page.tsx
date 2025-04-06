@@ -13,19 +13,27 @@ import {
   FiPlus,
   FiRefreshCw,
   FiStar,
+  FiTrendingDown,
+  FiTrendingUp,
 } from "react-icons/fi";
 import {
-  GiCheeseWedge,
-  GiChiliPepper,
-  GiFoodChain,
+  GiAvocado,
+  GiBellPepper,
+  GiBrandyBottle,
+  GiChicken,
+  GiCutLemon,
+  GiFriedFish,
   GiGarlic,
   GiHerbsBundle,
+  GiHotSpices,
   GiMeat,
-  GiOni,
+  GiPlantSeed,
+  GiSaltShaker,
   GiStabbedNote,
   GiTomato,
 } from "react-icons/gi";
-import { PiIslandFill } from "react-icons/pi";
+import { TbSaladFilled } from "react-icons/tb";
+
 // ─────────────────────────────────────────────
 // Type Definitions
 // ─────────────────────────────────────────────
@@ -41,6 +49,7 @@ export type Recipe = {
   ingredients: string[];
   instructions: string[];
   rating: number; // Will be set to 0.0 by default
+  hearts?: number; // Tracks total hearts across all users
 };
 
 // ─────────────────────────────────────────────
@@ -88,24 +97,45 @@ const countryFlags: { [key: string]: string } = {
 };
 
 // ─────────────────────────────────────────────
-// Helper: Get Appropriate Ingredient Icon
+// Enhanced Ingredient Icon Helper
 // ─────────────────────────────────────────────
 
 function getIngredientIcon(ingredient: string): React.ReactNode {
   const lower = ingredient.toLowerCase();
-  if (lower.includes("tomato")) return <GiTomato size={20} />;
-  if (lower.includes("onion")) return <GiOni size={20} />;
-  if (lower.includes("garlic")) return <GiGarlic size={20} />;
-  if (lower.includes("pepper")) return <GiChiliPepper size={20} />;
-  if (lower.includes("cheese")) return <GiCheeseWedge size={20} />;
-  if (lower.includes("meat")) return <GiMeat size={20} />;
-  if (lower.includes("basil") || lower.includes("herb"))
-    return <GiHerbsBundle size={20} />;
-  return <GiFoodChain size={20} />;
+  if (lower.includes("chicken")) return <GiChicken size={18} />;
+  if (lower.includes("fish")) return <GiFriedFish size={18} />;
+  if (lower.includes("salad")) return <TbSaladFilled size={18} />;
+  if (lower.includes("avocado")) return <GiAvocado size={18} />;
+  if (lower.includes("tomato")) return <GiTomato size={18} />;
+  if (lower.includes("onion")) return <GiGarlic size={18} />;
+  if (lower.includes("lemon")) return <GiCutLemon size={18} />;
+  if (lower.includes("olive oil")) return <GiBrandyBottle size={18} />;
+  if (lower.includes("salt and pepper")) return <GiSaltShaker size={18} />;
+  if (lower.includes("black pepper")) return <GiSaltShaker size={18} />;
+  if (lower.includes("salt")) return <GiSaltShaker size={18} />;
+  if (lower.includes("eggplant")) return <GiPlantSeed size={18} />;
+  if (lower.includes("seasoning")) return <GiHerbsBundle size={18} />;
+  if (lower.includes("garlic")) return <GiGarlic size={18} />;
+  if (lower.includes("bell pepper")) return <GiBellPepper size={18} />;
+
+  if (
+    lower.includes("beef") ||
+    lower.includes("pork") ||
+    lower.includes("lamb")
+  )
+    return <GiMeat size={18} />;
+  if (
+    lower.includes("herb") ||
+    lower.includes("basil") ||
+    lower.includes("oregano")
+  )
+    return <GiHerbsBundle size={18} />;
+
+  return <GiHotSpices size={18} />;
 }
 
 // ─────────────────────────────────────────────
-// Helper: Get AWS Image URL by Recipe ID
+// Get AWS Image URL by Recipe ID
 // ─────────────────────────────────────────────
 
 function getAWSImageUrl(recipeId: number) {
@@ -126,6 +156,18 @@ function shuffleArray<T>(array: T[]): T[] {
 }
 
 // ─────────────────────────────────────────────
+// Dynamic Title Class for Card
+// ─────────────────────────────────────────────
+
+function getDynamicTitleClass(title: string) {
+  // Adjust text size based on length
+  if (title.length > 40) return "text-xs";
+  if (title.length > 30) return "text-sm";
+  if (title.length > 20) return "text-base";
+  return "text-lg";
+}
+
+// ─────────────────────────────────────────────
 // Main Recipes Page Component
 // ─────────────────────────────────────────────
 
@@ -135,55 +177,135 @@ const RecipesPage = () => {
   );
   const [favorites, setFavorites] = useState<number[]>([]);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [featuredRecipe, setFeaturedRecipe] = useState<Recipe | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // For sorting by hearts
+  const [sortAscending, setSortAscending] = useState(true);
 
   // For pagination
   const RECIPES_PER_PAGE = 20;
   const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
   const [visibleCount, setVisibleCount] = useState(RECIPES_PER_PAGE);
 
+  // Track which recipes have hearts from the local user (IDs)
+  const [userHearted, setUserHearted] = useState<number[]>([]);
+
+  // Load hearts and favorites from local storage
   useEffect(() => {
     const storedFav = localStorage.getItem("favoriteRecipes");
     if (storedFav) setFavorites(JSON.parse(storedFav));
+
+    const storedHearts = localStorage.getItem("heartedRecipes");
+    if (storedHearts) {
+      const parsedHearts = JSON.parse(storedHearts) as {
+        userHearts: number[];
+      };
+      setUserHearted(parsedHearts.userHearts || []);
+    }
   }, []);
 
+  // Save hearts and favorites to local storage
   useEffect(() => {
     localStorage.setItem("favoriteRecipes", JSON.stringify(favorites));
-  }, [favorites]);
+    localStorage.setItem(
+      "heartedRecipes",
+      JSON.stringify({
+        userHearts: userHearted,
+      }),
+    );
+  }, [favorites, userHearted]);
 
-  // Initialize and shuffle on mount
+  // Initialize and shuffle on mount (with default hearts count = 0)
   useEffect(() => {
     const establishedRecipes: Recipe[] = establishedRecipesData.map((r) => ({
       ...r,
       rating: 0.0,
+      hearts: 0, // Set a default value for hearts
     }));
     const shuffled = shuffleArray(establishedRecipes);
     setAllRecipes(shuffled);
+    if (shuffled.length > 0) {
+      setFeaturedRecipe(shuffled[0]); // Set the first as default featured
+    }
   }, []);
 
+  // Toggle favorite
   const toggleFavorite = (id: number) => {
     setFavorites((prev) =>
       prev.includes(id) ? prev.filter((fid) => fid !== id) : [...prev, id],
     );
   };
 
+  // Handle rating
   const handleRating = (id: number) => {
     if (!isLoggedIn) alert("Please sign in or sign up to rate recipes!");
     else console.log(`User rated recipe ${id}`);
   };
 
+  // Hearting a recipe (for "like" count)
+  const handleHeart = (recipeId: number) => {
+    // Any user can heart. We'll store in local storage for demonstration
+    setAllRecipes((prev) =>
+      prev.map((r) =>
+        r.id === recipeId ? { ...r, hearts: (r.hearts || 0) + 1 } : r,
+      ),
+    );
+    setUserHearted((prev) => [...prev, recipeId]);
+  };
+
+  // Remove heart (un-heart) a recipe
+  const handleUnheart = (recipeId: number) => {
+    setAllRecipes((prev) =>
+      prev.map((r) =>
+        r.id === recipeId && r.hearts && r.hearts > 0
+          ? { ...r, hearts: r.hearts - 1 }
+          : r,
+      ),
+    );
+    setUserHearted((prev) => prev.filter((id) => id !== recipeId));
+  };
+
+  // Check if user has hearted
+  const userHasHearted = (recipeId: number) => {
+    return userHearted.includes(recipeId);
+  };
+
+  // Open and close modal
   const openModal = (recipe: Recipe) => setSelectedRecipe(recipe);
   const closeModal = () => setSelectedRecipe(null);
 
-  // Show more recipes in increments of 20
+  // Show more recipes
   const loadMoreRecipes = () => {
     setVisibleCount((prev) => prev + RECIPES_PER_PAGE);
   };
 
-  // Re-randomize the recipes
+  // Re-randomize
   const refreshRecipes = () => {
     setAllRecipes((prev) => shuffleArray(prev));
     setVisibleCount(RECIPES_PER_PAGE);
+  };
+
+  // Sort recipes by hearts
+  const toggleSortHearts = () => {
+    setSortAscending((prev) => !prev);
+    const sorted = [...allRecipes].sort((a, b) => {
+      const heartsA = a.hearts || 0;
+      const heartsB = b.hearts || 0;
+      return sortAscending ? heartsB - heartsA : heartsA - heartsB;
+    });
+    setAllRecipes(sorted);
+    setFeaturedRecipe(sorted[0] || null);
+  };
+
+  // Single-click on a card to become the featured
+  const handleCardClick = (recipe: Recipe) => {
+    setFeaturedRecipe(recipe);
+  };
+
+  // Double-click to open the modal
+  const handleCardDoubleClick = (recipe: Recipe) => {
+    openModal(recipe);
   };
 
   const visibleRecipes = allRecipes.slice(0, visibleCount);
@@ -233,19 +355,28 @@ const RecipesPage = () => {
           </defs>
         </svg>
 
+        {/* Tabs */}
         <div className="flex justify-center mb-6 space-x-4">
           <button
             onClick={() => setActiveTab("established")}
-            className="group px-4 py-2 rounded flex items-center gap-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-secondary hover:text-white transition-colors duration-300"
+            className={`group px-4 py-2 rounded flex items-center gap-2 ${
+              activeTab === "established"
+                ? "bg-secondary text-white"
+                : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            } transition-colors duration-300`}
           >
             <GiStabbedNote className="established-icon" />
             <span>Established Recipes</span>
           </button>
           <button
             onClick={() => setActiveTab("original")}
-            className="group px-4 py-2 rounded flex items-center gap-2 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100 hover:bg-primary hover:text-white transition-colors duration-300"
+            className={`group px-4 py-2 rounded flex items-center gap-2 ${
+              activeTab === "original"
+                ? "bg-primary text-white"
+                : "bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+            } transition-colors duration-300`}
           >
-            <PiIslandFill className="original-icon" />
+            <TbSaladFilled className="original-icon" />
             <span>Sunny Island Original Recipes</span>
           </button>
         </div>
@@ -266,22 +397,28 @@ const RecipesPage = () => {
 
         {/* Main Content */}
         {activeTab === "established" ? (
-          allRecipes.length > 0 && (
+          allRecipes.length > 0 &&
+          featuredRecipe && (
             <>
               <div className="space-y-6">
-                {visibleRecipes.length > 0 && (
-                  <FeaturedLayout
-                    featuredRecipe={visibleRecipes[0]}
-                    otherRecipes={visibleRecipes.slice(1)}
-                    onFavorite={toggleFavorite}
-                    onRating={handleRating}
-                    favorites={favorites}
-                    onOpenModal={openModal}
-                  />
-                )}
+                <FeaturedLayout
+                  featuredRecipe={featuredRecipe}
+                  otherRecipes={visibleRecipes.filter(
+                    (r) => r.id !== featuredRecipe.id,
+                  )}
+                  onFavorite={toggleFavorite}
+                  onRating={handleRating}
+                  favorites={favorites}
+                  onOpenModal={openModal}
+                  onSingleClick={handleCardClick}
+                  onDoubleClick={handleCardDoubleClick}
+                  userHasHearted={userHasHearted}
+                  onHeart={handleHeart}
+                  onUnheart={handleUnheart}
+                />
               </div>
-              {/* Moved Pagination/Refresh Buttons Below the Horizontal Cards */}
-              <div className="flex justify-center mt-6 gap-4">
+              {/* Action Buttons: Refresh, Sort by Hearts, Load More */}
+              <div className="flex flex-wrap justify-center mt-6 gap-4">
                 <button
                   onClick={refreshRecipes}
                   className="group flex items-center gap-2 px-4 py-2 bg-primary text-white rounded transition-all duration-300 hover:opacity-90"
@@ -289,10 +426,19 @@ const RecipesPage = () => {
                   <FiRefreshCw className="transition-transform duration-300 group-hover:rotate-90" />
                   <span>Refresh</span>
                 </button>
+
+                <button
+                  onClick={toggleSortHearts}
+                  className="group flex items-center gap-2 px-4 py-2 bg-secondary text-white rounded transition-all duration-300 hover:opacity-90"
+                >
+                  {sortAscending ? <FiTrendingUp /> : <FiTrendingDown />}
+                  <span>Sort by Hearts</span>
+                </button>
+
                 {visibleCount < allRecipes.length && (
                   <button
                     onClick={loadMoreRecipes}
-                    className="group flex items-center gap-2 px-4 py-2 bg-secondary text-white rounded transition-all duration-300 hover:opacity-90"
+                    className="group flex items-center gap-2 px-4 py-2 bg-pink-600 text-white rounded transition-all duration-300 hover:opacity-90"
                   >
                     <span>Load More</span>
                     <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-2" />
@@ -304,6 +450,8 @@ const RecipesPage = () => {
         ) : (
           <OriginalRecipesPlaceholder />
         )}
+
+        {/* Modal */}
         <AnimatePresence mode="wait">
           {selectedRecipe && (
             <RecipeModal
@@ -311,6 +459,9 @@ const RecipesPage = () => {
               onClose={closeModal}
               onRating={handleRating}
               isLoggedIn={isLoggedIn}
+              userHasHearted={userHasHearted}
+              onHeart={handleHeart}
+              onUnheart={handleUnheart}
             />
           )}
         </AnimatePresence>
@@ -332,6 +483,11 @@ type FeaturedLayoutProps = {
   onRating: (id: number) => void;
   favorites: number[];
   onOpenModal: (recipe: Recipe) => void;
+  onSingleClick: (recipe: Recipe) => void;
+  onDoubleClick: (recipe: Recipe) => void;
+  userHasHearted: (id: number) => boolean;
+  onHeart: (id: number) => void;
+  onUnheart: (id: number) => void;
 };
 
 const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
@@ -341,12 +497,33 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
   onRating,
   favorites,
   onOpenModal,
+  onSingleClick,
+  onDoubleClick,
+  userHasHearted,
+  onHeart,
+  onUnheart,
 }) => {
+  const handleFeaturedFavorite = () => {
+    onFavorite(featuredRecipe.id);
+  };
+
+  const handleFeaturedRating = () => {
+    onRating(featuredRecipe.id);
+  };
+
+  const handleFeaturedHeart = () => {
+    if (userHasHearted(featuredRecipe.id)) {
+      onUnheart(featuredRecipe.id);
+    } else {
+      onHeart(featuredRecipe.id);
+    }
+  };
+
   return (
-    <div>
-      {/* Featured Recipe Card */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6 bg-white dark:bg-gray-800 rounded shadow overflow-hidden">
-        <div className="relative w-full md:w-1/2 h-64">
+    <div className="space-y-10">
+      {/* Featured Recipe Card (Bigger, more visual) */}
+      <div className="relative bg-white dark:bg-gray-800 rounded shadow overflow-hidden flex flex-col md:flex-row h-auto">
+        <div className="relative w-full md:w-1/2 h-72 md:h-96">
           <Image
             src={getAWSImageUrl(featuredRecipe.id)}
             alt={featuredRecipe.title}
@@ -354,49 +531,68 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
             className="object-cover"
           />
         </div>
-        <div className="flex-1 p-4 flex flex-col">
-          <h2 className="text-2xl font-bold mb-2">{featuredRecipe.title}</h2>
-          <p className="text-sm mb-4 line-clamp-3">
+        <div className="flex-1 p-6 flex flex-col">
+          <h2 className="text-2xl md:text-3xl font-bold mb-4">
+            {featuredRecipe.title}
+          </h2>
+          <p className="text-sm md:text-base mb-6 line-clamp-5">
             {featuredRecipe.description}
           </p>
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-xl font-semibold">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="text-lg font-semibold">
               {featuredRecipe.rating.toFixed(1)}
             </span>
             <span className="text-xs text-gray-500">NOT YET RATED</span>
             <button
-              onClick={() => onRating(featuredRecipe.id)}
-              className="p-1 border rounded"
+              onClick={handleFeaturedRating}
+              className="p-1 border rounded hover:bg-gray-100"
             >
               <FiStar />
             </button>
           </div>
-          <div className="flex items-center gap-2 mb-2">
+          {/* Hearts Row */}
+          <div className="flex items-center gap-2 mb-4">
+            <button
+              onClick={handleFeaturedHeart}
+              className="p-2 rounded-full hover:bg-gray-100 transition-colors"
+            >
+              <FiHeart
+                size={20}
+                className={
+                  userHasHearted(featuredRecipe.id)
+                    ? "text-red-500"
+                    : "text-gray-400"
+                }
+              />
+            </button>
+            <span>{featuredRecipe.hearts || 0}</span>
+          </div>
+          <div className="flex items-center gap-2 mb-6">
             <img
               src={
                 countryFlags[featuredRecipe.country] || countryFlags["Unknown"]
               }
               alt={featuredRecipe.country}
-              width={24}
-              height={24}
+              width={28}
+              height={28}
               className="rounded-full"
             />
             <span className="text-sm">{featuredRecipe.country}</span>
           </div>
           <div className="mt-auto flex items-center justify-between">
             <button
-              onClick={() => onFavorite(featuredRecipe.id)}
-              className={`p-2 rounded ${
+              onClick={handleFeaturedFavorite}
+              className={`p-2 rounded-full hover:bg-gray-100 transition-colors ${
                 favorites.includes(featuredRecipe.id)
                   ? "text-pink-600"
                   : "text-gray-400"
               }`}
             >
-              <FiHeart size={20} />
+              <FiHeart size={24} />
             </button>
             <button
               onClick={() => onOpenModal(featuredRecipe)}
-              className="flex items-center text-sm text-blue-600 hover:text-blue-800"
+              className="flex items-center text-sm text-blue-600 hover:text-blue-800 font-semibold"
             >
               <span>View Full Recipe</span>
               <FiPlus className="ml-1" />
@@ -404,17 +600,24 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
           </div>
         </div>
       </div>
+
       {/* Horizontal Scroll for Other Recipes */}
       <div className="overflow-x-auto">
-        <div className="flex space-x-4">
+        <div className="flex space-x-4 pb-4">
           {otherRecipes.map((recipe) => (
-            <div key={recipe.id} className="min-w-[250px]">
+            <div key={recipe.id} className="flex-shrink-0">
               <RecipeCard
                 recipe={recipe}
                 onFavorite={onFavorite}
                 onRating={onRating}
                 isFavorited={favorites.includes(recipe.id)}
                 onOpenModal={onOpenModal}
+                userHasHearted={userHasHearted}
+                onHeart={onHeart}
+                onUnheart={onUnheart}
+                // Single-click to feature, double-click to open modal
+                onClick={() => onSingleClick(recipe)}
+                onDoubleClick={() => onDoubleClick(recipe)}
               />
             </div>
           ))}
@@ -425,7 +628,7 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
 };
 
 // ─────────────────────────────────────────────
-// Recipe Card Component
+// Recipe Card Component (Fixed Size)
 // ─────────────────────────────────────────────
 
 type RecipeCardProps = {
@@ -434,6 +637,11 @@ type RecipeCardProps = {
   onRating: (id: number) => void;
   isFavorited: boolean;
   onOpenModal: (recipe: Recipe) => void;
+  userHasHearted: (id: number) => boolean;
+  onHeart: (id: number) => void;
+  onUnheart: (id: number) => void;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  onDoubleClick?: React.MouseEventHandler<HTMLDivElement>;
 };
 
 const RecipeCard: React.FC<RecipeCardProps> = ({
@@ -442,10 +650,37 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
   onRating,
   isFavorited,
   onOpenModal,
+  userHasHearted,
+  onHeart,
+  onUnheart,
+  onClick,
+  onDoubleClick,
 }) => {
+  const titleClass = getDynamicTitleClass(recipe.title);
+
+  const handleFavorite = () => {
+    onFavorite(recipe.id);
+  };
+
+  const handleRating = () => {
+    onRating(recipe.id);
+  };
+
+  const handleHeartToggle = () => {
+    if (userHasHearted(recipe.id)) {
+      onUnheart(recipe.id);
+    } else {
+      onHeart(recipe.id);
+    }
+  };
+
   return (
-    <div className="relative bg-white dark:bg-gray-800 rounded shadow overflow-hidden flex flex-col h-70">
-      <div className="relative h-48">
+    <div
+      className="relative bg-white dark:bg-gray-800 rounded-md shadow overflow-hidden flex flex-col w-56 h-80 cursor-pointer"
+      onClick={onClick}
+      onDoubleClick={onDoubleClick}
+    >
+      <div className="relative w-full h-32">
         <Image
           src={getAWSImageUrl(recipe.id)}
           alt={recipe.title}
@@ -453,46 +688,80 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
           className="object-cover"
         />
       </div>
-      <div className="p-4 flex-grow flex flex-col">
-        <h3 className="text-md font-bold mb-1 leading-tight">{recipe.title}</h3>
+      <div className="p-3 flex-grow flex flex-col">
+        <h3
+          className={`${titleClass} font-bold mb-1 leading-tight line-clamp-2`}
+        >
+          {recipe.title}
+        </h3>
+        {/* Rating */}
         <div className="flex items-center mb-2">
-          <span className="text-xl font-semibold">
+          <span className="text-md font-semibold">
             {recipe.rating.toFixed(1)}
           </span>
-          <span className="text-xs text-gray-500 ml-1">NOT YET RATED</span>
+          <span className="text-xs text-gray-500 ml-1">/ 5</span>
           <button
-            onClick={() => onRating(recipe.id)}
-            className="ml-2 p-1 border rounded"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleRating();
+            }}
+            className="ml-2 p-1 border rounded hover:bg-gray-100"
           >
             <FiStar />
           </button>
         </div>
+        {/* Hearts */}
+        <div className="flex items-center mb-2">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleHeartToggle();
+            }}
+            className="p-1 rounded hover:bg-gray-100 transition-colors"
+          >
+            <FiHeart
+              size={18}
+              className={
+                userHasHearted(recipe.id) ? "text-red-500" : "text-gray-400"
+              }
+            />
+          </button>
+          <span className="ml-1 text-sm">{recipe.hearts || 0}</span>
+        </div>
+        {/* Country */}
         <div className="flex items-center mb-2">
           <img
             src={countryFlags[recipe.country] || countryFlags["Unknown"]}
             alt={recipe.country}
-            width={24}
-            height={24}
+            width={20}
+            height={20}
             className="rounded-full"
           />
-          <span className="ml-2 text-sm">{recipe.country}</span>
+          <span className="ml-2 text-xs">{recipe.country}</span>
         </div>
         <div className="flex-grow" />
+        {/* Bottom actions */}
         <div className="flex items-center justify-between">
           <button
-            onClick={() => onFavorite(recipe.id)}
-            className={`p-2 rounded ${
+            onClick={(e) => {
+              e.stopPropagation();
+              handleFavorite();
+            }}
+            className={`p-1 rounded hover:bg-gray-100 transition-colors ${
               isFavorited ? "text-pink-600" : "text-gray-400"
             }`}
           >
-            <FiHeart size={20} />
+            <FiHeart size={18} />
           </button>
           <button
-            onClick={() => onOpenModal(recipe)}
-            className="flex items-center text-sm text-blue-600 hover:text-blue-800"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenModal(recipe);
+            }}
+            className="flex items-center text-xs text-blue-600 hover:text-blue-800"
           >
-            <span>View Full Recipe</span>
-            <FiPlus className="ml-1" />
+            <span>Full</span>
+            <FiPlus className="ml-1" size={14} />
           </button>
         </div>
       </div>
@@ -501,7 +770,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
 };
 
 // ─────────────────────────────────────────────
-// Recipe Modal Component
+// Recipe Modal
 // ─────────────────────────────────────────────
 
 type RecipeModalProps = {
@@ -509,6 +778,9 @@ type RecipeModalProps = {
   onClose: () => void;
   onRating: (id: number) => void;
   isLoggedIn: boolean;
+  userHasHearted: (id: number) => boolean;
+  onHeart: (id: number) => void;
+  onUnheart: (id: number) => void;
 };
 
 const RecipeModal: React.FC<RecipeModalProps> = ({
@@ -516,11 +788,28 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
   onClose,
   onRating,
   isLoggedIn,
+  userHasHearted,
+  onHeart,
+  onUnheart,
 }) => {
   const { isDark } = useTheme();
   const [activeTab, setActiveTab] = useState<
     "description" | "ingredients" | "instructions"
   >("description");
+
+  const handleRating = () => {
+    if (!isLoggedIn) {
+      alert("Please sign in or sign up to rate recipes!");
+    } else onRating(recipe.id);
+  };
+
+  const handleHeartToggle = () => {
+    if (userHasHearted(recipe.id)) {
+      onUnheart(recipe.id);
+    } else {
+      onHeart(recipe.id);
+    }
+  };
 
   return (
     <motion.div
@@ -530,14 +819,14 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
       exit={{ opacity: 0 }}
     >
       <motion.div
-        className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden w-full max-w-3xl max-h-full"
+        className="relative bg-white dark:bg-gray-800 rounded-lg overflow-hidden w-full max-w-3xl max-h-full shadow-lg"
         initial={{ scale: 0.8 }}
         animate={{ scale: 1 }}
         exit={{ scale: 0.8 }}
       >
         <ExitIcon onClose={onClose} isDarkMode={isDark} />
         <div className="relative">
-          <div className="relative h-64">
+          <div className="relative w-full h-64">
             <Image
               src={getAWSImageUrl(recipe.id)}
               alt={recipe.title}
@@ -546,35 +835,58 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
             />
           </div>
         </div>
-        <div className="p-4">
-          <h2 className="text-2xl font-bold mb-2">{recipe.title}</h2>
-          <div className="flex items-center mb-4">
-            <span className="text-xl font-semibold">
-              {recipe.rating.toFixed(1)}
-            </span>
-            <span className="text-xs text-gray-500 ml-1">NOT YET RATED</span>
-            <button
-              onClick={() => {
-                if (!isLoggedIn)
-                  alert("Please sign in or sign up to rate recipes!");
-                else onRating(recipe.id);
-              }}
-              className="ml-2 p-1 border rounded"
-            >
-              <FiStar />
-            </button>
+        <div className="p-4 flex flex-col space-y-4">
+          <div>
+            <h2 className="text-2xl font-bold mb-2">{recipe.title}</h2>
+            <div className="flex items-center gap-4 mb-4">
+              {/* Rating */}
+              <div className="flex items-center gap-1">
+                <span className="text-xl font-semibold">
+                  {recipe.rating.toFixed(1)}
+                </span>
+                <span className="text-xs text-gray-500">/5</span>
+                <button
+                  onClick={handleRating}
+                  className="ml-2 p-1 border rounded hover:bg-gray-100"
+                >
+                  <FiStar />
+                </button>
+              </div>
+
+              {/* Hearts */}
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={handleHeartToggle}
+                  className="p-1 rounded hover:bg-gray-100 transition-colors"
+                >
+                  <FiHeart
+                    size={20}
+                    className={
+                      userHasHearted(recipe.id)
+                        ? "text-red-500"
+                        : "text-gray-400"
+                    }
+                  />
+                </button>
+                <span>{recipe.hearts || 0}</span>
+              </div>
+
+              {/* Country */}
+              <div className="flex items-center gap-2">
+                <img
+                  src={countryFlags[recipe.country] || countryFlags["Unknown"]}
+                  alt={recipe.country}
+                  width={24}
+                  height={24}
+                  className="rounded-full"
+                />
+                <span className="text-sm">{recipe.country}</span>
+              </div>
+            </div>
           </div>
-          <div className="flex items-center mb-4">
-            <img
-              src={countryFlags[recipe.country] || countryFlags["Unknown"]}
-              alt={recipe.country}
-              width={24}
-              height={24}
-              className="rounded-full"
-            />
-            <span className="ml-2 text-sm">{recipe.country}</span>
-          </div>
-          <div className="border-b mb-4">
+
+          {/* Tabs */}
+          <div className="border-b mb-2">
             <nav className="flex space-x-4">
               <button
                 onClick={() => setActiveTab("description")}
@@ -608,6 +920,8 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
               </button>
             </nav>
           </div>
+
+          {/* Tab Content */}
           <div className="relative h-64 overflow-y-auto">
             <AnimatePresence mode="wait">
               {activeTab === "description" && (
@@ -617,9 +931,9 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3 }}
-                  className="absolute inset-0"
+                  className="absolute inset-0 p-1 space-y-2 text-sm"
                 >
-                  <p className="text-sm">{recipe.description}</p>
+                  <p>{recipe.description}</p>
                 </motion.div>
               )}
               {activeTab === "ingredients" && (
@@ -629,15 +943,13 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3 }}
-                  className="absolute inset-0"
+                  className="absolute inset-0 p-1 text-sm"
                 >
-                  <div className="grid grid-cols-1 gap-2">
+                  <div className="flex flex-col space-y-2">
                     {recipe.ingredients.map((ingredient, index) => (
-                      <div key={index} className="flex items-center">
-                        <div className="p-2 rounded-full bg-gradient-to-r from-primary to-secondary text-transparent bg-clip-text mr-2">
-                          {getIngredientIcon(ingredient)}
-                        </div>
-                        <span className="text-sm">{ingredient}</span>
+                      <div key={index} className="flex items-center gap-2">
+                        <span>{getIngredientIcon(ingredient)}</span>
+                        <span>{ingredient}</span>
                       </div>
                     ))}
                   </div>
@@ -650,15 +962,15 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.3 }}
-                  className="absolute inset-0"
+                  className="absolute inset-0 p-1 text-sm"
                 >
-                  <div className="list-decimal pl-5">
+                  <ol className="list list-inside space-y-1">
                     {recipe.instructions.map((step, index) => (
-                      <p key={index} className="text-sm mb-2">
-                        {step}
-                      </p>
+                      <li key={index}>
+                        {index + 1} - {step}
+                      </li>
                     ))}
-                  </div>
+                  </ol>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -670,7 +982,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
 };
 
 // ─────────────────────────────────────────────
-// Original Recipes Placeholder Component
+// Placeholder for Original Recipes
 // ─────────────────────────────────────────────
 
 const OriginalRecipesPlaceholder: React.FC = () => {

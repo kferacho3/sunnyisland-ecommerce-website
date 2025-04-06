@@ -3,7 +3,8 @@
 import Button from "@/components/ui/Button";
 import FormInput from "@/components/ui/FormInput";
 import Link from "next/link";
-import { FiFacebook, FiInstagram, FiTwitter, FiYoutube } from "react-icons/fi";
+import { FaTiktok, FaXTwitter } from "react-icons/fa6";
+import { FiFacebook, FiInstagram, FiYoutube } from "react-icons/fi";
 
 export default function Footer() {
   const handleNewsletterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -29,17 +30,35 @@ export default function Footer() {
           <div className="flex-1 flex flex-col items-center sm:items-start">
             <h3 className="text-sm font-bold mb-2">SOCIALS</h3>
             <div className="flex gap-4 mb-4">
-              <Link href="#" className="hover:text-secondary">
+              <Link
+                href="https://www.instagram.com/sunnyislandpepper/"
+                className="hover:text-secondary"
+              >
                 <FiInstagram size={20} />
               </Link>
-              <Link href="#" className="hover:text-secondary">
+              <Link
+                href="https://www.x.com/sunnyislandpepper/#"
+                className="hover:text-secondary"
+              >
+                <FaXTwitter size={20} />
+              </Link>
+              <Link
+                href="https://www.facebook.com/sunnyislandpepper/#"
+                className="hover:text-secondary"
+              >
                 <FiFacebook size={20} />
               </Link>
-              <Link href="#" className="hover:text-secondary">
-                <FiYoutube size={20} />
+              <Link
+                href="https://www.tiktok.com/sunnyislandpepper/#"
+                className="hover:text-secondary"
+              >
+                <FaTiktok size={20} />
               </Link>
-              <Link href="#" className="hover:text-secondary">
-                <FiTwitter size={20} />
+              <Link
+                href="https://www.youtube.com/sunnyislandpepper/#"
+                className="hover:text-secondary"
+              >
+                <FiYoutube size={20} />
               </Link>
             </div>
 
@@ -50,41 +69,27 @@ export default function Footer() {
               <div>
                 <h4 className="font-semibold mb-2">Shop</h4>
                 <ul className="space-y-1 text-gray-300">
+                  {/* New items under Shop */}
+
+                  <li>
+                    <Link
+                      href="https://sunnyislandpepper.myshopify.com/"
+                      className="hover:text-secondary"
+                    >
+                      Products
+                    </Link>
+                  </li>
                   <li>
                     <Link href="/shop" className="hover:text-secondary">
-                      Shop
+                      Sauce Info
                     </Link>
                   </li>
                   <li>
                     <Link
-                      href="/shop/sections/shop"
+                      href="https://sunnyislandpepper.myshopify.com/products/sunny-island-pepper-sauce-classic-gold"
                       className="hover:text-secondary"
                     >
-                      Shop Items
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/shop/sections/nutrition"
-                      className="hover:text-secondary"
-                    >
-                      Nutrition
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/shop/sections/ratingsReview"
-                      className="hover:text-secondary"
-                    >
-                      Ratings &amp; Reviews
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/shop/sections/useCase"
-                      className="hover:text-secondary"
-                    >
-                      Use Case
+                      BUY NOW!
                     </Link>
                   </li>
                 </ul>

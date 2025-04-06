@@ -12,10 +12,6 @@ import { useEffect, useState } from "react";
 import { FiArrowLeft, FiArrowRight, FiRefreshCw } from "react-icons/fi";
 
 /* ---------------------------------------------------------------------------
-   Disable no-unused-vars for helper functions (they’re used internally)
----------------------------------------------------------------------------*/
-
-/* ---------------------------------------------------------------------------
    TILE INTERFACE
 ---------------------------------------------------------------------------*/
 interface Tile {
@@ -278,25 +274,31 @@ function generateLayout(
   return fallback;
 }
 
-/* ---------------------------------------------------------------------------
-   Re-enable ESLint no-unused-vars rule
----------------------------------------------------------------------------*/
-
 /* ============================================================================
-   7) MOBILE LAYOUT FUNCTION (Mobile Portrait: 4 rows × 3 columns)
+   7) MOBILE LAYOUT FUNCTION (Mobile Portrait)
 ============================================================================ */
-function getMobileLayoutForFourWidgets(widgets: Widget[]): Tile[] {
-  // In a fixed grid of 4 rows x 3 columns (12 cells), partition the cells as:
-  // Tile 1: occupies rows 0-1 and all 3 columns (2x3 = 6 cells)
-  // Tile 2: occupies row 2 and all 3 columns (1x3 = 3 cells)
-  // Tile 3: occupies row 3, columns 0-1 (1x2 = 2 cells)
-  // Tile 4: occupies row 3, column 2 (1x1 = 1 cell)
-  return [
-    { row: 0, col: 0, rowSpan: 2, colSpan: 3, widget: widgets[0] },
-    { row: 2, col: 0, rowSpan: 1, colSpan: 3, widget: widgets[1] },
-    { row: 3, col: 0, rowSpan: 1, colSpan: 2, widget: widgets[2] },
-    { row: 3, col: 2, rowSpan: 1, colSpan: 1, widget: widgets[3] },
-  ];
+function getMobileLayout(widgets: Widget[]): Tile[] {
+  // For mobile, create a simple layout:
+  // If 4 or more widgets: fixed 4 rows × 3 columns.
+  // For 1-3 widgets: single row.
+  if (widgets.length >= 4) {
+    return [
+      { row: 0, col: 0, rowSpan: 2, colSpan: 3, widget: widgets[0] },
+      { row: 2, col: 0, rowSpan: 1, colSpan: 3, widget: widgets[1] },
+      { row: 3, col: 0, rowSpan: 1, colSpan: 2, widget: widgets[2] },
+      { row: 3, col: 2, rowSpan: 1, colSpan: 1, widget: widgets[3] },
+    ];
+  } else {
+    // For 1-3 widgets, show them in a single row.
+    const cols = widgets.length;
+    return widgets.map((w, i) => ({
+      row: 0,
+      col: i,
+      rowSpan: 1,
+      colSpan: 1,
+      widget: w,
+    }));
+  }
 }
 
 /* ============================================================================
@@ -310,12 +312,24 @@ function WidgetCard({ widget }: WidgetCardProps) {
   return (
     <Link href={widget.route}>
       <div
-        className="p-1 rounded-lg border-2 border-gray-600 hover:border-red-600 transition-colors overflow-hidden"
+        className="
+          relative 
+          group 
+          rounded-lg 
+          overflow-hidden 
+          border border-gray-700 
+          hover:border-red-600 
+          transition-all 
+          duration-300 
+          hover:shadow-2xl 
+          hover:shadow-red-600/50
+          bg-gray-800
+          "
         style={{ height: "100%", width: "100%" }}
       >
         <motion.div
-          className="overflow-hidden rounded-md relative h-full w-full"
-          whileHover={{ scale: 1.05 }}
+          className="relative h-full w-full"
+          whileHover={{ scale: 1.06 }}
           transition={{ type: "spring", stiffness: 300, damping: 20 }}
           style={{
             backgroundImage: `url('${widget.image}')`,
@@ -324,10 +338,42 @@ function WidgetCard({ widget }: WidgetCardProps) {
             backgroundRepeat: "no-repeat",
             height: "100%",
             width: "100%",
+            filter: "brightness(0.9)",
           }}
         >
-          <div className="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-            <span className="uppercase whitespace-normal break-words text-white font-bold text-xl px-2 transition-colors hover:text-red-500 hover:[text-shadow:2px_2px_4px_black,_-2px_-2px_4px_white]">
+          {/* Hover Overlay */}
+          <div
+            className="
+              absolute 
+              inset-0 
+              bg-black 
+              bg-opacity-30 
+              transition-all 
+              duration-300 
+              group-hover:bg-opacity-60 
+              flex 
+              items-center 
+              justify-center
+            "
+          >
+            <span
+              className="
+                uppercase 
+                text-white 
+                font-bold 
+                text-xl 
+                px-2 
+                text-center
+                transform 
+                transition-transform 
+                duration-300 
+                group-hover:scale-105 
+                group-hover:text-red-400
+              "
+              style={{
+                textShadow: "2px 2px 6px rgba(0,0,0,0.8)",
+              }}
+            >
               {widget.title}
             </span>
           </div>
@@ -377,9 +423,8 @@ export default function SectionExploreGrid() {
   useEffect(() => {
     if (mounted) {
       let newLayout: Tile[];
-      // On mobile portrait and if we have at least 4 widgets, use the mobile layout.
-      if (isMobile && widgetCount >= 4) {
-        newLayout = getMobileLayoutForFourWidgets(dashboardWidgets.slice(0, 4));
+      if (isMobile) {
+        newLayout = getMobileLayout(dashboardWidgets);
       } else {
         newLayout = generateLayout(
           widgetCount,
@@ -391,22 +436,38 @@ export default function SectionExploreGrid() {
     }
   }, [mounted, widgetCount, secondaryPage, shuffledSecondaries, isMobile]);
 
-  // For desktop/tablet, use a larger cell size (150px); for mobile, use 100px.
-  const cellSize = isMobile ? 100 : 150;
-  let containerWidth: number;
-  let containerHeight: number;
-  if (isMobile && tiles.length === 4) {
-    containerWidth = 3 * cellSize;
-    containerHeight = 4 * cellSize;
+  // Define grid container style
+  let gridContainerStyle: React.CSSProperties;
+  if (isMobile) {
+    // For 1 widget => 1 column, 2 => 2 columns, >=3 => 3 columns
+    const cols = widgetCount === 1 ? 1 : widgetCount === 2 ? 2 : 3;
+    gridContainerStyle = {
+      display: "grid",
+      gridTemplateColumns: `repeat(${cols}, 1fr)`,
+      gap: "10px",
+      width: "90vw",
+      // Make roughly square cells
+      gridAutoRows: `calc((90vw - ${(cols - 1) * 10}px) / ${cols})`,
+      position: "relative",
+    };
   } else {
+    // Desktop / Tablet
     let maxRow = 0,
       maxCol = 0;
     for (const t of tiles) {
       maxRow = Math.max(maxRow, t.row + t.rowSpan);
       maxCol = Math.max(maxCol, t.col + t.colSpan);
     }
-    containerWidth = maxCol * cellSize;
-    containerHeight = maxRow * cellSize;
+    const cellSize = 150;
+    gridContainerStyle = {
+      display: "grid",
+      gridTemplateColumns: `repeat(${maxCol}, 1fr)`,
+      gridTemplateRows: `repeat(${maxRow}, ${cellSize}px)`,
+      gap: "10px",
+      width: `${maxCol * cellSize}px`,
+      height: `${maxRow * cellSize}px`,
+      position: "relative",
+    };
   }
 
   const totalSecondaryPages =
@@ -434,35 +495,29 @@ export default function SectionExploreGrid() {
   return (
     <section
       id="section-explore-grid"
-      className="w-full min-h-screen p-4 sm:p-8 bg-gray-100 dark:bg-gray-900 text-white flex flex-col items-center justify-center"
+      className="
+        w-full 
+        min-h-screen 
+        p-4 
+        sm:p-8 
+        bg-gray-100 
+        dark:bg-gray-900 
+        text-white 
+        flex 
+        flex-col 
+        items-center 
+        justify-center
+      "
     >
-      <h2 className="text-2xl sm:text-4xl font-bold mb-6">Quick Explore</h2>
-      <p className="mb-8 text-center text-sm sm:text-base">
+      <h2 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-6 text-center">
+        Quick Explore
+      </h2>
+      <p className="mb-6 sm:mb-8 text-center text-sm sm:text-base text-gray-800 dark:text-gray-200 max-w-xl">
         Choose from our main sections to learn more about our sauces and brand.
       </p>
 
       {/* Grid Container */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: isMobile
-            ? "repeat(3, 1fr)"
-            : `repeat(${tiles.reduce(
-                (acc, t) => Math.max(acc, t.col + t.colSpan),
-                0,
-              )}, 1fr)`,
-          gridTemplateRows: isMobile
-            ? "repeat(4, 100px)"
-            : `repeat(${tiles.reduce(
-                (acc, t) => Math.max(acc, t.row + t.rowSpan),
-                0,
-              )}, ${cellSize}px)`,
-          gap: "8px",
-          width: `${containerWidth}px`,
-          height: `${containerHeight}px`,
-          position: "relative",
-        }}
-      >
+      <div style={gridContainerStyle}>
         {tiles.map((tile, index) => (
           <div
             key={index}
@@ -483,15 +538,39 @@ export default function SectionExploreGrid() {
         {secondaryPage > 0 ? (
           <button
             onClick={handlePrevPage}
-            className="group flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded hover:bg-orange-700 transition"
+            className="
+              group 
+              flex 
+              items-center 
+              gap-2 
+              px-4 
+              py-2 
+              rounded 
+              bg-orange-600 
+              text-white 
+              hover:bg-orange-700 
+              transition-colors
+            "
           >
-            <FiArrowLeft className="transition-transform duration-300 group-hover:-translate-x-2" />
+            <FiArrowLeft className="transition-transform duration-300 group-hover:-translate-x-1" />
             <span>Previous Section</span>
           </button>
         ) : (
           <button
             onClick={handleRefresh}
-            className="group flex items-center gap-2 px-4 py-2 bg-primary text-white rounded hover:bg-primary transition"
+            className="
+              group 
+              flex 
+              items-center 
+              gap-2 
+              px-4 
+              py-2 
+              rounded 
+              bg-primary 
+              text-white 
+              hover:bg-primary-light 
+              transition-colors
+            "
           >
             <FiRefreshCw className="transition-transform duration-300 group-hover:rotate-90" />
             <span>Refresh Dashboard</span>
@@ -499,10 +578,22 @@ export default function SectionExploreGrid() {
         )}
         <button
           onClick={handleNextPage}
-          className="group flex items-center gap-2 px-4 py-2 bg-secondary text-white rounded hover:bg-secondary transition"
+          className="
+            group 
+            flex 
+            items-center 
+            gap-2 
+            px-4 
+            py-2 
+            rounded 
+            bg-secondary 
+            text-white 
+            hover:bg-secondary-dark 
+            transition-colors
+          "
         >
           <span>Next Section</span>
-          <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-2" />
+          <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
         </button>
       </div>
     </section>

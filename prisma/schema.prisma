@@ -54,7 +54,7 @@ model Address {
   id           Int      @id @default(autoincrement())
   userId       Int
   user         User     @relation(fields: [userId], references: [id])
-  label        String?  // e.g., "Home", "Work"
+  label        String?
   addressLine1 String
   addressLine2 String?
   city         String
@@ -72,7 +72,7 @@ model Order {
   userId         Int
   user           User     @relation(fields: [userId], references: [id])
   date           DateTime @default(now())
-  tracking       String?  // Optional tracking info
+  tracking       String?
   shippingStatus String
   total          Float
   createdAt      DateTime @default(now())
@@ -80,7 +80,6 @@ model Order {
 }
 
 /// Model to store subscription information.
-/// The "bag" field can store a JSON object with product details.
 model Subscription {
   id         Int      @id @default(autoincrement())
   userId     Int
@@ -98,11 +97,11 @@ model SubmittedRecipe {
   userId          Int
   user            User              @relation(fields: [userId], references: [id])
   name            String
-  photo           String?           // URL or file path for the recipe photo
+  photo           String?
   description     String?
-  preparationTime Int?              // in minutes
-  ingredients     String            // could be a comma-separated list or JSON-formatted
-  cookTime        Int?              // in minutes
+  preparationTime Int?
+  ingredients     String
+  cookTime        Int?
   servings        Int?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @updatedAt
@@ -135,8 +134,50 @@ model CartItem {
   id       Int    @id @default(autoincrement())
   cartId   Int
   cart     Cart   @relation(fields: [cartId], references: [id])
-  title    String // Title of the item.
-  price    Float  // Associated price.
-  quantity Int    // Quantity of the item.
-  // Note: Subtotal (price * quantity) can be calculated in your application code.
+  title    String
+  price    Float
+  quantity Int
+}
+
+/// NEXTAUTH MODELS: Add these if you plan to use NextAuth + Prisma Adapter.
+
+// Tracks which provider accounts (Google, Apple, etc.) or credentials
+// an individual user has.
+model Account {
+  id                 Int    @id @default(autoincrement())
+  userId             Int
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?
+  access_token       String?
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?
+  session_state      String?
+  user               User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+// Tracks session info if you’re storing sessions in the DB via NextAuth.
+model Session {
+  id               Int      @id @default(autoincrement())
+  sessionToken     String   @unique
+  userId           Int
+  expires          DateTime
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Tracks magic-link or other email-based verification tokens if you use
+// NextAuth's email provider or a similar flow that requires token-based
+// verification.
+model VerificationToken {
+  id         Int      @id @default(autoincrement())
+  identifier String
+  token      String   @unique
+  expires    DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 }
