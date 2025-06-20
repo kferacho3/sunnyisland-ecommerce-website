@@ -15,6 +15,7 @@ export default function SectionNewsletter() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [focusedField, setFocusedField] = useState<string | null>(null);
+  const [viewport, setViewport] = useState({ width: 0, height: 0 });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
@@ -58,19 +59,19 @@ export default function SectionNewsletter() {
         />
       </div>
 
-      {/* Floating pepper icons */}
+      {/* Floating peppers */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[...Array(6)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute text-orange-400/20 dark:text-orange-600/20"
             initial={{
-              x: Math.random() * window.innerWidth,
+              x: Math.random() * viewport.width,
               y: -50,
               rotate: 0,
             }}
             animate={{
-              y: window.innerHeight + 50,
+              y: viewport.height + 50,
               rotate: 360,
             }}
             transition={{

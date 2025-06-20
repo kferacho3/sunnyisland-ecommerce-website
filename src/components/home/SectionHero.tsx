@@ -13,11 +13,12 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [showContent, setShowContent] = useState(true);
-
+  const [viewport, setViewport] = useState({ width: 0, height: 0 }); // ← NEW
   useEffect(() => {
-    setIsLoaded(true);
+    // Runs only in the browser
+    const handleResize = () =>
+      setViewport({ width: window.innerWidth, height: window.innerHeight });
 
-    // Mouse move handler for desktop only
     const handleMouseMove = (e: MouseEvent) => {
       if (window.innerWidth > 768) {
         setMousePosition({
@@ -27,16 +28,15 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
       }
     };
 
-    // Scroll handler for all content
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      setShowContent(scrollPosition < 10);
-    };
+    const handleScroll = () => setShowContent(window.scrollY < 10);
 
+    handleResize(); // initial
+    window.addEventListener("resize", handleResize);
     window.addEventListener("mousemove", handleMouseMove);
     window.addEventListener("scroll", handleScroll);
 
     return () => {
+      window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("scroll", handleScroll);
     };
@@ -106,38 +106,30 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
       {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/30 to-black/60" />
 
-      {/* Animated particles - fewer on mobile */}
+      {/* Animated particles */}
       <div className="absolute inset-0 overflow-hidden">
-        {[
-          ...Array(
-            typeof window !== "undefined" && window.innerWidth < 768 ? 10 : 20,
+        {[...Array(viewport.width && viewport.width < 768 ? 10 : 20)].map(
+          (_, i) => (
+            <motion.div
+              key={i}
+              className="absolute w-1 h-1 bg-orange-400/30 rounded-full"
+              initial={{
+                x: Math.random() * viewport.width,
+                y: viewport.height + 10,
+              }}
+              animate={{
+                y: -10,
+                x: Math.random() * viewport.width,
+              }}
+              transition={{
+                duration: Math.random() * 20 + 10,
+                repeat: Infinity,
+                ease: "linear",
+                delay: Math.random() * 5,
+              }}
+            />
           ),
-        ].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-1 h-1 bg-orange-400/30 rounded-full"
-            initial={{
-              x:
-                typeof window !== "undefined"
-                  ? Math.random() * window.innerWidth
-                  : 0,
-              y: typeof window !== "undefined" ? window.innerHeight + 10 : 0,
-            }}
-            animate={{
-              y: -10,
-              x:
-                typeof window !== "undefined"
-                  ? Math.random() * window.innerWidth
-                  : 0,
-            }}
-            transition={{
-              duration: Math.random() * 20 + 10,
-              repeat: Infinity,
-              ease: "linear",
-              delay: Math.random() * 5,
-            }}
-          />
-        ))}
+        )}
       </div>
 
       {/* Main content container with fade on scroll */}
@@ -145,7 +137,7 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
         className="relative z-10 flex flex-col items-center gap-8 md:gap-4 p-4 sm:p-8 max-w-7xl mx-auto w-full"
         style={{
           transform:
-            window.innerWidth > 768
+            viewport.width > 768
               ? `translate(${mousePosition.x}px, ${mousePosition.y}px)`
               : "none",
           transition: "transform 0.3s ease-out",
