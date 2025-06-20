@@ -168,7 +168,8 @@ function Sidebar({
           transition-all duration-300
           overflow-y-auto
         `}
-        style={{ height: window.innerWidth >= 1024 ? sidebarHeight : "auto" }}
+        /* Let the effect decide the height. Never read window during render. */
+        style={{ height: sidebarHeight }}
       >
         <div className="p-6 lg:p-0 space-y-6">
           {/* Table of Contents */}
