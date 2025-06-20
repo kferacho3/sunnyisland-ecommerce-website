@@ -1,3 +1,4 @@
+// ClientEvents.tsx
 "use client";
 
 import Image from "next/image";
@@ -276,13 +277,15 @@ function EventCard({
     <RegularBorder>
       <div
         key={ev.id}
-        className="default-card cursor-pointer gap-2 w-[11.5rem] h-56 sm:w-64 sm:h-[18rem] hover:scale-105 transition-transform duration-300 relative"
+        className="cursor-pointer w-full h-96 group relative overflow-hidden transition-all duration-500 hover:shadow-2xl"
         onClick={onClick}
       >
-        {/* Card content with an opaque background + padding */}
-        <div className="card-inner bg-black/80 shadow-lg w-full h-full flex flex-col text-white overflow-hidden p-3 sm:p-4 relative">
-          {/* Top image occupies 65% of the card */}
-          <div className="w-full h-[65%] relative rounded-md overflow-hidden mb-2">
+        {/* Premium glass-morphism card design */}
+        <div className="absolute inset-0 bg-gradient-to-br from-white/95 via-white/90 to-white/85 backdrop-blur-xl shadow-xl"></div>
+
+        <div className="relative w-full h-full flex flex-col p-6">
+          {/* Image section with premium overlay */}
+          <div className="relative w-full h-48 rounded-xl overflow-hidden mb-4 group-hover:scale-[1.02] transition-transform duration-500">
             <Image
               src={thumb}
               alt={ev.title}
@@ -291,65 +294,87 @@ function EventCard({
               quality={90}
               className="object-cover"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
           </div>
 
-          {/* Text content occupies the remaining 35% */}
-          <div className="flex flex-col justify-start h-[35%] relative">
-            <h3 className="text-xs sm:text-sm font-bold mb-1">{ev.title}</h3>
-            <p className="text-[0.65rem] sm:text-xs mb-1">
-              <strong>Date:</strong> {ev.date}
-            </p>
-            <p className="text-[0.65rem] sm:text-xs mb-1">
-              <strong>Location:</strong> {ev.location}
-            </p>
+          {/* Content section with premium typography */}
+          <div className="flex-1 flex flex-col">
+            <h3 className="text-lg font-semibold text-slate-900 mb-2 line-clamp-2 group-hover:text-amber-700 transition-colors duration-300">
+              {ev.title}
+            </h3>
 
-            {/* On larger screens, show truncated text with fade effect */}
-            <div className="hidden sm:block relative fade-container">
-              <p className="text-[0.6rem] sm:text-xs fade-content">
-                {truncatedDesc}
+            <div className="space-y-1 mb-3">
+              <p className="text-sm text-slate-600 flex items-center gap-2">
+                <svg
+                  className="w-4 h-4 text-amber-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <span>
+                  {new Date(ev.date).toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
+              </p>
+              <p className="text-sm text-slate-600 flex items-center gap-2">
+                <svg
+                  className="w-4 h-4 text-amber-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                <span className="line-clamp-1">{ev.location}</span>
+              </p>
+            </div>
+
+            {/* Description with premium fade effect */}
+            <div className="relative flex-1">
+              <p className="text-sm text-slate-700 line-clamp-3">
+                {ev.description}
               </p>
               {isTruncated && (
-                <div className="fade-overlay pointer-events-none"></div>
+                <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-white via-white/80 to-transparent"></div>
               )}
             </div>
 
-            {/* Plus Button if text is truncated */}
+            {/* Premium action button */}
             {isTruncated && (
-              <div className="group absolute bottom-0 right-0 w-5 h-5 rounded-full bg-gradient-to-r from-gray-500 via-gray-400 to-gray-300 flex items-center justify-center transition-colors duration-300 hover:cursor-pointer hover:from-gray-400 hover:via-gray-300 hover:to-gray-200">
-                <button
-                  className="text-white text-sm w-full h-full flex items-center justify-center group-hover:text-gray-900"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setModalEvent(ev);
-                  }}
-                >
-                  +
-                </button>
-              </div>
+              <button
+                className="mt-3 self-end px-4 py-1.5 bg-amber-600 text-white text-sm rounded-full hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setModalEvent(ev);
+                }}
+              >
+                Read More
+              </button>
             )}
           </div>
         </div>
       </div>
-
-      {/* Fade-out styles for truncated text */}
-      <style jsx>{`
-        .fade-container {
-          max-height: 2.8em; /* roughly ~2 lines of text */
-          overflow: hidden;
-        }
-        .fade-overlay {
-          position: absolute;
-          bottom: 0;
-          right: 0;
-          left: 0;
-          height: 1.5em;
-          background: linear-gradient(
-            to top,
-            rgba(0, 0, 0, 0.8),
-            rgba(0, 0, 0, 0)
-          );
-        }
-      `}</style>
     </RegularBorder>
   );
 }
@@ -360,54 +385,160 @@ function EventCard({
 
 function Modal({ event, onClose }: { event: EventItem; onClose: () => void }) {
   const thumb = useThumbnail(event.title, event.imageUrl);
+
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, []);
+
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-lg p-6 relative w-[75vw] h-[75vh] overflow-auto"
+        className="bg-white rounded-2xl shadow-2xl relative w-full max-w-4xl max-h-[90vh] overflow-hidden animate-modalSlideIn"
         onClick={(e) => e.stopPropagation()}
       >
+        {/* Premium close button */}
         <button
-          className="absolute top-4 right-4 text-gray-600 hover:text-gray-900 text-2xl font-bold"
+          className="absolute top-6 right-6 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-white shadow-lg transition-all duration-300 z-10"
           onClick={onClose}
         >
-          &times;
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
         </button>
-        <div className="flex flex-col items-center">
-          <div className="relative w-full h-64 mb-4">
+
+        <div className="overflow-y-auto max-h-[90vh]">
+          {/* Hero image section */}
+          <div className="relative w-full h-80">
             <Image
               src={thumb}
               alt={event.title}
               fill
-              sizes="(max-width: 768px) 100vw, 33vw"
+              sizes="(max-width: 768px) 100vw, 50vw"
               quality={90}
-              className="object-cover rounded-md"
+              className="object-cover"
             />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"></div>
+            <div className="absolute bottom-0 left-0 right-0 p-8">
+              <h2 className="text-4xl font-bold text-white mb-2">
+                {event.title}
+              </h2>
+              <div className="flex items-center gap-4 text-white/90">
+                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
+                  {event.theme}
+                </span>
+                <span className="text-sm">
+                  {new Date(event.date).toLocaleDateString("en-US", {
+                    weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  })}
+                </span>
+              </div>
+            </div>
           </div>
-          <h2 className="text-3xl font-bold mb-4">{event.title}</h2>
-          <p className="mb-2">
-            <strong>Date:</strong> {event.date}
-          </p>
-          <p className="mb-2">
-            <strong>Location:</strong> {event.location}
-          </p>
-          <p className="mb-2">
-            <strong>Theme:</strong> {event.theme}
-          </p>
-          <p className="mb-2">{event.description}</p>
-          <p className="mb-2">
-            <strong>Price:</strong> {event.price}
-          </p>
-          <a
-            href={event.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 px-4 py-2 bg-primary text-white rounded hover:bg-primary-dark transition"
-          >
-            View Event
-          </a>
+
+          {/* Content section */}
+          <div className="p-8 space-y-6">
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <svg
+                    className="w-6 h-6 text-amber-600 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                    />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                    />
+                  </svg>
+                  <div>
+                    <h3 className="font-semibold text-slate-900">Location</h3>
+                    <p className="text-slate-600">{event.location}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <svg
+                    className="w-6 h-6 text-amber-600 mt-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  <div>
+                    <h3 className="font-semibold text-slate-900">Price</h3>
+                    <p className="text-slate-600">{event.price}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-center">
+                <a
+                  href={event.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-8 py-3 bg-amber-600 text-white rounded-full hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                >
+                  <span className="font-semibold">Get Tickets</span>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                    />
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div className="border-t pt-6">
+              <h3 className="font-semibold text-slate-900 mb-3">
+                About This Event
+              </h3>
+              <p className="text-slate-700 leading-relaxed">
+                {event.description}
+              </p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -423,7 +554,7 @@ export default function ClientEvents({
   featuredEvent,
 }: ClientEventsProps) {
   const [modalEvent, setModalEvent] = useState<EventItem | null>(null);
-  const [visibleCount, setVisibleCount] = useState(5);
+  const [visibleCount, setVisibleCount] = useState(8);
 
   // Filter states
   const [filterLocation, setFilterLocation] = useState("All");
@@ -438,7 +569,7 @@ export default function ClientEvents({
     const matchesLocation =
       filterLocation === "All"
         ? true
-        : ev.location.toLowerCase() === filterLocation.toLowerCase();
+        : ev.location.toLowerCase().includes(filterLocation.toLowerCase());
     const matchesTheme = filterTheme
       ? ev.theme.toLowerCase().includes(filterTheme.toLowerCase()) ||
         ev.title.toLowerCase().includes(filterTheme.toLowerCase())
@@ -476,102 +607,180 @@ export default function ClientEvents({
         <Modal event={modalEvent} onClose={() => setModalEvent(null)} />
       )}
 
-      {/* Filter Bar */}
-      <div className="mb-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-        <div>
-          <label htmlFor="location" className="mr-2 text-white">
-            Location:
-          </label>
-          <select
-            id="location"
-            value={filterLocation}
-            onChange={(e) => setFilterLocation(e.target.value)}
-            className="p-2 rounded text-black"
-          >
-            <option value="All">All</option>
-            <option value="Georgia">Georgia</option>
-            <option value="Florida">Florida</option>
-          </select>
-        </div>
-        <div>
-          <label htmlFor="date" className="mr-2 text-white">
-            Date from:
-          </label>
-          <input
-            id="date"
-            type="date"
-            value={filterDate}
-            onChange={(e) => setFilterDate(e.target.value)}
-            className="p-2 rounded text-black"
-          />
-        </div>
-        <div>
-          <label htmlFor="theme" className="mr-2 text-white">
-            Theme/Keyword:
-          </label>
-          <input
-            id="theme"
-            type="text"
-            value={filterTheme}
-            onChange={(e) => setFilterTheme(e.target.value)}
-            placeholder="e.g., food, arts, festival"
-            className="p-2 rounded text-black"
-          />
+      {/* Premium Filter Bar */}
+      <div className="mb-12 bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-6">
+        <div className="grid md:grid-cols-3 gap-4">
+          <div className="relative">
+            <label
+              htmlFor="location"
+              className="block text-sm font-medium text-slate-700 mb-2"
+            >
+              Location
+            </label>
+            <select
+              id="location"
+              value={filterLocation}
+              onChange={(e) => setFilterLocation(e.target.value)}
+              className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
+            >
+              <option value="All">All Locations</option>
+              <option value="Georgia">Georgia</option>
+              <option value="Florida">Florida</option>
+            </select>
+          </div>
+
+          <div className="relative">
+            <label
+              htmlFor="date"
+              className="block text-sm font-medium text-slate-700 mb-2"
+            >
+              Date From
+            </label>
+            <input
+              id="date"
+              type="date"
+              value={filterDate}
+              onChange={(e) => setFilterDate(e.target.value)}
+              className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
+            />
+          </div>
+
+          <div className="relative">
+            <label
+              htmlFor="theme"
+              className="block text-sm font-medium text-slate-700 mb-2"
+            >
+              Theme or Keyword
+            </label>
+            <input
+              id="theme"
+              type="text"
+              value={filterTheme}
+              onChange={(e) => setFilterTheme(e.target.value)}
+              placeholder="e.g., food, arts, festival"
+              className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
+            />
+          </div>
         </div>
       </div>
 
-      {/* Global Featured Event (Hero Component) */}
+      {/* Featured Event Hero */}
       {featuredEvent && (
-        <div
-          className="main-card mx-auto w-full max-w-5xl cursor-pointer hover:scale-105 transition-transform duration-300 mb-12 relative"
-          onClick={() => setModalEvent(featuredEvent)}
-        >
-          <div className="outer-border relative">
-            <div className="mid-border relative">
-              <div className="inner-border relative">
-                {/* Display the full description now */}
-                <div className="card-inner p-10 bg-black bg-opacity-60 rounded-lg shadow-2xl relative">
-                  <div className="mb-6 w-full h-80 relative">
-                    <Image
-                      src={useThumbnail(
-                        featuredEvent.title,
-                        featuredEvent.imageUrl,
-                      )}
-                      alt={featuredEvent.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                      quality={100}
-                      className="object-cover rounded-md"
-                    />
-                  </div>
-                  <h2 className="text-4xl font-bold mb-4">
-                    {featuredEvent.title}
-                  </h2>
-                  <p className="mb-2">
-                    <strong>Date:</strong> {featuredEvent.date}
-                  </p>
-                  <p className="mb-2">
-                    <strong>Location:</strong> {featuredEvent.location}
-                  </p>
-                  <p className="mb-2 text-xs pr-5">
-                    {featuredEvent.description}
-                  </p>
+        <div className="mb-16">
+          <div className="text-center mb-8">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+              Featured Event
+            </span>
+          </div>
 
-                  {/* We can keep the plus button if you still want to open the modal,
-                      but removing the truncation means we always see the full text. */}
-                  {featuredEvent.description.length > 100 && (
-                    <div className="group absolute bottom-6 right-6 w-8 h-8 rounded-full bg-gradient-to-r from-gray-500 via-gray-400 to-gray-300 flex items-center justify-center transition-colors duration-300 hover:cursor-pointer hover:from-gray-400 hover:via-gray-300 hover:to-gray-200">
-                      <button
-                        className="text-white text-sm w-full h-full flex items-center justify-center group-hover:text-gray-900"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setModalEvent(featuredEvent);
-                        }}
-                      >
-                        +
-                      </button>
+          <div
+            className="main-card cursor-pointer hover:scale-[1.02] transition-transform duration-500"
+            onClick={() => setModalEvent(featuredEvent)}
+          >
+            <div className="outer-border">
+              <div className="mid-border">
+                <div className="inner-border">
+                  <div className="relative bg-white/95 backdrop-blur-xl rounded-xl overflow-hidden shadow-2xl">
+                    <div className="grid md:grid-cols-2 gap-8 p-8 md:p-12">
+                      <div className="space-y-6">
+                        <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
+                          {featuredEvent.title}
+                        </h2>
+
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-3 text-slate-700">
+                            <svg
+                              className="w-5 h-5 text-amber-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                              />
+                            </svg>
+                            <span className="font-medium">
+                              {new Date(featuredEvent.date).toLocaleDateString(
+                                "en-US",
+                                {
+                                  weekday: "long",
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                },
+                              )}
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-3 text-slate-700">
+                            <svg
+                              className="w-5 h-5 text-amber-600"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                              />
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                              />
+                            </svg>
+                            <span className="font-medium">
+                              {featuredEvent.location}
+                            </span>
+                          </div>
+                        </div>
+
+                        <p className="text-lg text-slate-700 leading-relaxed">
+                          {featuredEvent.description}
+                        </p>
+
+                        <button className="inline-flex items-center gap-2 px-6 py-3 bg-amber-600 text-white rounded-full hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                          <span className="font-semibold">Learn More</span>
+                          <svg
+                            className="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17 8l4 4m0 0l-4 4m4-4H3"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+
+                      <div className="relative h-64 md:h-auto rounded-xl overflow-hidden">
+                        <Image
+                          src={useThumbnail(
+                            featuredEvent.title,
+                            featuredEvent.imageUrl,
+                          )}
+                          alt={featuredEvent.title}
+                          fill
+                          sizes="(max-width: 768px) 100vw, 50vw"
+                          quality={100}
+                          className="object-cover"
+                        />
+                      </div>
                     </div>
-                  )}
+                  </div>
                 </div>
               </div>
             </div>
@@ -579,33 +788,75 @@ export default function ClientEvents({
         </div>
       )}
 
-      {/* Featured Sunny Island Section */}
-      <div
-        className="mx-auto w-full max-w-5xl mb-12 cursor-pointer hover:scale-105 transition-transform duration-300"
-        onClick={() => {}}
-      >
+      {/* Sunny Island Section */}
+      <div className="mb-16">
         <SunnyIslandBorder>
-          <div className="p-10 bg-black bg-opacity-60 rounded-lg shadow-2xl">
-            <h2 className="text-4xl font-bold text-center text-white">
-              Featured Sunny Island
+          <div className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 rounded-xl p-12 text-center">
+            <h2 className="text-4xl font-bold text-slate-900 mb-4">
+              Sunny Island Experiences
             </h2>
-            <p className="text-center text-white mt-4">Coming Soon</p>
+            <p className="text-lg text-slate-700 mb-8 max-w-2xl mx-auto">
+              Exclusive culinary adventures and premium dining experiences
+              curated for the most discerning food enthusiasts
+            </p>
+            <div className="inline-flex items-center gap-2 px-6 py-3 bg-amber-100 text-amber-800 rounded-full">
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span className="font-semibold">Coming Soon</span>
+            </div>
           </div>
         </SunnyIslandBorder>
       </div>
 
-      {/* Render Filtered Sections (Grouped by Theme) */}
+      {/* Event Sections */}
       {filteredSections.length === 0 ? (
-        <p className="text-center text-white">
-          No events found matching the selected filters.
-        </p>
+        <div className="text-center py-16">
+          <svg
+            className="w-16 h-16 text-slate-300 mx-auto mb-4"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <p className="text-xl text-slate-600">
+            No events found matching your criteria
+          </p>
+          <button
+            onClick={() => {
+              setFilterLocation("All");
+              setFilterDate("");
+              setFilterTheme("");
+            }}
+            className="mt-4 px-6 py-2 text-amber-600 hover:text-amber-700 font-medium"
+          >
+            Clear all filters
+          </button>
+        </div>
       ) : (
-        filteredSections.map((section) => (
-          <section key={section.term} className="p-5 sm:p-20 mb-26">
-            <h2 className="text-3xl font-extrabold mb-4 uppercase tracking-wide">
-              {section.term}
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-items-center">
+        filteredSections.map((section, index) => (
+          <section
+            key={section.term}
+            className={index !== filteredSections.length - 1 ? "mb-16" : ""}
+          >
+            <div className="mb-8">
+              <h2 className="text-3xl font-bold text-slate-200 mb-2">
+                {section.term}
+              </h2>
+              <div className="h-1 w-24 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"></div>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {section.events.slice(0, visibleCount).map((ev) => (
                 <EventCard
                   key={ev.id}
@@ -615,13 +866,27 @@ export default function ClientEvents({
                 />
               ))}
             </div>
+
             {section.events.length > visibleCount && (
-              <div className="flex justify-center mt-4">
+              <div className="flex justify-center mt-8">
                 <button
-                  className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-700 transition"
-                  onClick={() => setVisibleCount(visibleCount + 5)}
+                  className="inline-flex items-center gap-2 px-8 py-3 bg-slate-900 text-white rounded-full hover:bg-slate-800 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  onClick={() => setVisibleCount(visibleCount + 8)}
                 >
-                  Load More
+                  <span className="font-semibold">Load More Events</span>
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
                 </button>
               </div>
             )}
@@ -629,16 +894,97 @@ export default function ClientEvents({
         ))
       )}
 
-      {/* Global Font Update */}
+      {/* Premium Font Import */}
       <style jsx global>{`
+        @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+
         body {
-          font-family: "Open Sans", sans-serif;
+          font-family:
+            "Inter",
+            -apple-system,
+            BlinkMacSystemFont,
+            "Segoe UI",
+            Roboto,
+            "Helvetica Neue",
+            Arial,
+            sans-serif;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Premium animations */
+        @keyframes modalSlideIn {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        .animate-modalSlideIn {
+          animation: modalSlideIn 0.3s ease-out;
+        }
+
+        /* Smooth scrolling */
+        html {
+          scroll-behavior: smooth;
+        }
+
+        /* Premium selection color */
+        ::selection {
+          background-color: #fbbf24;
+          color: #1f2937;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+          width: 10px;
+          height: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+          background: #f1f5f9;
+          border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+
+        /* Line clamp utilities */
+        .line-clamp-1 {
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 1;
+          -webkit-box-orient: vertical;
+        }
+
+        .line-clamp-2 {
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+        }
+
+        .line-clamp-3 {
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
         }
       `}</style>
 
-      {/* Custom Border & Decoration Styles remain largely unchanged */}
+      {/* Preserved Border Styles */}
       <style jsx>{`
-        /* ---------------- Main Card (Hero) Styles (Unchanged) ---------------- */
+        /* ---------------- Main Card (Hero) Styles ---------------- */
         .main-card {
           position: relative;
           border: 2px solid transparent;
@@ -721,78 +1067,6 @@ export default function ClientEvents({
           height: 100%;
           width: 100%;
           margin: auto;
-        }
-        /* ---------------- Decorations for Featured Component ---------------- */
-        .corner-decoration {
-          position: absolute;
-          width: 0em;
-          margin: -3px;
-        }
-        @media (min-width: 768px) {
-          .corner-decoration {
-            width: 0em;
-            margin: -4px;
-          }
-        }
-        @media (min-width: 992px) {
-          .corner-decoration {
-            width: 0em;
-            margin: -5px;
-          }
-        }
-        @media (min-width: 1200px) {
-          .corner-decoration {
-            width: 0em;
-            margin: -6px;
-          }
-        }
-        .corner-decoration.corner-left-top {
-          left: 0;
-          top: 0;
-        }
-        .corner-decoration.corner-right-top {
-          top: 0;
-          right: 0;
-          transform: scaleX(-1);
-        }
-        .corner-decoration.corner-right-bottom {
-          right: 0;
-          bottom: 0;
-          transform: scale(-1);
-        }
-        .corner-decoration.corner-left-bottom {
-          left: 0;
-          bottom: 0;
-          transform: scaleY(-1);
-        }
-        .vertical-decoration {
-          position: absolute;
-          left: 0;
-          right: 0;
-          margin: auto;
-          width: 11em;
-        }
-        @media (min-width: 768px) {
-          .vertical-decoration {
-            width: 16em;
-          }
-        }
-        @media (min-width: 992px) {
-          .vertical-decoration {
-            width: 20em;
-          }
-        }
-        @media (min-width: 1200px) {
-          .vertical-decoration {
-            width: 27em;
-          }
-        }
-        .vertical-decoration.top {
-          top: 0;
-        }
-        .vertical-decoration.bottom {
-          bottom: 0;
-          transform: scaleY(-1);
         }
       `}</style>
     </div>

@@ -48,8 +48,10 @@ export default function SectionParallax() {
       ref={containerRef}
       className="relative min-h-screen flex flex-col items-center justify-center overflow-hidden"
       style={{
-        background:
-          "linear-gradient(to bottom, white 0%, #87CEEB 30%, #F4A460 70%, #FAEBD7 100%)",
+        backgroundImage: `url('https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/parallax/SunnyIslandParallaxSectionBackground.webp')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
         fontFamily: "'ZelioonWild', sans-serif",
       }}
     >
@@ -71,37 +73,54 @@ export default function SectionParallax() {
         }
       `}</style>
 
-      {/* Sun Animation Styles */}
+      {/* Optimized Sun Animation for Mobile */}
       <style jsx>{`
-        .sun {
-          margin-left: 7%;
-          top: 1%;
-          animation: ${shouldReduceMotion
-            ? "none"
-            : "rotate 4s linear infinite"};
-          --color: yellow;
-          --scale: 0.5;
+        @media (max-width: 768px) {
+          .sun {
+            animation: none !important;
+          }
+          .ray {
+            display: none !important;
+          }
         }
+
+        @media (min-width: 769px) {
+          .sun {
+            margin-left: 7%;
+            top: 1%;
+            animation: rotate 10s linear infinite;
+            animation-play-state: ${shouldReduceMotion ? "paused" : "running"};
+            --color: yellow;
+            --scale: 0.5;
+          }
+
+          @keyframes rotate {
+            0% {
+              transform: rotate(0deg);
+            }
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+        }
+
         .center {
           height: calc(var(--scale) * 10em);
           width: calc(var(--scale) * 10em);
-          transition:
-            background-color 2s linear,
-            box-shadow 2s linear;
           background-color: var(--color);
           border-radius: 50%;
           box-shadow: 0 0 calc(var(--scale) * 3em) var(--color);
+          will-change: transform;
         }
+
         .ray {
           position: absolute;
           height: calc(var(--scale) * 3em);
           width: calc(var(--scale) * 0.5em);
-          transition:
-            background-color 2s ease-in-out,
-            box-shadow 2s ease-in-out;
           box-shadow: 0 0 calc(var(--scale) * 1em) var(--color);
           background-color: var(--color);
         }
+
         .r-1 {
           margin-left: calc(var(--scale) * 4.75em);
           margin-top: calc(var(--scale) * 1em);
@@ -140,16 +159,6 @@ export default function SectionParallax() {
           margin-top: calc(var(--scale) * -11.75em);
           transform: rotate(-45deg);
         }
-        @keyframes rotate {
-          0% {
-            transform: rotate(0deg);
-            --color: yellow;
-          }
-          100% {
-            transform: rotate(360deg);
-            --color: orange;
-          }
-        }
       `}</style>
 
       {/* Parallax Header with moving text */}
@@ -165,7 +174,7 @@ export default function SectionParallax() {
 
       {/* Image Container */}
       <div className="relative w-full flex items-center justify-center">
-        {/* Parallax Image 1 (Static, in the back) */}
+        {/* Parallax Image 1 (Static, in the back) - Reduced size */}
         <motion.img
           src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/parallax/SunnyIslandPepperSauceParallax1.png"
           alt="Parallax 1"
@@ -174,12 +183,13 @@ export default function SectionParallax() {
           style={{
             left: "50%",
             x: "-50%",
+            y: "7.5%",
             zIndex: 1,
-            scale: 1.25,
+            scale: 0.5, // Reduced from 0.75
           }}
         />
 
-        {/* Parallax Image 2 (Middle layer) */}
+        {/* Parallax Image 2 (Middle layer) - Reduced size */}
         <motion.img
           src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/home/parallax/SunnyIslandPepperSauceParallax2.png"
           alt="Parallax 2"
@@ -190,7 +200,7 @@ export default function SectionParallax() {
             x: "-50%",
             y: translateYImage2,
             zIndex: 2,
-            scale: 1.25,
+            scale: 0.5, // Reduced from 0.75
           }}
         />
 
@@ -227,12 +237,13 @@ export default function SectionParallax() {
             <div className="ray r-8"></div>
           </div>
 
-          {/* Sun glow effect */}
+          {/* Sun glow effect - only on desktop */}
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true, amount: 0.75 }}
             transition={{ delay: 1.5, duration: 1 }}
+            className="hidden md:block"
             style={{
               position: "absolute",
               left: "50%",
@@ -249,19 +260,48 @@ export default function SectionParallax() {
         </motion.div>
       </div>
 
-      {/* Buttons Container */}
+      {/* Restyled Buttons Container */}
       <div className="relative z-20 mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center">
         <Link href="/explore/products">
-          <button className="group flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-[#FFB300] via-[#FFC107] to-[#FFA000] text-black font-bold rounded-lg shadow-lg border border-transparent transition-all duration-300 transform hover:scale-105 hover:border-white">
-            View Our Products
-            <GiHeartBottle className="transition-transform duration-300 group-hover:animate-shake" />
-          </button>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="relative px-12 py-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold text-lg rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group"
+          >
+            <span className="relative z-10 flex items-center justify-center gap-3">
+              View Our Products
+              <GiHeartBottle className="text-xl transition-transform duration-300 group-hover:animate-shake" />
+            </span>
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-400"
+              initial={{ x: "-100%" }}
+              whileHover={{ x: "100%" }}
+              transition={{ duration: 0.6 }}
+            />
+          </motion.button>
         </Link>
+
         <Link href="https://sunnyislandpepper.myshopify.com/products/sunny-island-pepper-sauce-classic-gold">
-          <button className="group flex items-center gap-2 px-8 py-3 bg-secondary text-white font-bold rounded-lg shadow-lg border border-transparent transition-all duration-300 transform hover:scale-105 hover:border-white">
-            Shop Now
-            <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-2" />
-          </button>
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className="relative px-12 py-4 bg-white dark:bg-gray-900 text-orange-600 dark:text-orange-400 font-bold text-lg rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group border-2 border-orange-500"
+          >
+            <span className="relative z-10 flex items-center justify-center gap-3">
+              Shop Now
+              <FiArrowRight className="text-xl transition-transform duration-300 group-hover:translate-x-2" />
+            </span>
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500"
+              initial={{ x: "-100%" }}
+              whileHover={{ x: "0%" }}
+              transition={{ duration: 0.6 }}
+            />
+            <span className="absolute inset-0 flex items-center justify-center gap-3 text-white opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              Shop Now
+              <FiArrowRight className="text-xl translate-x-2" />
+            </span>
+          </motion.button>
         </Link>
       </div>
 
@@ -292,6 +332,33 @@ export default function SectionParallax() {
         }
         .animate-shake {
           animation: shake 0.5s ease-in-out;
+        }
+
+        /* Button shine effect */
+        @keyframes shine {
+          0% {
+            transform: translateX(-100%) translateY(-100%) rotate(45deg);
+          }
+          100% {
+            transform: translateX(100%) translateY(100%) rotate(45deg);
+          }
+        }
+
+        /* Performance optimizations for mobile */
+        @media (max-width: 768px) {
+          .sun img {
+            transform: scale(3.5) !important;
+          }
+        }
+
+        /* Reduced motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+          .sun {
+            animation: none !important;
+          }
+          .animate-shake {
+            animation: none !important;
+          }
         }
       `}</style>
     </section>

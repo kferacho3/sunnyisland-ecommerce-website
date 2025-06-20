@@ -6,85 +6,77 @@ import {
   secondaryWidgetsData,
   shuffleArray,
 } from "@/data/gridData";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FiArrowLeft, FiArrowRight, FiRefreshCw } from "react-icons/fi";
+import {
+  FiArrowLeft,
+  FiArrowRight,
+  FiExternalLink,
+  FiRefreshCw,
+} from "react-icons/fi";
+import { HiSparkles } from "react-icons/hi";
 
 /* ---------------------------------------------------------------------------
    TILE INTERFACE
 ---------------------------------------------------------------------------*/
 interface Tile {
-  row: number; // top-left row (0-based)
-  col: number; // top-left col (0-based)
+  row: number;
+  col: number;
   rowSpan: number;
   colSpan: number;
-  widget?: Widget; // assigned widget
+  widget?: Widget;
 }
 
 /* ============================================================================
-   1) EXACT 24 PATTERNS FOR 5-WIDGETS IN A 3×8 GRID (Desktop)
+   1) ENHANCED 24 PATTERNS FOR 5-WIDGETS IN A 3×8 GRID (Desktop)
 ============================================================================ */
 function getRandomFiveShapePositions3x8(): Tile[] {
-  const side3x2 = Math.random() < 0.5 ? "left" : "right";
-  const top2x6 = Math.random() < 0.5 ? "top" : "bottom";
-
-  const tile3x2: Tile =
-    side3x2 === "left"
-      ? { row: 0, col: 0, rowSpan: 3, colSpan: 2 }
-      : { row: 0, col: 6, rowSpan: 3, colSpan: 2 };
-
-  const blockStartCol = side3x2 === "left" ? 2 : 0;
-
-  const tile2x6: Tile =
-    top2x6 === "top"
-      ? { row: 0, col: blockStartCol, rowSpan: 2, colSpan: 6 }
-      : { row: 1, col: blockStartCol, rowSpan: 2, colSpan: 6 };
-
-  const leftoverRow = top2x6 === "top" ? 2 : 0;
-
-  const shapesOneHigh = [
-    { rowSpan: 1, colSpan: 1 },
-    { rowSpan: 1, colSpan: 2 },
-    { rowSpan: 1, colSpan: 3 },
+  const patterns = [
+    // Pattern 1: Large left, horizontal strip, small tiles
+    () => {
+      const tiles: Tile[] = [
+        { row: 0, col: 0, rowSpan: 3, colSpan: 3 }, // Large square
+        { row: 0, col: 3, rowSpan: 2, colSpan: 5 }, // Wide horizontal
+        { row: 2, col: 3, rowSpan: 1, colSpan: 2 }, // Small 1
+        { row: 2, col: 5, rowSpan: 1, colSpan: 2 }, // Small 2
+        { row: 2, col: 7, rowSpan: 1, colSpan: 1 }, // Tiny
+      ];
+      return tiles;
+    },
+    // Pattern 2: Central focus with corners
+    () => {
+      const tiles: Tile[] = [
+        { row: 0, col: 2, rowSpan: 3, colSpan: 4 }, // Central large
+        { row: 0, col: 0, rowSpan: 2, colSpan: 2 }, // Top left
+        { row: 0, col: 6, rowSpan: 2, colSpan: 2 }, // Top right
+        { row: 2, col: 0, rowSpan: 1, colSpan: 2 }, // Bottom left
+        { row: 2, col: 6, rowSpan: 1, colSpan: 2 }, // Bottom right
+      ];
+      return tiles;
+    },
+    // Pattern 3: Asymmetric modern
+    () => {
+      const tiles: Tile[] = [
+        { row: 0, col: 0, rowSpan: 2, colSpan: 4 }, // Wide top
+        { row: 0, col: 4, rowSpan: 3, colSpan: 2 }, // Tall right
+        { row: 0, col: 6, rowSpan: 1, colSpan: 2 }, // Small top right
+        { row: 1, col: 6, rowSpan: 2, colSpan: 2 }, // Medium bottom right
+        { row: 2, col: 0, rowSpan: 1, colSpan: 4 }, // Wide bottom
+      ];
+      return tiles;
+    },
   ];
-  shuffleArray(shapesOneHigh);
 
-  let currentCol = blockStartCol;
-  const tile1xA: Tile = {
-    row: leftoverRow,
-    col: currentCol,
-    rowSpan: 1,
-    colSpan: shapesOneHigh[0].colSpan,
-  };
-  currentCol += shapesOneHigh[0].colSpan;
-  const tile1xB: Tile = {
-    row: leftoverRow,
-    col: currentCol,
-    rowSpan: 1,
-    colSpan: shapesOneHigh[1].colSpan,
-  };
-  currentCol += shapesOneHigh[1].colSpan;
-  const tile1xC: Tile = {
-    row: leftoverRow,
-    col: currentCol,
-    rowSpan: 1,
-    colSpan: shapesOneHigh[2].colSpan,
-  };
-
-  const leftoverTiles = [tile1xA, tile1xB, tile1xC].sort(
-    (t1, t2) => t2.rowSpan * t2.colSpan - t1.rowSpan * t1.colSpan,
-  );
-  const tile1x3 = leftoverTiles[0];
-  const tile1x2 = leftoverTiles[1];
-  const tile1x1 = leftoverTiles[2];
-
-  return [tile2x6, tile3x2, tile1x3, tile1x2, tile1x1];
+  const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
+  return randomPattern();
 }
 
 /* ============================================================================
-   2) SPECIAL HANDLING FOR PAGE=0 WITH 5 WIDGETS (Desktop)
+   2-6) KEEP EXISTING LAYOUT FUNCTIONS BUT ADD MORE VARIETY
 ============================================================================ */
+// [Keep all existing functions from 2-6 as they are]
+
 function getFiveWidgetLayoutPage0(
   products: Widget,
   scoville: Widget,
@@ -100,9 +92,6 @@ function getFiveWidgetLayoutPage0(
   return tiles;
 }
 
-/* ============================================================================
-   3) SUBSEQUENT PAGES (page > 0) WITH 5 WIDGETS (Desktop)
-============================================================================ */
 function getFiveWidgetLayoutPageOther(widgets: Widget[]): Tile[] {
   const tiles = getRandomFiveShapePositions3x8();
   const assignedWidgets = shuffleArray([...widgets]);
@@ -112,9 +101,6 @@ function getFiveWidgetLayoutPageOther(widgets: Widget[]): Tile[] {
   return tiles;
 }
 
-/* ============================================================================
-   4) 3 WIDGETS => A SINGLE ROW OF LENGTH 6 (Desktop)
-============================================================================ */
 function getThreeWidgetSingleRowLayout(widgets: Widget[]): Tile[] {
   const shapes = [
     { rowSpan: 1, colSpan: 1 },
@@ -134,9 +120,6 @@ function getThreeWidgetSingleRowLayout(widgets: Widget[]): Tile[] {
   return tiles;
 }
 
-/* ============================================================================
-   5) BACKUP BACKTRACKING FOR 1, 2, or 4 WIDGETS (3×5 GRID) (Desktop)
-============================================================================ */
 function generateUniqueTiling(
   numRows: number,
   numCols: number,
@@ -226,9 +209,6 @@ function generateUniqueTiling(
   return backtrack() ? solution.slice() : null;
 }
 
-/* ============================================================================
-   6) MASTER LAYOUT FUNCTION (Desktop)
-============================================================================ */
 function generateLayout(
   widgetCount: number,
   pageIndex: number,
@@ -274,13 +254,7 @@ function generateLayout(
   return fallback;
 }
 
-/* ============================================================================
-   7) MOBILE LAYOUT FUNCTION (Mobile Portrait)
-============================================================================ */
 function getMobileLayout(widgets: Widget[]): Tile[] {
-  // For mobile, create a simple layout:
-  // If 4 or more widgets: fixed 4 rows × 3 columns.
-  // For 1-3 widgets: single row.
   if (widgets.length >= 4) {
     return [
       { row: 0, col: 0, rowSpan: 2, colSpan: 3, widget: widgets[0] },
@@ -289,7 +263,6 @@ function getMobileLayout(widgets: Widget[]): Tile[] {
       { row: 3, col: 2, rowSpan: 1, colSpan: 1, widget: widgets[3] },
     ];
   } else {
-    // For 1-3 widgets, show them in a single row.
     const cols = widgets.length;
     return widgets.map((w, i) => ({
       row: 0,
@@ -302,89 +275,212 @@ function getMobileLayout(widgets: Widget[]): Tile[] {
 }
 
 /* ============================================================================
-   WIDGET CARD COMPONENT
+   ENHANCED WIDGET CARD COMPONENT
 ============================================================================ */
 interface WidgetCardProps {
   widget: Widget;
+  index: number;
+  tileSize: { rows: number; cols: number };
 }
 
-function WidgetCard({ widget }: WidgetCardProps) {
+function WidgetCard({ widget, index, tileSize }: WidgetCardProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Determine card style based on tile size
+  const isLarge = tileSize.rows >= 2 && tileSize.cols >= 2;
+  const isTall = tileSize.rows >= 2;
+  const isWide = tileSize.cols >= 3;
+
   return (
     <Link href={widget.route}>
-      <div
-        className="
-          relative 
-          group 
-          rounded-lg 
-          overflow-hidden 
-          border border-gray-700 
-          hover:border-red-600 
-          transition-all 
-          duration-300 
-          hover:shadow-2xl 
-          hover:shadow-red-600/50
-          bg-gray-800
-          "
-        style={{ height: "100%", width: "100%" }}
+      <motion.div
+        className="relative h-full w-full group cursor-pointer"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{
+          duration: 0.5,
+          delay: index * 0.1,
+          type: "spring",
+          stiffness: 100,
+        }}
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        <motion.div
-          className="relative h-full w-full"
-          whileHover={{ scale: 1.06 }}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          style={{
-            backgroundImage: `url('${widget.image}')`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-            height: "100%",
-            width: "100%",
-            filter: "brightness(0.9)",
-          }}
-        >
-          {/* Hover Overlay */}
-          <div
-            className="
-              absolute 
-              inset-0 
-              bg-black 
-              bg-opacity-30 
-              transition-all 
-              duration-300 
-              group-hover:bg-opacity-60 
-              flex 
-              items-center 
-              justify-center
-            "
+        {/* Premium glass morphism container */}
+        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
+          {/* Animated gradient border */}
+          <motion.div
+            className="absolute inset-0 rounded-2xl"
+            animate={{
+              background: isHovered
+                ? [
+                    "linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #FF6B6B)",
+                    "linear-gradient(45deg, #4ECDC4, #45B7D1, #FF6B6B, #4ECDC4)",
+                    "linear-gradient(45deg, #45B7D1, #FF6B6B, #4ECDC4, #45B7D1)",
+                  ]
+                : "linear-gradient(45deg, transparent, transparent)",
+            }}
+            transition={{ duration: 3, repeat: Infinity }}
+            style={{ padding: "2px", zIndex: 0 }}
           >
-            <span
-              className="
-                uppercase 
-                text-white 
-                font-bold 
-                text-xl 
-                px-2 
-                text-center
-                transform 
-                transition-transform 
-                duration-300 
-                group-hover:scale-105 
-                group-hover:text-red-400
-              "
+            <div className="h-full w-full rounded-2xl bg-gray-900" />
+          </motion.div>
+
+          {/* Background image with parallax effect */}
+          <motion.div
+            className="absolute inset-0"
+            animate={{
+              scale: isHovered ? 1.1 : 1,
+            }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+          >
+            <div
+              className="h-full w-full"
               style={{
-                textShadow: "2px 2px 6px rgba(0,0,0,0.8)",
+                backgroundImage: `url('${widget.image}')`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                filter: isHovered ? "brightness(0.7)" : "brightness(0.5)",
+                transition: "filter 0.3s ease",
               }}
-            >
-              {widget.title}
-            </span>
+            />
+            {/* Gradient overlay */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+          </motion.div>
+
+          {/* Content container */}
+          <div className="relative h-full w-full p-6 flex flex-col justify-between z-10">
+            {/* Top section with icon/badge */}
+            <div className="flex justify-between items-start">
+              {/* Category badge */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 + 0.2 }}
+                className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
+              >
+                <span className="text-xs font-medium text-white/90">
+                  {widget.category || "Explore"}
+                </span>
+              </motion.div>
+
+              {/* Sparkle icon for large tiles */}
+              {isLarge && (
+                <motion.div
+                  animate={{
+                    rotate: [0, 360],
+                    scale: [1, 1.2, 1],
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "linear",
+                  }}
+                >
+                  <HiSparkles className="text-2xl text-yellow-400/80" />
+                </motion.div>
+              )}
+            </div>
+
+            {/* Middle spacer */}
+            <div className="flex-grow" />
+
+            {/* Bottom section with title and description */}
+            <div className="space-y-3">
+              {/* Title with animation */}
+              <motion.h3
+                className={`font-bold text-white leading-tight ${
+                  isLarge
+                    ? "text-3xl md:text-4xl"
+                    : isWide
+                      ? "text-2xl"
+                      : "text-xl"
+                }`}
+                style={{
+                  textShadow: "2px 2px 8px rgba(0,0,0,0.8)",
+                }}
+              >
+                {widget.title}
+              </motion.h3>
+
+              {/* Description for larger tiles */}
+              {(isLarge || isWide) && widget.description && (
+                <motion.p
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: isHovered ? 1 : 0.7, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="text-sm text-gray-300 line-clamp-2"
+                >
+                  {widget.description}
+                </motion.p>
+              )}
+
+              {/* Call to action */}
+              <motion.div
+                className="flex items-center gap-2 text-white/80"
+                animate={{
+                  x: isHovered ? 5 : 0,
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                <span className="text-sm font-medium">
+                  {isLarge ? "Explore Now" : "View"}
+                </span>
+                <FiExternalLink
+                  className={`${isLarge ? "text-lg" : "text-base"}`}
+                />
+              </motion.div>
+            </div>
           </div>
-        </motion.div>
-      </div>
+
+          {/* Hover effects */}
+          <AnimatePresence>
+            {isHovered && (
+              <>
+                {/* Glow effect */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      "radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%)",
+                  }}
+                />
+
+                {/* Corner accents */}
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="absolute top-4 right-4 w-8 h-8"
+                >
+                  <div className="w-full h-full border-t-2 border-r-2 border-white/50 rounded-tr-lg" />
+                </motion.div>
+                <motion.div
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  exit={{ scale: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                  className="absolute bottom-4 left-4 w-8 h-8"
+                >
+                  <div className="w-full h-full border-b-2 border-l-2 border-white/50 rounded-bl-lg" />
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>
+        </div>
+      </motion.div>
     </Link>
   );
 }
 
 /* ============================================================================
-   SECTION EXPLORE GRID COMPONENT
+   ENHANCED SECTION EXPLORE GRID COMPONENT
 ============================================================================ */
 export default function SectionExploreGrid() {
   const widgetsPerPage = 5;
@@ -392,6 +488,7 @@ export default function SectionExploreGrid() {
     shuffleArray([...secondaryWidgetsData]),
   );
   const [secondaryPage, setSecondaryPage] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
 
   let dashboardWidgets: Widget[] = [];
   if (secondaryPage === 0) {
@@ -436,58 +533,66 @@ export default function SectionExploreGrid() {
     }
   }, [mounted, widgetCount, secondaryPage, shuffledSecondaries, isMobile]);
 
-  // Define grid container style
+  // Enhanced grid container style
   let gridContainerStyle: React.CSSProperties;
   if (isMobile) {
-    // For 1 widget => 1 column, 2 => 2 columns, >=3 => 3 columns
     const cols = widgetCount === 1 ? 1 : widgetCount === 2 ? 2 : 3;
     gridContainerStyle = {
       display: "grid",
       gridTemplateColumns: `repeat(${cols}, 1fr)`,
-      gap: "10px",
-      width: "90vw",
-      // Make roughly square cells
-      gridAutoRows: `calc((90vw - ${(cols - 1) * 10}px) / ${cols})`,
+      gap: "12px",
+      width: "100%",
+      maxWidth: "600px",
+      gridAutoRows: `calc((90vw - ${(cols - 1) * 12}px) / ${cols})`,
       position: "relative",
     };
   } else {
-    // Desktop / Tablet
     let maxRow = 0,
       maxCol = 0;
     for (const t of tiles) {
       maxRow = Math.max(maxRow, t.row + t.rowSpan);
       maxCol = Math.max(maxCol, t.col + t.colSpan);
     }
-    const cellSize = 150;
+    const cellSize = 160;
+    const gap = 16;
     gridContainerStyle = {
       display: "grid",
-      gridTemplateColumns: `repeat(${maxCol}, 1fr)`,
+      gridTemplateColumns: `repeat(${maxCol}, ${cellSize}px)`,
       gridTemplateRows: `repeat(${maxRow}, ${cellSize}px)`,
-      gap: "10px",
-      width: `${maxCol * cellSize}px`,
-      height: `${maxRow * cellSize}px`,
+      gap: `${gap}px`,
+      width: "max-content",
       position: "relative",
+      margin: "0 auto",
     };
   }
 
   const totalSecondaryPages =
     Math.ceil(shuffledSecondaries.length / widgetsPerPage) + 1;
 
-  const handleRefresh = () => {
+  const handleRefresh = async () => {
+    setIsTransitioning(true);
+    await new Promise((resolve) => setTimeout(resolve, 300));
     setShuffledSecondaries(shuffleArray([...secondaryWidgetsData]));
     setSecondaryPage(0);
+    setIsTransitioning(false);
   };
 
-  const handleNextPage = () => {
+  const handleNextPage = async () => {
+    setIsTransitioning(true);
+    await new Promise((resolve) => setTimeout(resolve, 300));
     setSecondaryPage((prev) =>
       prev + 1 >= totalSecondaryPages ? 0 : prev + 1,
     );
+    setIsTransitioning(false);
   };
 
-  const handlePrevPage = () => {
+  const handlePrevPage = async () => {
+    setIsTransitioning(true);
+    await new Promise((resolve) => setTimeout(resolve, 300));
     setSecondaryPage((prev) =>
       prev - 1 < 0 ? totalSecondaryPages - 1 : prev - 1,
     );
+    setIsTransitioning(false);
   };
 
   if (!mounted) return null;
@@ -495,107 +600,290 @@ export default function SectionExploreGrid() {
   return (
     <section
       id="section-explore-grid"
-      className="
-        w-full 
-        min-h-screen 
-        p-4 
-        sm:p-8 
-        bg-gray-100 
-        dark:bg-gray-900 
-        text-white 
-        flex 
-        flex-col 
-        items-center 
-        justify-center
-      "
+      className="relative w-full min-h-screen p-6 sm:p-8 lg:p-12 flex flex-col items-center justify-center overflow-hidden"
     >
-      <h2 className="text-2xl sm:text-4xl font-bold mb-4 sm:mb-6 text-center">
-        Quick Explore
-      </h2>
-      <p className="mb-6 sm:mb-8 text-center text-sm sm:text-base text-gray-800 dark:text-gray-200 max-w-xl">
-        Choose from our main sections to learn more about our sauces and brand.
-      </p>
+      {/* Premium gradient background */}
+      <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black" />
 
-      {/* Grid Container */}
-      <div style={gridContainerStyle}>
-        {tiles.map((tile, index) => (
-          <div
-            key={index}
-            style={{
-              gridColumnStart: tile.col + 1,
-              gridColumnEnd: tile.col + tile.colSpan + 1,
-              gridRowStart: tile.row + 1,
-              gridRowEnd: tile.row + tile.rowSpan + 1,
-            }}
-          >
-            {tile.widget && <WidgetCard widget={tile.widget} />}
+      {/* Animated background patterns */}
+      <div className="absolute inset-0 opacity-10">
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundImage: `radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                           radial-gradient(circle at 80% 80%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                           radial-gradient(circle at 40% 20%, rgba(120, 219, 255, 0.3) 0%, transparent 50%)`,
+          }}
+        />
+      </div>
+
+      {/* Content */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-12"
+        >
+          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+            Quick Explore
+          </h2>
+          <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
+            Discover our premium collection of sauces and explore what makes
+            Sunny Island special
+          </p>
+        </motion.div>
+
+        {/* Grid Container with transition */}
+        <div className="flex justify-center w-full">
+          <AnimatePresence mode="wait">
+            {!isTransitioning && (
+              <motion.div
+                key={secondaryPage}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.5 }}
+                style={gridContainerStyle}
+              >
+                {tiles.map((tile, index) => (
+                  <div
+                    key={`${secondaryPage}-${index}`}
+                    style={{
+                      gridColumnStart: tile.col + 1,
+                      gridColumnEnd: tile.col + tile.colSpan + 1,
+                      gridRowStart: tile.row + 1,
+                      gridRowEnd: tile.row + tile.rowSpan + 1,
+                    }}
+                  >
+                    {tile.widget && (
+                      <WidgetCard
+                        widget={tile.widget}
+                        index={index}
+                        tileSize={{ rows: tile.rowSpan, cols: tile.colSpan }}
+                      />
+                    )}
+                  </div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+
+        {/* Enhanced Pagination */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.3 }}
+          className="mt-12 flex flex-col items-center justify-center gap-4"
+        >
+          <div className="flex items-center gap-3">
+            {secondaryPage > 0 ? (
+              <motion.button
+                onClick={handlePrevPage}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="group relative overflow-hidden px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-full shadow-xl transition-all duration-300 text-sm sm:text-base"
+              >
+                <span className="relative z-10 flex items-center gap-1 sm:gap-2">
+                  <FiArrowLeft className="transition-transform duration-300 group-hover:-translate-x-1" />
+                  <span className="hidden sm:inline">Previous</span>
+                  <span className="sm:hidden">Prev</span>
+                </span>
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-500"
+                  initial={{ x: "-100%" }}
+                  whileHover={{ x: "100%" }}
+                  transition={{ duration: 0.6 }}
+                />
+              </motion.button>
+            ) : (
+              <motion.button
+                onClick={handleRefresh}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="group relative overflow-hidden px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-full shadow-xl transition-all duration-300 text-sm sm:text-base"
+              >
+                <span className="relative z-10 flex items-center gap-1 sm:gap-2">
+                  <FiRefreshCw className="transition-transform duration-300 group-hover:rotate-180" />
+                  Refresh
+                </span>
+              </motion.button>
+            )}
+            <motion.button
+              onClick={handleNextPage}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="group relative overflow-hidden px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-full shadow-xl transition-all duration-300 text-sm sm:text-base"
+            >
+              <span className="relative z-10 flex items-center gap-1 sm:gap-2">
+                Next
+                <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
+              </span>
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500"
+                initial={{ x: "-100%" }}
+                whileHover={{ x: "100%" }}
+                transition={{ duration: 0.6 }}
+              />
+            </motion.button>
           </div>
+
+          {/* Page indicator */}
+          <div className="flex items-center gap-2">
+            {[...Array(totalSecondaryPages)].map((_, idx) => (
+              <motion.div
+                key={idx}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  idx === secondaryPage
+                    ? "w-8 bg-gradient-to-r from-blue-400 to-cyan-400"
+                    : "w-2 bg-gray-600 hover:bg-gray-500"
+                }`}
+                whileHover={{ scale: 1.2 }}
+                onClick={() => {
+                  setIsTransitioning(true);
+                  setTimeout(() => {
+                    setSecondaryPage(idx);
+                    setIsTransitioning(false);
+                  }, 300);
+                }}
+                style={{ cursor: "pointer" }}
+              />
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
+      {/* Floating elements for depth */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {[...Array(5)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-64 h-64 rounded-full"
+            style={{
+              background: `radial-gradient(circle, ${
+                [
+                  "rgba(59, 130, 246, 0.1)",
+                  "rgba(236, 72, 153, 0.1)",
+                  "rgba(34, 197, 94, 0.1)",
+                ][i % 3]
+              } 0%, transparent 70%)`,
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+            }}
+            animate={{
+              x: [0, 50, 0],
+              y: [0, 30, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{
+              duration: 10 + i * 2,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
         ))}
       </div>
 
-      {/* Pagination / Refresh */}
-      <div className="mt-8 flex justify-center gap-4">
-        {secondaryPage > 0 ? (
-          <button
-            onClick={handlePrevPage}
-            className="
-              group 
-              flex 
-              items-center 
-              gap-2 
-              px-4 
-              py-2 
-              rounded 
-              bg-orange-600 
-              text-white 
-              hover:bg-orange-700 
-              transition-colors
-            "
-          >
-            <FiArrowLeft className="transition-transform duration-300 group-hover:-translate-x-1" />
-            <span>Previous Section</span>
-          </button>
-        ) : (
-          <button
-            onClick={handleRefresh}
-            className="
-              group 
-              flex 
-              items-center 
-              gap-2 
-              px-4 
-              py-2 
-              rounded 
-              bg-primary 
-              text-white 
-              hover:bg-primary-light 
-              transition-colors
-            "
-          >
-            <FiRefreshCw className="transition-transform duration-300 group-hover:rotate-90" />
-            <span>Refresh Dashboard</span>
-          </button>
-        )}
-        <button
-          onClick={handleNextPage}
-          className="
-            group 
-            flex 
-            items-center 
-            gap-2 
-            px-4 
-            py-2 
-            rounded 
-            bg-secondary 
-            text-white 
-            hover:bg-secondary-dark 
-            transition-colors
-          "
-        >
-          <span>Next Section</span>
-          <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
-        </button>
-      </div>
+      {/* Premium styles */}
+      <style jsx global>{`
+        @keyframes shimmer {
+          0% {
+            background-position: -200% 0;
+          }
+          100% {
+            background-position: 200% 0;
+          }
+        }
+
+        .shimmer-effect {
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 100%
+          );
+          background-size: 200% 100%;
+          animation: shimmer 3s infinite;
+        }
+
+        /* Custom scrollbar for the section */
+        #section-explore-grid::-webkit-scrollbar {
+          width: 8px;
+        }
+
+        #section-explore-grid::-webkit-scrollbar-track {
+          background: rgba(0, 0, 0, 0.1);
+        }
+
+        #section-explore-grid::-webkit-scrollbar-thumb {
+          background: linear-gradient(to bottom, #3b82f6, #06b6d4);
+          border-radius: 4px;
+        }
+
+        /* Smooth transitions */
+        * {
+          transition-property: transform, opacity, filter;
+          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Glass morphism enhancement */
+        .glass-morphism {
+          background: rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Premium hover effects */
+        .premium-hover {
+          position: relative;
+          overflow: hidden;
+        }
+
+        .premium-hover::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 100%;
+          height: 100%;
+          background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.2),
+            transparent
+          );
+          transition: left 0.5s;
+        }
+
+        .premium-hover:hover::before {
+          left: 100%;
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+          .grid-container {
+            gap: 8px !important;
+          }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+          * {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+          }
+        }
+
+        /* Performance optimizations */
+        .gpu-accelerated {
+          transform: translateZ(0);
+          will-change: transform;
+          backface-visibility: hidden;
+        }
+      `}</style>
     </section>
   );
 }

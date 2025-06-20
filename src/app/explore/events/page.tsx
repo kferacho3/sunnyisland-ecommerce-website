@@ -1,3 +1,4 @@
+// EventsPage.tsx
 import {
   EventItem,
   floridaEvents,
@@ -33,16 +34,26 @@ export default function EventsPage() {
 
   return (
     <div
-      className="pt-[130px] min-h-screen text-white px-4"
+      className="min-h-screen text-white"
       style={{ background: "linear-gradient(to right, #1f1c2c, #928dab)" }}
     >
-      <h1 className="text-5xl font-extrabold mb-8 text-center uppercase tracking-wider">
-        Upcoming Events
-      </h1>
-      <ClientEvents
-        sections={allSections}
-        featuredEvent={featuredEvent ?? undefined}
-      />
+      <div className="pt-[130px] pb-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16 space-y-4">
+            <h1 className="text-5xl md:text-7xl font-extrabold uppercase tracking-wider">
+              Upcoming Events
+            </h1>
+            <p className="text-xl text-white/90 max-w-2xl mx-auto">
+              Discover extraordinary culinary experiences and cultural
+              celebrations in Georgia and Florida
+            </p>
+          </div>
+          <ClientEvents
+            sections={allSections}
+            featuredEvent={featuredEvent ?? undefined}
+          />
+        </div>
+      </div>
     </div>
   );
 }

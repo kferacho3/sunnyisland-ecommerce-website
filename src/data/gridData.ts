@@ -5,6 +5,8 @@ export interface Widget {
   title: string;
   route: string;
   image: string;
+  category?: string;
+  description?: string;
 }
 
 // Permanent widgets (always appear on page 0)
