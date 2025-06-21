@@ -13,6 +13,8 @@ import {
   FiCheck,
   FiChevronRight,
   FiClock,
+  FiColumns,
+  FiGrid,
   FiHeart,
   FiRefreshCw,
   FiStar,
@@ -38,6 +40,7 @@ import {
   GiTomato,
 } from "react-icons/gi";
 import { TbSaladFilled } from "react-icons/tb";
+
 // ─────────────────────────────────────────────
 // Type Definitions
 // ─────────────────────────────────────────────
@@ -189,6 +192,9 @@ const RecipesPage = () => {
   const [visibleCount, setVisibleCount] = useState(RECIPES_PER_PAGE);
   const [userHearted, setUserHearted] = useState<number[]>([]);
 
+  // NEW: add view mode state
+  const [viewMode, setViewMode] = useState<"carousel" | "grid">("carousel");
+
   // Load hearts and favorites from local storage
   useEffect(() => {
     const storedFav = localStorage.getItem("favoriteRecipes");
@@ -303,6 +309,10 @@ const RecipesPage = () => {
   // Single-click on a card to become the featured
   const handleCardClick = (recipe: Recipe) => {
     setFeaturedRecipe(recipe);
+    // Scroll to top for better UX in grid mode
+    if (viewMode === "grid") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   // Double-click to open the modal
@@ -323,7 +333,7 @@ const RecipesPage = () => {
       </Head>
 
       {/* Premium Hero Section */}
-      <section className="relative min-h-[50vh] overflow-hidden bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 mt-16">
+      <section className="relative min-h-[50vh] overflow-hidden bg-gradient-to-b from-gray-900 via-gray-800 to-gray-900 mt-10">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-10">
           <div
@@ -465,6 +475,8 @@ const RecipesPage = () => {
                   userHasHearted={userHasHearted}
                   onHeart={handleHeart}
                   onUnheart={handleUnheart}
+                  viewMode={viewMode}
+                  setViewMode={setViewMode}
                 />
 
                 {/* Premium Action Buttons */}
@@ -545,6 +557,8 @@ type FeaturedLayoutProps = {
   userHasHearted: (id: number) => boolean;
   onHeart: (id: number) => void;
   onUnheart: (id: number) => void;
+  viewMode: "carousel" | "grid";
+  setViewMode: React.Dispatch<React.SetStateAction<"carousel" | "grid">>;
 };
 
 const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
@@ -559,6 +573,8 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
   userHasHearted,
   onHeart,
   onUnheart,
+  viewMode,
+  setViewMode,
 }) => {
   const handleFeaturedFavorite = () => {
     onFavorite(featuredRecipe.id);
@@ -746,11 +762,41 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
         </div>
       </motion.div>
 
-      {/* Other Recipes Grid */}
-      <div>
-        <h3 className="text-2xl font-bold mb-6 text-gray-900 dark:text-white">
+      {/* Other Recipes Header & View Switch */}
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-2xl font-bold text-gray-900 dark:text-white">
           More Recipes to Explore
         </h3>
+        <div className="flex gap-2">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setViewMode("carousel")}
+            className={`p-2 rounded-full ${
+              viewMode === "carousel"
+                ? "bg-gray-900 text-white dark:bg-gray-700"
+                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+            }`}
+          >
+            <FiColumns />
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setViewMode("grid")}
+            className={`p-2 rounded-full ${
+              viewMode === "grid"
+                ? "bg-gray-900 text-white dark:bg-gray-700"
+                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
+            }`}
+          >
+            <FiGrid />
+          </motion.button>
+        </div>
+      </div>
+
+      {/* Other Recipes */}
+      {viewMode === "grid" ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {otherRecipes.map((recipe) => (
             <RecipeCard
@@ -768,7 +814,26 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
             />
           ))}
         </div>
-      </div>
+      ) : (
+        <div className="flex gap-6 overflow-x-auto pb-2 snap-x snap-mandatory">
+          {otherRecipes.map((recipe) => (
+            <div key={recipe.id} className="min-w-[260px] snap-center">
+              <RecipeCard
+                recipe={recipe}
+                onFavorite={onFavorite}
+                onRating={onRating}
+                isFavorited={favorites.includes(recipe.id)}
+                onOpenModal={onOpenModal}
+                userHasHearted={userHasHearted}
+                onHeart={onHeart}
+                onUnheart={onUnheart}
+                onClick={() => onSingleClick(recipe)}
+                onDoubleClick={() => onDoubleClick(recipe)}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
