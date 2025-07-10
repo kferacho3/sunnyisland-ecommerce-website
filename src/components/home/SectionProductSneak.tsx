@@ -171,26 +171,41 @@ export default function SectionProductSneak() {
 
                 <div className="relative bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                    {/* Product Image Section - More compact */}
-                    <div className="relative bg-gradient-to-br from-orange-100/50 to-red-100/50 dark:from-gray-800/50 dark:to-gray-900/50 p-4 sm:p-6 lg:p-8 flex items-center justify-center">
-                      {/* Decorative sparkle */}
+                    {/* ----- PRODUCT IMAGE SECTION (hover-triggered only) ----- */}
+                    <motion.div
+                      className="relative bg-gradient-to-br from-orange-100/50 to-red-100/50 dark:from-gray-800/50 dark:to-gray-900/50 p-4 sm:p-6 lg:p-8 flex items-center justify-center will-change-transform"
+                      initial="rest"
+                      whileHover="hover"
+                      variants={{
+                        rest: {},
+                        hover: {},
+                      }}
+                    >
+                      {/* Decorative sparkle, rotates once on hover */}
                       <motion.div
-                        animate={{ rotate: 360 }}
+                        className="absolute top-4 right-4 text-yellow-500/50 will-change-transform"
+                        initial={{ rotate: 0 }}
+                        variants={{ hover: { rotate: -360 } }}
                         transition={{
-                          duration: 20,
-                          repeat: Infinity,
-                          ease: "linear",
+                          duration: 1,
+                          ease: "easeInOut",
+                          bounce: 0,
                         }}
-                        className="absolute top-4 right-4 text-yellow-500/50"
                       >
                         <HiSparkles className="text-xl sm:text-2xl" />
                       </motion.div>
 
+                      {/* Image container, scales up on hover */}
                       {product.images.edges[0]?.node.url && (
                         <motion.div
-                          whileHover={{ scale: 1.05 }}
-                          transition={{ type: "spring", stiffness: 300 }}
-                          className="relative max-w-[200px] sm:max-w-[250px] lg:max-w-[280px]"
+                          className="relative max-w-[200px] sm:max-w-[250px] lg:max-w-[280px] will-change-transform"
+                          initial={{ scale: 1 }}
+                          variants={{ hover: { scale: 1.05 } }}
+                          transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 20,
+                          }}
                         >
                           <Image
                             src={product.images.edges[0].node.url}
@@ -203,16 +218,17 @@ export default function SectionProductSneak() {
                           />
                           {imageLoaded && (
                             <motion.div
+                              className="absolute -bottom-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full p-2 shadow-lg will-change-transform"
                               initial={{ opacity: 0, scale: 0 }}
                               animate={{ opacity: 1, scale: 1 }}
-                              className="absolute -bottom-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full p-2 shadow-lg"
+                              transition={{ duration: 0.3 }}
                             >
                               <GiChiliPepper className="text-lg sm:text-xl" />
                             </motion.div>
                           )}
                         </motion.div>
                       )}
-                    </div>
+                    </motion.div>
 
                     {/* Product Details Section - More compact */}
                     <div className="p-4 sm:p-6 lg:p-8 flex flex-col justify-center">

@@ -4,7 +4,6 @@
 import SectionExploreGrid from "@/components/home/SectionExploreGrid";
 import SectionHero from "@/components/home/SectionHero";
 import SectionNewsletter from "@/components/home/SectionNewsletter";
-import SectionParallax from "@/components/home/SectionParallax";
 import SectionProductSneak from "@/components/home/SectionProductSneak";
 import SectionSocial from "@/components/home/SectionSocial";
 import Head from "next/head";
@@ -45,7 +44,6 @@ const Home = () => {
           <SectionProductSneak />
         </div>
         {/* Section 3: Parallax Product View */}
-        <SectionParallax />
 
         {/* Section 4: Explore Grid */}
         <SectionExploreGrid />

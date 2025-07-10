@@ -8,7 +8,7 @@ import {
 } from "@/data/gridData";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import {
   FiArrowLeft,
   FiArrowRight,
@@ -16,7 +16,6 @@ import {
   FiRefreshCw,
 } from "react-icons/fi";
 import { HiSparkles } from "react-icons/hi";
-
 /* ---------------------------------------------------------------------------
    TILE INTERFACE
 ---------------------------------------------------------------------------*/
@@ -273,10 +272,9 @@ function getMobileLayout(widgets: Widget[]): Tile[] {
     }));
   }
 }
-
-/* ============================================================================
-   ENHANCED WIDGET CARD COMPONENT
-============================================================================ */
+/* ---------------------------------------------------------------------------
+   WIDGET CARD — fixed syntax + micro-perf tweaks
+---------------------------------------------------------------------------*/
 interface WidgetCardProps {
   widget: Widget;
   index: number;
@@ -284,57 +282,53 @@ interface WidgetCardProps {
 }
 
 function WidgetCard({ widget, index, tileSize }: WidgetCardProps) {
-  const [isHovered, setIsHovered] = useState(false);
+  const [isHovered, setIsHovered] = React.useState(false);
 
-  // Determine card style based on tile size
+  /* ─────────────  size helpers  ───────────── */
   const isLarge = tileSize.rows >= 2 && tileSize.cols >= 2;
-  const isTall = tileSize.rows >= 2;
   const isWide = tileSize.cols >= 3;
 
+  /* ─────────────  motion variants  ───────────── */
+  const cardVariants = {
+    initial: { opacity: 0, scale: 0.95 },
+    enter: {
+      opacity: 1,
+      scale: 1,
+      transition: { delay: index * 0.05, type: "spring", stiffness: 100 },
+    },
+    hover: { scale: 1.02 },
+    tap: { scale: 0.98 },
+  };
+
+  const bgVariants = { rest: { scale: 1 }, hover: { scale: 1.06 } };
+
   return (
-    <Link href={widget.route}>
-      <motion.div
-        className="relative h-full w-full group cursor-pointer"
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{
-          duration: 0.5,
-          delay: index * 0.1,
-          type: "spring",
-          stiffness: 100,
-        }}
-        whileHover={{ scale: 1.02 }}
-        whileTap={{ scale: 0.98 }}
+    <Link href={widget.route} legacyBehavior passHref>
+      <motion.a
+        className="relative h-full w-full group cursor-pointer will-change-transform"
+        variants={cardVariants}
+        initial="initial"
+        animate="enter"
+        whileHover="hover"
+        whileTap="tap"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Premium glass morphism container */}
-        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl border border-gray-700/50 shadow-2xl">
-          {/* Animated gradient border */}
-          <motion.div
-            className="absolute inset-0 rounded-2xl"
-            animate={{
-              background: isHovered
-                ? [
-                    "linear-gradient(45deg, #FF6B6B, #4ECDC4, #45B7D1, #FF6B6B)",
-                    "linear-gradient(45deg, #4ECDC4, #45B7D1, #FF6B6B, #4ECDC4)",
-                    "linear-gradient(45deg, #45B7D1, #FF6B6B, #4ECDC4, #45B7D1)",
-                  ]
-                : "linear-gradient(45deg, transparent, transparent)",
-            }}
-            transition={{ duration: 3, repeat: Infinity }}
-            style={{ padding: "2px", zIndex: 0 }}
+        {/* ─────────────  glass card  ───────────── */}
+        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-lg border border-gray-700/50 shadow-2xl">
+          {/* animated border (GPU-friendly) */}
+          <div
+            className={`absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300 ${isHovered ? "opacity-100 animate-gradientShift" : "opacity-0"}`}
+            style={{ padding: 2 }}
           >
             <div className="h-full w-full rounded-2xl bg-gray-900" />
-          </motion.div>
+          </div>
 
-          {/* Background image with parallax effect */}
+          {/* background image */}
           <motion.div
-            className="absolute inset-0"
-            animate={{
-              scale: isHovered ? 1.1 : 1,
-            }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="absolute inset-0 will-change-transform"
+            variants={bgVariants}
+            transition={{ duration: 0.25, ease: "easeOut" }}
           >
             <div
               className="h-full w-full"
@@ -342,270 +336,204 @@ function WidgetCard({ widget, index, tileSize }: WidgetCardProps) {
                 backgroundImage: `url('${widget.image}')`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                filter: isHovered ? "brightness(0.7)" : "brightness(0.5)",
-                transition: "filter 0.3s ease",
               }}
             />
-            {/* Gradient overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
           </motion.div>
 
-          {/* Content container */}
-          <div className="relative h-full w-full p-6 flex flex-col justify-between z-10">
-            {/* Top section with icon/badge */}
+          {/* ─────────────  content  ───────────── */}
+          <div className="relative z-10 h-full w-full p-6 flex flex-col justify-between">
+            {/* top row */}
             <div className="flex justify-between items-start">
-              {/* Category badge */}
-              <motion.div
+              <motion.span
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: index * 0.1 + 0.2 }}
-                className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20"
+                transition={{ delay: index * 0.05 + 0.1, duration: 0.4 }}
+                className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-xs font-medium text-white/90"
               >
-                <span className="text-xs font-medium text-white/90">
-                  {widget.category || "Explore"}
-                </span>
-              </motion.div>
+                {widget.category ?? "Explore"}
+              </motion.span>
 
-              {/* Sparkle icon for large tiles */}
               {isLarge && (
                 <motion.div
-                  animate={{
-                    rotate: [0, 360],
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "linear",
-                  }}
+                  animate={{ rotate: isHovered ? -360 : 0 }}
+                  transition={{ duration: 0.7, ease: "easeInOut" }}
+                  className="will-change-transform"
                 >
                   <HiSparkles className="text-2xl text-yellow-400/80" />
                 </motion.div>
               )}
             </div>
 
-            {/* Middle spacer */}
+            {/* spacer */}
             <div className="flex-grow" />
 
-            {/* Bottom section with title and description */}
+            {/* bottom info */}
             <div className="space-y-3">
-              {/* Title with animation */}
-              <motion.h3
-                className={`font-bold text-white leading-tight ${
-                  isLarge
-                    ? "text-3xl md:text-4xl"
-                    : isWide
-                      ? "text-2xl"
-                      : "text-xl"
-                }`}
-                style={{
-                  textShadow: "2px 2px 8px rgba(0,0,0,0.8)",
-                }}
+              <h3
+                className={`font-bold uppercase text-white leading-tight ${isLarge ? "text-3xl" : isWide ? "text-2xl" : "text-xl"}`}
+                style={{ textShadow: "2px 2px 8px rgba(0,0,0,0.8)" }}
               >
                 {widget.title}
-              </motion.h3>
+              </h3>
 
-              {/* Description for larger tiles */}
               {(isLarge || isWide) && widget.description && (
-                <motion.p
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: isHovered ? 1 : 0.7, y: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="text-sm text-gray-300 line-clamp-2"
+                <p
+                  className={`text-sm text-gray-300 line-clamp-2 transition-opacity ${isHovered ? "opacity-100" : "opacity-70"}`}
                 >
                   {widget.description}
-                </motion.p>
+                </p>
               )}
 
-              {/* Call to action */}
               <motion.div
+                animate={{ x: isHovered ? 6 : 0 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
                 className="flex items-center gap-2 text-white/80"
-                animate={{
-                  x: isHovered ? 5 : 0,
-                }}
-                transition={{ duration: 0.3 }}
               >
                 <span className="text-sm font-medium">
                   {isLarge ? "Explore Now" : "View"}
                 </span>
-                <FiExternalLink
-                  className={`${isLarge ? "text-lg" : "text-base"}`}
-                />
+                <FiExternalLink className={isLarge ? "text-lg" : "text-base"} />
               </motion.div>
             </div>
           </div>
 
-          {/* Hover effects */}
-          <AnimatePresence>
-            {isHovered && (
-              <>
-                {/* Glow effect */}
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="absolute inset-0 pointer-events-none"
-                  style={{
-                    background:
-                      "radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%)",
-                  }}
-                />
-
-                {/* Corner accents */}
-                <motion.div
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="absolute top-4 right-4 w-8 h-8"
-                >
-                  <div className="w-full h-full border-t-2 border-r-2 border-white/50 rounded-tr-lg" />
-                </motion.div>
-                <motion.div
-                  initial={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
-                  className="absolute bottom-4 left-4 w-8 h-8"
-                >
-                  <div className="w-full h-full border-b-2 border-l-2 border-white/50 rounded-bl-lg" />
-                </motion.div>
-              </>
-            )}
-          </AnimatePresence>
+          {/* subtle hover accents — self-closing spans fixed (jsx now uses explicit close tag) */}
+          <span className="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-white/50 rounded-tr-lg transform scale-75 opacity-0 transition duration-150 ease-out group-hover:scale-100 group-hover:opacity-100"></span>
+          <span className="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-white/50 rounded-bl-lg transform scale-75 opacity-0 transition duration-150 ease-out delay-75 group-hover:scale-100 group-hover:opacity-100"></span>
         </div>
-      </motion.div>
+
+        {/* local CSS */}
+        <style jsx>{`
+          @keyframes gradientShift {
+            0% {
+              background-position: 0% 50%;
+            }
+            50% {
+              background-position: 100% 50%;
+            }
+            100% {
+              background-position: 0% 50%;
+            }
+          }
+          .animate-gradientShift {
+            background: linear-gradient(
+              45deg,
+              #ff6b6b,
+              #4ecdc4,
+              #45b7d1,
+              #ff6b6b
+            );
+            background-size: 400% 400%;
+            animation: gradientShift 6s linear infinite;
+          }
+        `}</style>
+      </motion.a>
     </Link>
   );
 }
 
 /* ============================================================================
-   ENHANCED SECTION EXPLORE GRID COMPONENT
+   OPTIMIZED SECTION EXPLORE GRID COMPONENT
 ============================================================================ */
 export default function SectionExploreGrid() {
   const widgetsPerPage = 5;
-  const [shuffledSecondaries, setShuffledSecondaries] = useState<Widget[]>(() =>
+  const [secondaryPage, setSecondaryPage] = useState(0);
+  const [shuffledSecondaries, setShuffledSecondaries] = useState(() =>
     shuffleArray([...secondaryWidgetsData]),
   );
-  const [secondaryPage, setSecondaryPage] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-
-  let dashboardWidgets: Widget[] = [];
-  if (secondaryPage === 0) {
-    const needed = widgetsPerPage - permanentWidgets.length;
-    dashboardWidgets = [
-      ...permanentWidgets,
-      ...shuffledSecondaries.slice(0, needed),
-    ];
-  } else {
-    const start = (secondaryPage - 1) * widgetsPerPage;
-    dashboardWidgets = shuffledSecondaries.slice(start, start + widgetsPerPage);
-  }
-  const widgetCount = dashboardWidgets.length;
-
-  const [mounted, setMounted] = useState(false);
-  const [tiles, setTiles] = useState<Tile[]>([]);
   const [isMobile, setIsMobile] = useState(false);
 
+  // Effect for handling window resize to detect mobile state
   useEffect(() => {
-    setMounted(true);
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    handleResize();
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
     window.addEventListener("resize", handleResize);
+    handleResize(); // Initial check
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  useEffect(() => {
-    if (mounted) {
-      let newLayout: Tile[];
-      if (isMobile) {
-        newLayout = getMobileLayout(dashboardWidgets);
-      } else {
-        newLayout = generateLayout(
-          widgetCount,
-          secondaryPage,
-          dashboardWidgets,
-        );
-      }
-      setTiles(newLayout);
-    }
-  }, [mounted, widgetCount, secondaryPage, shuffledSecondaries, isMobile]);
-
-  // Enhanced grid container style
-  let gridContainerStyle: React.CSSProperties;
-  if (isMobile) {
-    const cols = widgetCount === 1 ? 1 : widgetCount === 2 ? 2 : 3;
-    gridContainerStyle = {
-      display: "grid",
-      gridTemplateColumns: `repeat(${cols}, 1fr)`,
-      gap: "12px",
-      width: "100%",
-      maxWidth: "600px",
-      gridAutoRows: `calc((90vw - ${(cols - 1) * 12}px) / ${cols})`,
-      position: "relative",
-    };
-  } else {
-    let maxRow = 0,
-      maxCol = 0;
-    for (const t of tiles) {
-      maxRow = Math.max(maxRow, t.row + t.rowSpan);
-      maxCol = Math.max(maxCol, t.col + t.colSpan);
-    }
-    const cellSize = 160;
-    const gap = 16;
-    gridContainerStyle = {
-      display: "grid",
-      gridTemplateColumns: `repeat(${maxCol}, ${cellSize}px)`,
-      gridTemplateRows: `repeat(${maxRow}, ${cellSize}px)`,
-      gap: `${gap}px`,
-      width: "max-content",
-      position: "relative",
-      margin: "0 auto",
-    };
-  }
 
   const totalSecondaryPages =
     Math.ceil(shuffledSecondaries.length / widgetsPerPage) + 1;
 
-  const handleRefresh = async () => {
-    setIsTransitioning(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
+  // Memoize the calculation of widgets to display for the current page.
+  // This now only recalculates when the page or the shuffled data changes.
+  const dashboardWidgets = useMemo(() => {
+    if (secondaryPage === 0) {
+      const needed = widgetsPerPage - permanentWidgets.length;
+      return [...permanentWidgets, ...shuffledSecondaries.slice(0, needed)];
+    }
+    const start = (secondaryPage - 1) * widgetsPerPage;
+    return shuffledSecondaries.slice(start, start + widgetsPerPage);
+  }, [secondaryPage, shuffledSecondaries]);
+
+  // Memoize the layout generation. This is a critical optimization.
+  // The layout is now only generated when its dependencies change.
+  const tiles = useMemo(() => {
+    const widgetCount = dashboardWidgets.length;
+    return isMobile
+      ? getMobileLayout(dashboardWidgets)
+      : generateLayout(widgetCount, secondaryPage, dashboardWidgets);
+  }, [isMobile, dashboardWidgets, secondaryPage]);
+
+  // Memoize the grid container style calculation.
+  const gridContainerStyle = useMemo((): React.CSSProperties => {
+    if (isMobile) {
+      const cols = dashboardWidgets.length <= 2 ? dashboardWidgets.length : 3;
+      return {
+        display: "grid",
+        gridTemplateColumns: `repeat(${cols}, 1fr)`,
+        gridAutoRows: "200px",
+        gap: "12px",
+        width: "100%",
+      };
+    }
+    const maxRow = Math.max(...tiles.map((t) => t.row + t.rowSpan), 1);
+    const maxCol = Math.max(...tiles.map((t) => t.col + t.colSpan), 1);
+    return {
+      display: "grid",
+      gridTemplateColumns: `repeat(${maxCol}, 1fr)`,
+      gridTemplateRows: `repeat(${maxRow}, 160px)`,
+      gap: "16px",
+      width: "100%",
+      maxWidth: "1200px",
+      margin: "0 auto",
+    };
+  }, [tiles, isMobile, dashboardWidgets.length]);
+
+  // Memoize event handlers to prevent recreating them on every render.
+  const handleRefresh = useCallback(() => {
     setShuffledSecondaries(shuffleArray([...secondaryWidgetsData]));
     setSecondaryPage(0);
-    setIsTransitioning(false);
-  };
+  }, []);
 
-  const handleNextPage = async () => {
-    setIsTransitioning(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
+  const handleNextPage = useCallback(() => {
     setSecondaryPage((prev) =>
       prev + 1 >= totalSecondaryPages ? 0 : prev + 1,
     );
-    setIsTransitioning(false);
-  };
+  }, [totalSecondaryPages]);
 
-  const handlePrevPage = async () => {
-    setIsTransitioning(true);
-    await new Promise((resolve) => setTimeout(resolve, 300));
+  const handlePrevPage = useCallback(() => {
     setSecondaryPage((prev) =>
       prev - 1 < 0 ? totalSecondaryPages - 1 : prev - 1,
     );
-    setIsTransitioning(false);
-  };
+  }, [totalSecondaryPages]);
 
-  if (!mounted) return null;
+  const handlePageIndicatorClick = useCallback(
+    (idx: number) => {
+      if (idx !== secondaryPage) {
+        setSecondaryPage(idx);
+      }
+    },
+    [secondaryPage],
+  );
 
   return (
     <section
       id="section-explore-grid"
       className="relative w-full min-h-screen p-6 sm:p-8 lg:p-12 flex flex-col items-center justify-center overflow-hidden"
     >
-      {/* Premium gradient background */}
+      {/* Backgrounds */}
       <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-gray-800 to-black" />
-
-      {/* Animated background patterns */}
       <div className="absolute inset-0 opacity-10">
         <div
           className="absolute inset-0"
@@ -626,7 +554,7 @@ export default function SectionExploreGrid() {
           transition={{ duration: 0.6 }}
           className="text-center mb-12"
         >
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
+          <h2 className="text-4xl uppercase sm:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-white via-gray-200 to-white bg-clip-text text-transparent">
             Quick Explore
           </h2>
           <p className="text-lg sm:text-xl text-gray-400 max-w-2xl mx-auto">
@@ -635,39 +563,37 @@ export default function SectionExploreGrid() {
           </p>
         </motion.div>
 
-        {/* Grid Container with transition */}
-        <div className="flex justify-center w-full">
+        {/* Grid Container with streamlined transition */}
+        <div className="flex justify-center w-full min-h-[500px]">
           <AnimatePresence mode="wait">
-            {!isTransitioning && (
-              <motion.div
-                key={secondaryPage}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.5 }}
-                style={gridContainerStyle}
-              >
-                {tiles.map((tile, index) => (
-                  <div
-                    key={`${secondaryPage}-${index}`}
-                    style={{
-                      gridColumnStart: tile.col + 1,
-                      gridColumnEnd: tile.col + tile.colSpan + 1,
-                      gridRowStart: tile.row + 1,
-                      gridRowEnd: tile.row + tile.rowSpan + 1,
-                    }}
-                  >
-                    {tile.widget && (
-                      <WidgetCard
-                        widget={tile.widget}
-                        index={index}
-                        tileSize={{ rows: tile.rowSpan, cols: tile.colSpan }}
-                      />
-                    )}
-                  </div>
-                ))}
-              </motion.div>
-            )}
+            <motion.div
+              key={secondaryPage} // ensure this is here
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.4, ease: "easeInOut" }}
+              style={gridContainerStyle}
+            >
+              {tiles.map((tile, idx) => (
+                <div
+                  key={`page-${secondaryPage}-tile-${tile.widget?.id ?? idx}`} // ← unique per page & widget
+                  style={{
+                    gridColumnStart: tile.col + 1,
+                    gridColumnEnd: `span ${tile.colSpan}`,
+                    gridRowStart: tile.row + 1,
+                    gridRowEnd: `span ${tile.rowSpan}`,
+                  }}
+                >
+                  {tile.widget && (
+                    <WidgetCard
+                      widget={tile.widget}
+                      index={idx}
+                      tileSize={{ rows: tile.rowSpan, cols: tile.colSpan }}
+                    />
+                  )}
+                </div>
+              ))}
+            </motion.div>
           </AnimatePresence>
         </div>
 
@@ -689,14 +615,7 @@ export default function SectionExploreGrid() {
                 <span className="relative z-10 flex items-center gap-1 sm:gap-2">
                   <FiArrowLeft className="transition-transform duration-300 group-hover:-translate-x-1" />
                   <span className="hidden sm:inline">Previous</span>
-                  <span className="sm:hidden">Prev</span>
                 </span>
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-red-500 to-orange-500"
-                  initial={{ x: "-100%" }}
-                  whileHover={{ x: "100%" }}
-                  transition={{ duration: 0.6 }}
-                />
               </motion.button>
             ) : (
               <motion.button
@@ -721,33 +640,20 @@ export default function SectionExploreGrid() {
                 Next
                 <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
               </span>
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-blue-500"
-                initial={{ x: "-100%" }}
-                whileHover={{ x: "100%" }}
-                transition={{ duration: 0.6 }}
-              />
             </motion.button>
           </div>
-
           {/* Page indicator */}
           <div className="flex items-center gap-2">
             {[...Array(totalSecondaryPages)].map((_, idx) => (
               <motion.div
-                key={idx}
+                key={`page-indicator-${idx}`} // ← add a prefix so it's never just "0" or "1"
                 className={`h-2 rounded-full transition-all duration-300 ${
                   idx === secondaryPage
                     ? "w-8 bg-gradient-to-r from-blue-400 to-cyan-400"
                     : "w-2 bg-gray-600 hover:bg-gray-500"
                 }`}
                 whileHover={{ scale: 1.2 }}
-                onClick={() => {
-                  setIsTransitioning(true);
-                  setTimeout(() => {
-                    setSecondaryPage(idx);
-                    setIsTransitioning(false);
-                  }, 300);
-                }}
+                onClick={() => handlePageIndicatorClick(idx)}
                 style={{ cursor: "pointer" }}
               />
             ))}
@@ -759,26 +665,27 @@ export default function SectionExploreGrid() {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {[...Array(5)].map((_, i) => (
           <motion.div
-            key={i}
+            key={`float-${secondaryPage}-${i}`} // ← include page so keys don’t collide on re-render
             className="absolute w-64 h-64 rounded-full"
             style={{
               background: `radial-gradient(circle, ${
                 [
-                  "rgba(59, 130, 246, 0.1)",
-                  "rgba(236, 72, 153, 0.1)",
-                  "rgba(34, 197, 94, 0.1)",
+                  "rgba(59,130,246,0.1)",
+                  "rgba(236,72,153,0.1)",
+                  "rgba(34,197,94,0.1)",
                 ][i % 3]
               } 0%, transparent 70%)`,
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
+              willChange: "transform",
             }}
             animate={{
-              x: [0, 50, 0],
-              y: [0, 30, 0],
+              x: [0, Math.random() * 100 - 50, 0],
+              y: [0, Math.random() * 60 - 30, 0],
               scale: [1, 1.2, 1],
             }}
             transition={{
-              duration: 10 + i * 2,
+              duration: 15 + i * 5,
               repeat: Infinity,
               ease: "easeInOut",
             }}
@@ -786,102 +693,54 @@ export default function SectionExploreGrid() {
         ))}
       </div>
 
-      {/* Premium styles */}
+      {/* Global Styles */}
       <style jsx global>{`
+        /* Keyframes and other styles remain the same, ensure they are optimized */
         @keyframes shimmer {
           0% {
-            background-position: -200% 0;
+            transform: translateX(-100%);
           }
           100% {
-            background-position: 200% 0;
+            transform: translateX(100%);
           }
         }
-
         .shimmer-effect {
-          background: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.1) 50%,
-            transparent 100%
-          );
-          background-size: 200% 100%;
-          animation: shimmer 3s infinite;
-        }
-
-        /* Custom scrollbar for the section */
-        #section-explore-grid::-webkit-scrollbar {
-          width: 8px;
-        }
-
-        #section-explore-grid::-webkit-scrollbar-track {
-          background: rgba(0, 0, 0, 0.1);
-        }
-
-        #section-explore-grid::-webkit-scrollbar-thumb {
-          background: linear-gradient(to bottom, #3b82f6, #06b6d4);
-          border-radius: 4px;
-        }
-
-        /* Smooth transitions */
-        * {
-          transition-property: transform, opacity, filter;
-          transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Glass morphism enhancement */
-        .glass-morphism {
-          background: rgba(255, 255, 255, 0.05);
-          backdrop-filter: blur(10px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Premium hover effects */
-        .premium-hover {
           position: relative;
           overflow: hidden;
         }
-
-        .premium-hover::before {
+        .shimmer-effect::before {
           content: "";
           position: absolute;
           top: 0;
-          left: -100%;
+          left: 0;
           width: 100%;
           height: 100%;
           background: linear-gradient(
             90deg,
             transparent,
-            rgba(255, 255, 255, 0.2),
+            rgba(255, 255, 255, 0.1),
             transparent
           );
-          transition: left 0.5s;
+          animation: shimmer 3s infinite linear;
+          will-change: transform;
         }
-
-        .premium-hover:hover::before {
-          left: 100%;
+        .glass-morphism {
+          background: rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          transform: translateZ(0);
         }
-
-        /* Mobile optimizations */
-        @media (max-width: 768px) {
-          .grid-container {
-            gap: 8px !important;
-          }
-        }
-
-        /* Reduced motion */
         @media (prefers-reduced-motion: reduce) {
-          * {
+          *,
+          *::before,
+          *::after {
             animation-duration: 0.01ms !important;
             animation-iteration-count: 1 !important;
             transition-duration: 0.01ms !important;
+            animation: none !important;
+            transition: none !important;
           }
-        }
-
-        /* Performance optimizations */
-        .gpu-accelerated {
-          transform: translateZ(0);
-          will-change: transform;
-          backface-visibility: hidden;
         }
       `}</style>
     </section>

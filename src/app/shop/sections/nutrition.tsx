@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useState } from "react";
 import { FiInfo } from "react-icons/fi";
+// ⬆️ add these imports with the rest of your icons
+import { GiCoolSpices, GiHotSpices } from "react-icons/gi";
+import { PiPlantDuotone } from "react-icons/pi";
 
 export default function NutritionSection() {
   const [activeTab, setActiveTab] = useState<"nutrition" | "ingredients">(
@@ -59,7 +62,7 @@ export default function NutritionSection() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden"
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden h-full"
             >
               {/* Tab Navigation */}
               <div className="flex border-b border-gray-200 dark:border-gray-700">
@@ -296,26 +299,50 @@ export default function NutritionSection() {
                 </div>
 
                 {/* Product Highlights */}
-                <div className="mt-8 grid grid-cols-3 gap-4">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1 }}
+                  className="grid grid-cols-1 md:grid-cols-3 gap-2 mt-4"
+                >
                   {[
-                    { icon: "🔥", label: "Perfect Heat" },
-                    { icon: "🌿", label: "Natural" },
-                    { icon: "💯", label: "Premium" },
-                  ].map((highlight, index) => (
+                    {
+                      icon: <GiHotSpices className="text-2xl" />,
+                      title: "Heat Levels",
+                      desc: "From mild to extreme, find your perfect spice",
+                    },
+                    {
+                      icon: <PiPlantDuotone className="text-2xl" />,
+                      title: "Usage Tips",
+                      desc: "Expert advice for every culinary application",
+                    },
+                    {
+                      icon: <GiCoolSpices className="text-2xl" />,
+                      title: "Flavor Profiles",
+                      desc: "Discover unique taste combinations",
+                    },
+                  ].map((card, index) => (
                     <motion.div
-                      key={highlight.label}
+                      key={card.title}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 + index * 0.1 }}
-                      className="text-center"
+                      transition={{ delay: 1.2 + index * 0.1 }}
+                      whileHover={{ y: -5 }}
+                      className="
+        bg-gray-800/50 backdrop-blur-sm rounded-xl p-1
+        border border-gray-700 hover:border-orange-500/50
+        transition-all duration-300
+
+        /* new: center everything in a column */
+        flex flex-col items-center text-center
+      "
                     >
-                      <div className="text-2xl mb-1">{highlight.icon}</div>
-                      <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
-                        {highlight.label}
-                      </p>
+                      {card.icon}
+                      <h3 className="text-l font-semibold ">{card.title}</h3>
+                      <p className="text-gray-400 text-xs">{card.desc}</p>
                     </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </div>
             </motion.div>
           </div>

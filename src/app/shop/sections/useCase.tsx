@@ -5,10 +5,18 @@ import styles from "@/styles/hexagonGrid.module.css";
 import { AnimatePresence, motion, useAnimation } from "framer-motion";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { FiInfo, FiRefreshCw } from "react-icons/fi";
-import { GiChiliPepper, GiFireBowl } from "react-icons/gi";
+import { GiChiliPepper, GiFireBowl, GiSpiralBottle } from "react-icons/gi";
+import { TbSalt } from "react-icons/tb";
 
+import { LiaPepperHotSolid } from "react-icons/lia";
 // Enhanced type for combined data
+
+/* 🟢 2.  Stronger type ----------------------------------------------------- */
 type EnhancedUseCase = UseCase & {
+  id: number;
+  title: string;
+  desc: string;
+  icon: React.ReactNode; // <- guarantee a renderable node
   type: "useCase" | "pepper";
   category?: string;
   intensity?: number;
@@ -55,25 +63,32 @@ function getHeatLevel(scoville: number): {
   return { level: 5, name: "Inferno", colorClass: "from-red-900 to-black" };
 }
 
-// Create a combined array with enhanced metadata
+/** util — just wraps any icon in a 3-xl span */
+const big = (el: React.ReactElement) => <span className="text-3xl">{el}</span>;
+
+/* ------------------------------------------------------------------ */
+/*  Build the single array that feeds your HexGrid                    */
+/* ------------------------------------------------------------------ */
+
 const combinedData: EnhancedUseCase[] = [
-  ...useCaseData.map(
-    (item): EnhancedUseCase => ({
-      ...item,
-      type: "useCase",
-      category: "general", // Default category since it's optional
-    }),
-  ),
-  ...pepperData.map((item, index): EnhancedUseCase => {
-    const scovilleNumber = parseScoville(item.scoville);
-    const heatLevel = getHeatLevel(scovilleNumber);
+  /* 1️⃣  Use-cases — add the discriminant and freeze its literal value */
+  ...useCaseData.map<EnhancedUseCase>((u) => ({
+    ...u,
+    type: "useCase" as const, // <- keeps the literal, not “string”
+  })),
+
+  /* 2️⃣  Peppers — already have a literal, just add the missing fields */
+  ...pepperData.map<EnhancedUseCase>((p, i) => {
+    const scovilleNumber = parseScoville(p.scoville);
+    const heat = getHeatLevel(scovilleNumber);
+
     return {
-      id: index + 1 + useCaseData.length,
-      title: item.name,
-      desc: `${item.scoville} • ${heatLevel.name}`,
-      icon: item.icon,
-      type: "pepper",
-      intensity: heatLevel.level,
+      id: useCaseData.length + i + 1,
+      title: p.name,
+      desc: `${p.scoville} • ${heat.name}`,
+      icon: big(p.icon),
+      type: "pepper" as const, // <- same trick
+      intensity: heat.level,
       scovilleNumber,
     };
   }),
@@ -329,7 +344,7 @@ const HexagonItem = React.memo(
               className={`font-bold ${
                 breakpoint === "mobile"
                   ? "text-xs leading-tight mt-1"
-                  : "text-sm md:text-base mt-2"
+                  : "text-sm md:text-sm mt-2"
               }`}
             >
               {item.title}
@@ -349,7 +364,7 @@ const HexagonItem = React.memo(
                 onClick(item);
               }}
             >
-              View Details
+              <FiInfo />
             </motion.button>
           </motion.div>
         </motion.div>
@@ -603,17 +618,17 @@ export default function UseCaseSection() {
         >
           {[
             {
-              icon: "🌶️",
+              icon: <LiaPepperHotSolid className="text-3xl text-red-500" />, // 🌶️
               title: "Heat Levels",
               desc: "From mild to extreme, find your perfect spice",
             },
             {
-              icon: "🍳",
+              icon: <GiSpiralBottle className="text-3xl text-yellow-500" />, // 🍳
               title: "Usage Tips",
               desc: "Expert advice for every culinary application",
             },
             {
-              icon: "🔥",
+              icon: <TbSalt className="text-3xl text-orange-500" />, // 🔥
               title: "Flavor Profiles",
               desc: "Discover unique taste combinations",
             },

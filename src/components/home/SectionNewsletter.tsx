@@ -3,9 +3,12 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import React, { useState } from "react";
 import { FiCheck, FiMail, FiSend, FiUser } from "react-icons/fi";
-import { GiChiliPepper } from "react-icons/gi";
-import { HiSparkles } from "react-icons/hi";
+import { GiChiliPepper, GiCook } from "react-icons/gi";
+import { IoIosStopwatch } from "react-icons/io";
 
+import { IoGift } from "react-icons/io5";
+
+import { HiSparkles } from "react-icons/hi";
 export default function SectionNewsletter() {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -111,7 +114,6 @@ export default function SectionNewsletter() {
             hot, receive exclusive offers, and get insider access to new flavors
           </p>
         </motion.div>
-
         {/* Benefits */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -121,30 +123,32 @@ export default function SectionNewsletter() {
         >
           {[
             {
-              icon: "🎁",
+              icon: <IoGift className="mx-auto text-5xl text-orange-500" />,
               title: "Exclusive Offers",
               desc: "Special discounts for subscribers",
             },
             {
-              icon: "🚀",
+              icon: (
+                <IoIosStopwatch className="mx-auto text-5xl text-blue-500" />
+              ),
               title: "Early Access",
               desc: "New products before anyone else",
             },
             {
-              icon: "📖",
+              icon: <GiCook className="mx-auto text-5xl text-green-500" />,
               title: "Recipe Ideas",
               desc: "Creative ways to use our sauces",
             },
           ].map((benefit, index) => (
             <motion.div
-              key={index}
+              key={benefit.title}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
               whileHover={{ y: -5, scale: 1.02 }}
               className="text-center p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700"
             >
-              <div className="text-4xl mb-3">{benefit.icon}</div>
+              <div className="mb-3">{benefit.icon}</div>
               <h3 className="font-bold text-gray-900 dark:text-white mb-2">
                 {benefit.title}
               </h3>
@@ -154,7 +158,6 @@ export default function SectionNewsletter() {
             </motion.div>
           ))}
         </motion.div>
-
         {/* Form Container */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
