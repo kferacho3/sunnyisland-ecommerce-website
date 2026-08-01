@@ -124,14 +124,52 @@ Not retained: `aboutUs/about1–5.webp` are DALL·E 1024×1024 squares; `about6/
 ~149 third-party food photos are re-hosted on Sunny Island S3 under `explore/recipes/`.
 
 **No new photography will be generated.** A site whose thesis is verifiability cannot be illustrated with
-invented images. Derived assets — poster frames, re-encodes, GLB renders, traced SVG — are generated from
-real sources and are in scope. Abstract non-factual texture (grain, gradient fields) is in scope.
+invented images. Derived assets — poster frames, re-encodes, GLB renders — are generated from real sources
+and are in scope. Abstract non-factual texture (grain, gradient fields) is in scope.
+
+#### Supplied AI image set (21 files, 2026-08-01)
+
+Owner-supplied, all generated 2026-08-01. Triaged individually; policy approved by the owner:
+
+- **Use** — abstract and decorative brand graphics. They assert no fact.
+- **Use** — food-only compositions with no visible faces, captioned "Serving suggestion". Standard CPG practice.
+- **Skip** — anything depicting people, staff, customers, crowds, a market stall, a food truck, a staffed
+  commercial kitchen, or a fulfilment operation.
+
+The skipped set depicts operations and a customer base that do not exist. `/partners` addresses wholesale
+distributors and retail buyers making purchasing decisions, so an image of a branded food truck or a
+three-cook kitchen functions as an operational claim, not decoration. It is also off-brand: the jars shown
+carry a multi-SKU lineup and label artwork that do not match the real "New and Improved" labels.
+
+Per-file verdicts and placements: `docs/image-manifest.md`.
+
+#### Label-derived brand assets
+
+Extracted from `Sunny Island Pepper Sauce New and Improved (16 oz).svg` and optimised into `public/brand/`:
+
+| Asset | Source | Size |
+|---|---|---|
+| `flame-mark-{256,512,1024}.webp` | embedded 1024² RGBA | 10 / 24 / 44 KB |
+| `wreath-ornament-768.webp` | embedded 1024² RGBA | 335 KB |
+| `label-front-16oz.webp` | embedded 1052×1495 | 143 KB |
+| `label-history-panel.webp` | embedded 1024×1536 | 141 KB |
+| `label-message-panel.webp` | embedded 1024×1536 | 144 KB |
+
+The isolated flame mark is the cleanest brand asset now available and replaces the 440–870 KB PNG lockups
+for favicon and small-size use.
 
 ### 4.4 Identity
 
-`public/` holds three PNG logos (440–870 KB) and `ZelioonWild-BLOm5.otf`. **No vector master exists.** A
-traced SVG of the badge is produced for favicon and small sizes. The beveled 3D wordmark in the video has
-no font equivalent and is treated as a brand image, not recreated in type.
+`public/` holds three PNG logos (440–870 KB) and `ZelioonWild-BLOm5.otf`.
+
+**There is still no vector master.** The four label SVGs are not vector artwork: each is a ~12.7 MB file
+wrapping ~8.96 MB of embedded PNG rasters, with 45 paths (almost all of them the Instagram QR code) and
+**zero `<text>` elements**. Nothing in them is a scalable mark.
+
+The extracted 1024² alpha flame mark is sufficient for favicon and small on-screen sizes, so a traced SVG
+is no longer on the critical path — but a real vector master should still be commissioned for print,
+large-format, and motion use. The beveled 3D wordmark in the video has no font equivalent and is treated
+as a brand image, not recreated in type.
 
 `SunnyIslandLogoName.png` is 2800 px wide and `priority`-preloaded into a ~200 px slot. `Footer.tsx:200`
 is a raw `<img>` loading a 440 KB PNG into a 160 px box on every page. Both fixed.
