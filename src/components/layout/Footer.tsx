@@ -365,8 +365,7 @@ export default function Footer() {
                 transition={{ duration: 0.6 }}
                 className="text-xs sm:text-sm text-gray-400"
               >
-                © {new Date().getFullYear()} Sunny Island®. All rights
-                reserved.
+                © {new Date().getFullYear()} Sunny Island®. All rights reserved.
               </motion.p>
 
               <motion.div

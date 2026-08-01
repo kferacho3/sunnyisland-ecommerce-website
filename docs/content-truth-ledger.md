@@ -16,9 +16,14 @@ Status values: `approved` (evidence on file) · `pending` (needs owner evidence)
 |---|---|---|---|
 | Product name | Sunny Island Pepper Sauce | approved | label-16oz front panel |
 | Net contents (16 oz SKU) | 16 FL OZ (473 ml) | approved | label-16oz front panel |
-| Sizes with artwork on file | 2 oz, 16 oz, 32 oz, 64 oz | approved | four label PDFs |
-| Sizes actually in production | — | **pending** | Artwork exists ≠ SKU ships. Which can a buyer order today? |
-| Legacy size referenced in code | 8 FL OZ / 250 g | **rejected for new site** | `faqData.ts:16`, `PepperSauceBottleShopDisplay.webp`. Superseded by the four new labels. |
+| **Primary consumer SKU** | **8 FL OZ (250 g)** | **approved** | Owner-confirmed 2026-08-01. This is the main bottle sold to consumers. Corroborated by `faqData.ts:16` and `PepperSauceBottleShopDisplay.webp`. |
+| Sizes with additional artwork on file | 2 oz, 16 oz, 32 oz, 64 oz | approved | four label PDFs |
+| Which of 2/16/32/64 oz ship today | — | **pending** | Artwork exists ≠ SKU ships. Which can a buyer order now? |
+
+The 8 oz bottle is the hero product for `/sauce` and the Direct-to-Consumer buyer path. The larger
+formats (16/32/64 oz) are the wholesale and food-service story on `/partners`.
+
+Dual declaration "8 FL OZ (250 g)" — volume plus net weight — is a standard and correct format.
 | Multi-flavour range (FIESTA, BLAZE, INFERNO, VERDE) | — | **pending** | `productsData.ts` lists five; only OG has a model and no label artwork exists for the other four. |
 
 ## 2. Ingredients and nutrition
@@ -43,21 +48,28 @@ gives the ingredient statement as "Peppers, Garlic, Water, Vinegar, **Fruit**, *
 
 ### 2.1 ⚠️ Label defect — servings per container
 
-All four labels state **"48 Servings per container"**. That cannot be true across a 32× size range.
+All four of the 2/16/32/64 oz labels state **"48 Servings per container"**. That cannot be true across a
+32× size range.
 
-At the label's own serving size of 5.7 g, 48 servings = **273.6 g ≈ 8.8 fl oz** — which corresponds to the
-*previous 8 FL OZ / 250 g jar*. The panel was carried over to the four new sizes without recalculation.
+At the label's own serving size of 5.7 g, 48 servings = **273.6 g**. That is the 8 oz consumer bottle's
+panel — 250 g actual, which works out to **43.9 servings**, so 48 is ~9% over even there. The 8 oz panel
+was then carried onto all four larger labels without recalculation.
 
-Approximate corrected values, assuming a density of ~1.05 g/ml for a vinegar-based sauce:
+Approximate corrected values, assuming ~1.05 g/ml for a vinegar-based sauce:
 
 | Label | Volume | Approx. net weight | Servings should be ≈ |
 |---|---|---|---|
+| **8 oz (consumer)** | 237 ml | **250 g (stated)** | **~44** (label says 48) |
 | 2 oz | 59 ml | ~62 g | ~11 |
 | 16 oz | 473 ml | ~497 g | ~87 |
 | 32 oz | 946 ml | ~994 g | ~174 |
 | 64 oz | 1,893 ml | ~1,987 g | ~349 |
 
-Density is an assumption. The exact figures must come from measured fill weight per SKU.
+Only the 8 oz row uses a stated net weight; the rest assume density. Exact figures must come from
+measured fill weight per SKU.
+
+Severity: the 8 oz discrepancy is small and may be a rounding or formulation difference worth confirming.
+**The 2 / 16 / 32 / 64 oz labels are wrong by 4× to 7×** and are the ones to stop at the printer.
 
 **Action: owner to confirm with the label printer before any further print run.** Servings-per-container is
 a required and enforceable field. This is a product issue, not a website issue, and it outranks the website.

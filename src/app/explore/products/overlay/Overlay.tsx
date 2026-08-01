@@ -78,8 +78,7 @@ const product3DButtonVariants: {
 };
 
 // A reusable 3D button component using Tailwind CSS.
-interface ThreeDButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ThreeDButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   buttonClasses: string;
   backgroundClasses: string;

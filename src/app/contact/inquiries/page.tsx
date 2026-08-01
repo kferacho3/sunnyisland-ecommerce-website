@@ -985,8 +985,8 @@ ${message}
             transition={{ delay: 0.6 }}
           >
             <p className="text-sm text-gray-500 dark:text-gray-400">
-              © {new Date().getFullYear()} Sunny Island Pepper Sauce. All
-              rights reserved.
+              © {new Date().getFullYear()} Sunny Island Pepper Sauce. All rights
+              reserved.
             </p>
           </motion.div>
         </div>

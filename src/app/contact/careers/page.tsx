@@ -968,8 +968,8 @@ export default function CareersPage() {
 
           <div className="text-center pt-8 border-t border-gray-800">
             <p className="text-sm text-gray-500">
-              © {new Date().getFullYear()} Sunny Island Pepper Sauce. All
-              rights reserved.
+              © {new Date().getFullYear()} Sunny Island Pepper Sauce. All rights
+              reserved.
             </p>
             <p className="text-xs text-gray-600 mt-2">
               Made with 🌶️ and ❤️ in the Caribbean | Equal Opportunity Employer

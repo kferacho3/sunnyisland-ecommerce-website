@@ -33,6 +33,12 @@ yarn-error.log*
 # env files (can opt-in for committing if needed)
 .env*
 .env.local
+# also match dotless variants — `env.local` slipped past `.env*` and was
+# committed with 18 live credentials. Do not remove these lines.
+env
+env.*
+*.env
+!.env.example
 
 
 # vercel

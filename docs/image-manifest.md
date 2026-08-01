@@ -46,26 +46,32 @@ Approved files are staged, optimised, in `public/brand/concept/`.
 
 ## Label defects in approved files
 
-Real facts: black label, circular flame/palm badge, "SUNNY ISLAND / PEPPER SAUCE", net contents styled
-"16 FL OZ (473ml)". Real sizes **2 / 16 / 32 / 64 oz**.
+Real facts: black label, circular flame/palm badge, "SUNNY ISLAND / PEPPER SAUCE".
+Real sizes: **8 oz (primary consumer SKU)**, plus 2 / 16 / 32 / 64 oz.
 
-**`sauce-product-hero.webp` (f06)** — highest exposure, appears at largest scale.
-- Three jars, two sizes. The real range is four sizes; a buyer reads three jars as the full line.
-- Small jars read **"8 FL OZ (250g)"** — 8 oz is not a real SKU, and the line mixes a volume unit with a
-  weight unit, which is nonsensical on a food label.
-- Large jar reads "64 FL OZ (1893ml)" — correct, and the only accurate net-contents line in the whole set.
-- **Action:** crop above the net-contents line, or retouch it out, before publishing.
+> **Corrected 2026-08-01.** An earlier revision of this file flagged "8 FL OZ (250g)" as an invented size
+> and as a unit error. Both were wrong. 8 FL OZ (250 g) is the **primary consumer bottle**, and a dual
+> volume-plus-net-weight declaration is standard. The crop requirements on f06, f15, and f21 are lifted.
 
-**`divider-jars-sunset.webp` (f01)**
-- Five jars, two sizes. Front three read **"6 FL OZ (250g)"** — 6 oz is not a real SKU, mixed units again.
-- **Action:** use only at a scale or crop where no net-contents text is legible. Never place adjacent to
-  sizing, case-pack, or spec content on any page.
+**`sauce-product-hero.webp` (f06)** — ✅ **cleared for use as-is.**
+- Small jars read "8 FL OZ (250g)" — the real primary consumer SKU.
+- Large jar reads "64 FL OZ (1893ml)" — also real.
+- Remaining caveat: it shows three jars across two sizes, so it reads as a two-size line. Fine as a
+  product hero; do not caption it as "the full range".
+- Label art is an AI approximation of the real black circular-badge label, not production artwork.
 
-**`ways-to-use-1.webp` / `ways-to-use-2.webp` (f15, f21)**
-- Both carry a legible jar reading roughly **"8 FL OZ (250g)"** — invented size, mixed units.
-- f21's badge additionally carries garbled sub-lettering and a fabricated barcode.
-- **Action:** crop the jar out of frame, or hold the scale so the label does not resolve. Caption
-  "Serving suggestion". Replace with real product photography as soon as the label is locked.
+**`ways-to-use-1.webp` / `ways-to-use-2.webp` (f15, f21)** — ✅ **cleared for use.**
+- The legible jar reads ~"8 FL OZ (250g)" — the real consumer SKU.
+- f21's badge carries garbled sub-lettering and a fabricated barcode, so **hold the scale so fine label
+  detail does not resolve**, or crop the barcode out.
+- "Serving suggestion" caption still mandatory (food styling, not a product claim).
+
+**`divider-jars-sunset.webp` (f01)** — ⚠️ **still needs cropping.**
+- Front three jars read **"6 FL OZ (250g)"**. 6 oz is not a listed SKU, and 6 fl oz ≈ 186 g, so pairing it
+  with 250 g is internally inconsistent regardless.
+- Back jars read "64 FL OZ (1893ml)" — correct.
+- **Action:** crop or scale so no net-contents text is legible. Never place adjacent to sizing, case-pack,
+  or spec content.
 
 **Cross-cutting — every decorative file (f02, f03, f04, f05, f07, f09, f10)**
 - None assert a SKU, so none is a label risk. But **all of them render long cayenne-type peppers rather
