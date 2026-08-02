@@ -81,6 +81,12 @@ export function InquiryForm() {
     consent: false,
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  /**
+   * Three contained steps rather than one long scroll: the single-page form
+   * ran well past a viewport, which reads as work before it reads as a
+   * conversation. Values persist across steps and across buyer-type changes.
+   */
+  const [step, setStep] = useState(0);
   const [status, setStatus] = useState<"idle" | "sending" | "failed">("idle");
   const [formError, setFormError] = useState<string | null>(null);
 
@@ -111,6 +117,7 @@ export function InquiryForm() {
   function pickBuyer(next: BuyerType) {
     setBuyerType(next);
     setErrors({});
+    setStep(1);
     // Keep the URL honest so the choice survives a refresh or a shared link.
     const q = new URLSearchParams(params.toString());
     q.set("buyer", next);
@@ -205,7 +212,20 @@ export function InquiryForm() {
       }
 
       setStatus("failed");
-      setErrors(data.fieldErrors ?? {});
+      const fields: Record<string, string> = data.fieldErrors ?? {};
+      setErrors(fields);
+      // Send them to the step that actually owns the first bad field.
+      const SHARED = new Set([
+        "name",
+        "email",
+        "phone",
+        "region",
+        "preferredContact",
+        "message",
+        "consent",
+      ]);
+      const first = Object.keys(fields)[0];
+      if (first) setStep(SHARED.has(first) ? 2 : 1);
       setFormError(
         data.error ?? "Something went wrong. Please try again or email us.",
       );
@@ -222,45 +242,93 @@ export function InquiryForm() {
   const busy = status === "sending";
 
   return (
-    <form onSubmit={onSubmit} noValidate className="relative">
+    <form
+      onSubmit={onSubmit}
+      noValidate
+      className="relative flex min-h-[min(46rem,82svh)] flex-col"
+    >
+      {/* Progress rail — three named steps, each clickable once reached. */}
+      <ol className="mb-9 flex items-center gap-3" aria-label="Form progress">
+        {["What kind of inquiry?", "The details", "About you"].map(
+          (label, i) => {
+            const done = i < step;
+            const here = i === step;
+            return (
+              <li key={label} className="flex flex-1 items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => (done ? setStep(i) : undefined)}
+                  disabled={!done}
+                  aria-current={here ? "step" : undefined}
+                  className={cn(
+                    "flex flex-1 flex-col gap-2 text-left",
+                    done ? "cursor-pointer" : "cursor-default",
+                  )}
+                >
+                  <span
+                    className={cn(
+                      "h-px w-full transition-colors duration-medium ease-si",
+                      here || done ? "bg-gold" : "bg-cream-line",
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "font-body text-eyebrow font-semibold uppercase transition-colors duration-fast ease-si",
+                      here
+                        ? "text-gold"
+                        : done
+                          ? "text-on-cream"
+                          : "text-on-cream-muted",
+                    )}
+                  >
+                    {String(i + 1).padStart(2, "0")} · {label}
+                  </span>
+                </button>
+              </li>
+            );
+          },
+        )}
+      </ol>
+
       <Honeypot
         value={str("company_website")}
         onChange={(x) => set("company_website", x)}
       />
 
-      {/* 1 — which kind of inquiry */}
-      <fieldset>
-        <legend className="font-display text-heading tracking-display text-on-cream">
-          What kind of inquiry is this?
-        </legend>
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          {BUYER_TYPES.map((b) => {
-            const on = b === buyerType;
-            return (
-              <button
-                key={b}
-                type="button"
-                aria-pressed={on}
-                onClick={() => pickBuyer(b)}
-                className={cn(
-                  "border p-5 text-left transition-all duration-medium ease-si",
-                  on
-                    ? "border-gold bg-cream-raised shadow-gold"
-                    : "border-cream-line bg-cream-raised hover:border-gold",
-                )}
-              >
-                <span className="block font-body text-[0.9375rem] font-semibold text-on-cream">
-                  {BUYER_LABELS[b]}
-                </span>
-                <span className="mt-1 block text-sm text-on-cream-muted">
-                  {BUYER_BLURB[b]}
-                </span>
-              </button>
-            );
-          })}
-        </div>
-      </fieldset>
-
+      {/* ── STEP 1 ───────────────────────────────────────────── */}
+      <div hidden={step !== 0} className="flex-1">
+        <fieldset>
+          <legend className="font-display text-heading tracking-display text-on-cream">
+            What kind of inquiry is this?
+          </legend>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            {BUYER_TYPES.map((b) => {
+              const on = b === buyerType;
+              return (
+                <button
+                  key={b}
+                  type="button"
+                  aria-pressed={on}
+                  onClick={() => pickBuyer(b)}
+                  className={cn(
+                    "border p-5 text-left transition-all duration-medium ease-si",
+                    on
+                      ? "border-gold bg-cream-raised shadow-gold"
+                      : "border-cream-line bg-cream-raised hover:border-gold",
+                  )}
+                >
+                  <span className="block font-body text-[0.9375rem] font-semibold text-on-cream">
+                    {BUYER_LABELS[b]}
+                  </span>
+                  <span className="mt-1 block text-sm text-on-cream-muted">
+                    {BUYER_BLURB[b]}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+        </fieldset>
+      </div>
       {formError ? (
         <div
           ref={summaryRef}
@@ -281,347 +349,373 @@ export function InquiryForm() {
         </div>
       ) : null}
 
-      {/* 2 — path-specific */}
-      <div className="mt-12 grid gap-6 sm:grid-cols-2">
-        {buyerType === "consumer" ? (
-          <>
-            <ChipGroup
-              className="sm:col-span-2"
-              label="Which sizes?"
-              hint="The 8 oz bottle is our main consumer size."
-              required
-              options={SIZE_OPTS}
-              selected={arr("sizes")}
-              onToggle={(x) => toggle("sizes", x)}
-              error={errors.sizes}
-            />
-            <TextField
-              name="quantity"
-              label="Roughly how many?"
-              placeholder="e.g. 12 bottles, or 2 cases"
-              value={str("quantity")}
-              onChange={(e) => set("quantity", e.target.value)}
-              error={errors.quantity}
-            />
-            <SelectField
-              name="useCase"
-              label="What's it for?"
-              value={str("useCase")}
-              onChange={(e) => set("useCase", e.target.value)}
-              options={[
-                { value: "", label: "Select…" },
-                ...opts(CONSUMER_USES),
-              ]}
-              error={errors.useCase}
-            />
-            <TextField
-              name="neededBy"
-              label="Needed by"
-              placeholder="e.g. Sept 12, or no rush"
-              value={str("neededBy")}
-              onChange={(e) => set("neededBy", e.target.value)}
-              error={errors.neededBy}
-            />
-            <SelectField
-              name="fulfilment"
-              label="How would you like it?"
-              value={str("fulfilment")}
-              onChange={(e) => set("fulfilment", e.target.value)}
-              options={opts(FULFILMENT)}
-              error={errors.fulfilment}
-            />
-            <CheckField
-              className="sm:col-span-2"
-              name="recurring"
-              label="I'd be interested in a standing or recurring order"
-              checked={bool("recurring")}
-              onChange={(x) => set("recurring", x)}
-            />
-          </>
-        ) : null}
+      {/* ── STEP 2 ───────────────────────────────────────────── */}
+      <div hidden={step !== 1} className="flex-1 overflow-y-auto">
+        <div className="mt-12 grid gap-6 sm:grid-cols-2">
+          {buyerType === "consumer" ? (
+            <>
+              <ChipGroup
+                className="sm:col-span-2"
+                label="Which sizes?"
+                hint="The 8 oz bottle is our main consumer size."
+                required
+                options={SIZE_OPTS}
+                selected={arr("sizes")}
+                onToggle={(x) => toggle("sizes", x)}
+                error={errors.sizes}
+              />
+              <TextField
+                name="quantity"
+                label="Roughly how many?"
+                placeholder="e.g. 12 bottles, or 2 cases"
+                value={str("quantity")}
+                onChange={(e) => set("quantity", e.target.value)}
+                error={errors.quantity}
+              />
+              <SelectField
+                name="useCase"
+                label="What's it for?"
+                value={str("useCase")}
+                onChange={(e) => set("useCase", e.target.value)}
+                options={[
+                  { value: "", label: "Select…" },
+                  ...opts(CONSUMER_USES),
+                ]}
+                error={errors.useCase}
+              />
+              <TextField
+                name="neededBy"
+                label="Needed by"
+                placeholder="e.g. Sept 12, or no rush"
+                value={str("neededBy")}
+                onChange={(e) => set("neededBy", e.target.value)}
+                error={errors.neededBy}
+              />
+              <SelectField
+                name="fulfilment"
+                label="How would you like it?"
+                value={str("fulfilment")}
+                onChange={(e) => set("fulfilment", e.target.value)}
+                options={opts(FULFILMENT)}
+                error={errors.fulfilment}
+              />
+              <CheckField
+                className="sm:col-span-2"
+                name="recurring"
+                label="I'd be interested in a standing or recurring order"
+                checked={bool("recurring")}
+                onChange={(x) => set("recurring", x)}
+              />
+            </>
+          ) : null}
 
-        {buyerType === "wholesale" ? (
-          <>
-            <TextField
-              name="company"
-              label="Company"
-              required
-              value={str("company")}
-              onChange={(e) => set("company", e.target.value)}
-              error={errors.company}
-            />
-            <TextField
-              name="role"
-              label="Your role"
-              value={str("role")}
-              onChange={(e) => set("role", e.target.value)}
-              error={errors.role}
-            />
-            <TextField
-              name="website"
-              label="Website"
-              placeholder="example.com"
-              value={str("website")}
-              onChange={(e) => set("website", e.target.value)}
-              error={errors.website}
-            />
-            <SelectField
-              name="businessType"
-              label="Business type"
-              required
-              value={str("businessType")}
-              onChange={(e) => set("businessType", e.target.value)}
-              options={opts(BUSINESS_TYPES)}
-              error={errors.businessType}
-            />
-            <TextField
-              name="territory"
-              label="Territory you serve"
-              placeholder="e.g. FL, GA, SC"
-              value={str("territory")}
-              onChange={(e) => set("territory", e.target.value)}
-              error={errors.territory}
-            />
-            <TextField
-              name="firstOrder"
-              label="Estimated first order"
-              placeholder="e.g. 40 cases"
-              value={str("firstOrder")}
-              onChange={(e) => set("firstOrder", e.target.value)}
-              error={errors.firstOrder}
-            />
-            <TextField
-              name="monthlyVolume"
-              label="Monthly volume"
-              placeholder="e.g. 120–150 cases"
-              value={str("monthlyVolume")}
-              onChange={(e) => set("monthlyVolume", e.target.value)}
-              error={errors.monthlyVolume}
-            />
-            <TextField
-              name="startDate"
-              label="Target start"
-              placeholder="e.g. Q4 2026"
-              value={str("startDate")}
-              onChange={(e) => set("startDate", e.target.value)}
-              error={errors.startDate}
-            />
-            <ChipGroup
-              className="sm:col-span-2"
-              label="Formats of interest"
-              options={SIZE_OPTS}
-              selected={arr("formats")}
-              onToggle={(x) => toggle("formats", x)}
-            />
-            <CheckField
-              className="sm:col-span-2"
-              name="sampleRequest"
-              label="Please send samples"
-              checked={bool("sampleRequest")}
-              onChange={(x) => set("sampleRequest", x)}
-            />
-          </>
-        ) : null}
+          {buyerType === "wholesale" ? (
+            <>
+              <TextField
+                name="company"
+                label="Company"
+                required
+                value={str("company")}
+                onChange={(e) => set("company", e.target.value)}
+                error={errors.company}
+              />
+              <TextField
+                name="role"
+                label="Your role"
+                value={str("role")}
+                onChange={(e) => set("role", e.target.value)}
+                error={errors.role}
+              />
+              <TextField
+                name="website"
+                label="Website"
+                placeholder="example.com"
+                value={str("website")}
+                onChange={(e) => set("website", e.target.value)}
+                error={errors.website}
+              />
+              <SelectField
+                name="businessType"
+                label="Business type"
+                required
+                value={str("businessType")}
+                onChange={(e) => set("businessType", e.target.value)}
+                options={opts(BUSINESS_TYPES)}
+                error={errors.businessType}
+              />
+              <TextField
+                name="territory"
+                label="Territory you serve"
+                placeholder="e.g. FL, GA, SC"
+                value={str("territory")}
+                onChange={(e) => set("territory", e.target.value)}
+                error={errors.territory}
+              />
+              <TextField
+                name="firstOrder"
+                label="Estimated first order"
+                placeholder="e.g. 40 cases"
+                value={str("firstOrder")}
+                onChange={(e) => set("firstOrder", e.target.value)}
+                error={errors.firstOrder}
+              />
+              <TextField
+                name="monthlyVolume"
+                label="Monthly volume"
+                placeholder="e.g. 120–150 cases"
+                value={str("monthlyVolume")}
+                onChange={(e) => set("monthlyVolume", e.target.value)}
+                error={errors.monthlyVolume}
+              />
+              <TextField
+                name="startDate"
+                label="Target start"
+                placeholder="e.g. Q4 2026"
+                value={str("startDate")}
+                onChange={(e) => set("startDate", e.target.value)}
+                error={errors.startDate}
+              />
+              <ChipGroup
+                className="sm:col-span-2"
+                label="Formats of interest"
+                options={SIZE_OPTS}
+                selected={arr("formats")}
+                onToggle={(x) => toggle("formats", x)}
+              />
+              <CheckField
+                className="sm:col-span-2"
+                name="sampleRequest"
+                label="Please send samples"
+                checked={bool("sampleRequest")}
+                onChange={(x) => set("sampleRequest", x)}
+              />
+            </>
+          ) : null}
 
-        {buyerType === "retail" ? (
-          <>
-            <TextField
-              name="retailer"
-              label="Retailer"
-              required
-              value={str("retailer")}
-              onChange={(e) => set("retailer", e.target.value)}
-              error={errors.retailer}
-            />
-            <TextField
-              name="buyerRole"
-              label="Your role"
-              value={str("buyerRole")}
-              onChange={(e) => set("buyerRole", e.target.value)}
-              error={errors.buyerRole}
-            />
-            <TextField
-              name="website"
-              label="Website"
-              placeholder="example.com"
-              value={str("website")}
-              onChange={(e) => set("website", e.target.value)}
-              error={errors.website}
-            />
-            <SelectField
-              name="storeType"
-              label="Store type"
-              required
-              value={str("storeType")}
-              onChange={(e) => set("storeType", e.target.value)}
-              options={opts(STORE_TYPES)}
-              error={errors.storeType}
-            />
-            <TextField
-              name="storeCount"
-              label="How many stores?"
-              placeholder="e.g. 6"
-              value={str("storeCount")}
-              onChange={(e) => set("storeCount", e.target.value)}
-              error={errors.storeCount}
-            />
-            <TextField
-              name="locations"
-              label="Where?"
-              placeholder="e.g. Brooklyn, Queens"
-              value={str("locations")}
-              onChange={(e) => set("locations", e.target.value)}
-              error={errors.locations}
-            />
-            <TextField
-              name="launchWindow"
-              label="Launch window"
-              placeholder="e.g. October reset"
-              value={str("launchWindow")}
-              onChange={(e) => set("launchWindow", e.target.value)}
-              error={errors.launchWindow}
-            />
-            <TextField
-              name="openingOrder"
-              label="Estimated opening order"
-              placeholder="e.g. 12 cases per store"
-              value={str("openingOrder")}
-              onChange={(e) => set("openingOrder", e.target.value)}
-              error={errors.openingOrder}
-            />
-            <ChipGroup
-              className="sm:col-span-2"
-              label="SKUs you'd shelve"
-              options={SIZE_OPTS}
-              selected={arr("skus")}
-              onToggle={(x) => toggle("skus", x)}
-            />
-            <CheckField
-              className="sm:col-span-2"
-              name="packetRequest"
-              label="Please send a sample and buyer packet"
-              checked={bool("packetRequest")}
-              onChange={(x) => set("packetRequest", x)}
-            />
-          </>
-        ) : null}
+          {buyerType === "retail" ? (
+            <>
+              <TextField
+                name="retailer"
+                label="Retailer"
+                required
+                value={str("retailer")}
+                onChange={(e) => set("retailer", e.target.value)}
+                error={errors.retailer}
+              />
+              <TextField
+                name="buyerRole"
+                label="Your role"
+                value={str("buyerRole")}
+                onChange={(e) => set("buyerRole", e.target.value)}
+                error={errors.buyerRole}
+              />
+              <TextField
+                name="website"
+                label="Website"
+                placeholder="example.com"
+                value={str("website")}
+                onChange={(e) => set("website", e.target.value)}
+                error={errors.website}
+              />
+              <SelectField
+                name="storeType"
+                label="Store type"
+                required
+                value={str("storeType")}
+                onChange={(e) => set("storeType", e.target.value)}
+                options={opts(STORE_TYPES)}
+                error={errors.storeType}
+              />
+              <TextField
+                name="storeCount"
+                label="How many stores?"
+                placeholder="e.g. 6"
+                value={str("storeCount")}
+                onChange={(e) => set("storeCount", e.target.value)}
+                error={errors.storeCount}
+              />
+              <TextField
+                name="locations"
+                label="Where?"
+                placeholder="e.g. Brooklyn, Queens"
+                value={str("locations")}
+                onChange={(e) => set("locations", e.target.value)}
+                error={errors.locations}
+              />
+              <TextField
+                name="launchWindow"
+                label="Launch window"
+                placeholder="e.g. October reset"
+                value={str("launchWindow")}
+                onChange={(e) => set("launchWindow", e.target.value)}
+                error={errors.launchWindow}
+              />
+              <TextField
+                name="openingOrder"
+                label="Estimated opening order"
+                placeholder="e.g. 12 cases per store"
+                value={str("openingOrder")}
+                onChange={(e) => set("openingOrder", e.target.value)}
+                error={errors.openingOrder}
+              />
+              <ChipGroup
+                className="sm:col-span-2"
+                label="SKUs you'd shelve"
+                options={SIZE_OPTS}
+                selected={arr("skus")}
+                onToggle={(x) => toggle("skus", x)}
+              />
+              <CheckField
+                className="sm:col-span-2"
+                name="packetRequest"
+                label="Please send a sample and buyer packet"
+                checked={bool("packetRequest")}
+                onChange={(x) => set("packetRequest", x)}
+              />
+            </>
+          ) : null}
 
-        {buyerType === "other" ? (
-          <>
-            <TextField
-              name="organisation"
-              label="Organisation"
-              value={str("organisation")}
-              onChange={(e) => set("organisation", e.target.value)}
-              error={errors.organisation}
-            />
-            <TextField
-              name="partnershipType"
-              label="What kind of partnership?"
-              placeholder="e.g. chef collaboration, event"
-              value={str("partnershipType")}
-              onChange={(e) => set("partnershipType", e.target.value)}
-              error={errors.partnershipType}
-            />
-          </>
-        ) : null}
+          {buyerType === "other" ? (
+            <>
+              <TextField
+                name="organisation"
+                label="Organisation"
+                value={str("organisation")}
+                onChange={(e) => set("organisation", e.target.value)}
+                error={errors.organisation}
+              />
+              <TextField
+                name="partnershipType"
+                label="What kind of partnership?"
+                placeholder="e.g. chef collaboration, event"
+                value={str("partnershipType")}
+                onChange={(e) => set("partnershipType", e.target.value)}
+                error={errors.partnershipType}
+              />
+            </>
+          ) : null}
 
-        {buyerType === "feedback" ? (
-          <>
-            <SelectField
-              name="rating"
-              label="How was it?"
-              value={str("rating")}
-              onChange={(e) => set("rating", e.target.value)}
-              options={[
-                { value: "", label: "Select…" },
-                { value: "5", label: "★★★★★" },
-                { value: "4", label: "★★★★" },
-                { value: "3", label: "★★★" },
-                { value: "2", label: "★★" },
-                { value: "1", label: "★" },
-              ]}
-            />
-            <TextField
-              name="purchasedAt"
-              label="Where did you get it?"
-              placeholder="e.g. a festival, a friend"
-              value={str("purchasedAt")}
-              onChange={(e) => set("purchasedAt", e.target.value)}
-            />
-          </>
-        ) : null}
+          {buyerType === "feedback" ? (
+            <>
+              <SelectField
+                name="rating"
+                label="How was it?"
+                value={str("rating")}
+                onChange={(e) => set("rating", e.target.value)}
+                options={[
+                  { value: "", label: "Select…" },
+                  { value: "5", label: "★★★★★" },
+                  { value: "4", label: "★★★★" },
+                  { value: "3", label: "★★★" },
+                  { value: "2", label: "★★" },
+                  { value: "1", label: "★" },
+                ]}
+              />
+              <TextField
+                name="purchasedAt"
+                label="Where did you get it?"
+                placeholder="e.g. a festival, a friend"
+                value={str("purchasedAt")}
+                onChange={(e) => set("purchasedAt", e.target.value)}
+              />
+            </>
+          ) : null}
+        </div>
       </div>
-
-      {/* 3 — always */}
-      <div className="mt-12 grid gap-6 border-t border-cream-line pt-12 sm:grid-cols-2">
-        <TextField
-          name="name"
-          label="Your name"
-          required
-          autoComplete="name"
-          value={str("name")}
-          onChange={(e) => set("name", e.target.value)}
-          error={errors.name}
-        />
-        <TextField
-          name="email"
-          label="Email"
-          type="email"
-          required
-          autoComplete="email"
-          value={str("email")}
-          onChange={(e) => set("email", e.target.value)}
-          error={errors.email}
-        />
-        <TextField
-          name="phone"
-          label="Phone"
-          type="tel"
-          autoComplete="tel"
-          value={str("phone")}
-          onChange={(e) => set("phone", e.target.value)}
-          error={errors.phone}
-        />
-        <TextField
-          name="region"
-          label={buyerType === "consumer" ? "City / state" : "Region you serve"}
-          value={str("region")}
-          onChange={(e) => set("region", e.target.value)}
-          error={errors.region}
-        />
-        <SelectField
-          name="preferredContact"
-          label="Best way to reach you"
-          value={str("preferredContact")}
-          onChange={(e) => set("preferredContact", e.target.value)}
-          options={opts(CONTACT_METHODS)}
-          error={errors.preferredContact}
-        />
-        <TextArea
-          className="sm:col-span-2"
-          name="message"
-          label="Tell us what you need"
-          required
-          hint="The more specific you are, the faster we can give you a real answer."
-          value={str("message")}
-          onChange={(e) => set("message", e.target.value)}
-          error={errors.message}
-        />
-        <CheckField
-          className="sm:col-span-2"
-          name="consent"
-          label="I agree to be contacted about this inquiry. No newsletter, no account."
-          checked={bool("consent")}
-          onChange={(x) => set("consent", x)}
-          error={errors.consent}
-        />
+      {/* ── STEP 3 ───────────────────────────────────────────── */}
+      <div hidden={step !== 2} className="flex-1 overflow-y-auto">
+        <div className="mt-12 grid gap-6 border-t border-cream-line pt-12 sm:grid-cols-2">
+          <TextField
+            name="name"
+            label="Your name"
+            required
+            autoComplete="name"
+            value={str("name")}
+            onChange={(e) => set("name", e.target.value)}
+            error={errors.name}
+          />
+          <TextField
+            name="email"
+            label="Email"
+            type="email"
+            required
+            autoComplete="email"
+            value={str("email")}
+            onChange={(e) => set("email", e.target.value)}
+            error={errors.email}
+          />
+          <TextField
+            name="phone"
+            label="Phone"
+            type="tel"
+            autoComplete="tel"
+            value={str("phone")}
+            onChange={(e) => set("phone", e.target.value)}
+            error={errors.phone}
+          />
+          <TextField
+            name="region"
+            label={
+              buyerType === "consumer" ? "City / state" : "Region you serve"
+            }
+            value={str("region")}
+            onChange={(e) => set("region", e.target.value)}
+            error={errors.region}
+          />
+          <SelectField
+            name="preferredContact"
+            label="Best way to reach you"
+            value={str("preferredContact")}
+            onChange={(e) => set("preferredContact", e.target.value)}
+            options={opts(CONTACT_METHODS)}
+            error={errors.preferredContact}
+          />
+          <TextArea
+            className="sm:col-span-2"
+            name="message"
+            label="Tell us what you need"
+            required
+            hint="The more specific you are, the faster we can give you a real answer."
+            value={str("message")}
+            onChange={(e) => set("message", e.target.value)}
+            error={errors.message}
+          />
+          <CheckField
+            className="sm:col-span-2"
+            name="consent"
+            label="I agree to be contacted about this inquiry. No newsletter, no account."
+            checked={bool("consent")}
+            onChange={(x) => set("consent", x)}
+            error={errors.consent}
+          />
+        </div>
       </div>
+      {/* Navigation. Submit only exists on the final step. */}
+      <div className="mt-10 flex flex-wrap items-center gap-4 border-t border-cream-line pt-8">
+        {step > 0 ? (
+          <ButtonEl
+            type="button"
+            variant="ghost-cream"
+            onClick={() => setStep((s) => Math.max(0, s - 1))}
+          >
+            Back
+          </ButtonEl>
+        ) : null}
 
-      <div className="mt-10 flex flex-wrap items-center gap-6">
-        <ButtonEl type="submit" size="lg" disabled={busy}>
-          {busy ? "Sending…" : "Submit inquiry"}
-        </ButtonEl>
+        {step < 2 ? (
+          <ButtonEl
+            type="button"
+            size="lg"
+            onClick={() => setStep((s) => Math.min(2, s + 1))}
+          >
+            Continue
+          </ButtonEl>
+        ) : (
+          <ButtonEl type="submit" size="lg" disabled={busy}>
+            {busy ? "Sending…" : "Submit inquiry"}
+          </ButtonEl>
+        )}
+
         <p className="text-sm text-on-cream-muted">
           Or email{" "}
           <a

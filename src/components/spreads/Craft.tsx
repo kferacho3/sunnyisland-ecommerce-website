@@ -3,17 +3,20 @@ import Image from "next/image";
 import { Fact } from "@/components/content/Fact";
 import { Container } from "@/components/core/Container";
 import { Eyebrow } from "@/components/core/Section";
+import { IngredientBanner } from "@/components/marketing/IngredientBanner";
 import { Lines, Settle } from "@/components/motion/Reveal.client";
 import { TextLink } from "@/components/core/Button";
-import { product } from "@/content/product";
 import { story } from "@/content/story";
 
 /**
- * SPREAD III — CRAFT. Seven ingredients as an editorial litany (a 64s
- * marquee — slow reads editorial, fast reads carnival), then the archive
- * plates: the ten real kitchen photographs as small, duotoned, captioned
- * evidence. Phone photos rendered large read cheap; rendered as archive
- * material they read as provenance.
+ * SPREAD III — CRAFT. A drawn frieze of what goes in the jar — scotch
+ * bonnets, onion, garlic, green papaya — with no text. The landing page shows
+ * the ingredients rather than reciting them; the written statement stays where
+ * a buyer actually needs it (the printed label, and /sauce).
+ *
+ * Then the archive plates: the ten real kitchen photographs as small,
+ * duotoned, captioned evidence. Phone photos rendered large read cheap;
+ * rendered as archive material they read as provenance.
  */
 
 const PLATES = [
@@ -35,44 +38,13 @@ export function Craft() {
         <Eyebrow>What&rsquo;s in the jar</Eyebrow>
         <Lines
           as="h2"
-          className="mt-6 max-w-[14ch] font-display text-display tracking-display text-on-cream"
+          className="mt-6 max-w-[16ch] font-display text-display tracking-display text-on-cream"
         >
-          Seven things. Nothing else.
+          Short list. Long answer.
         </Lines>
       </Container>
 
-      {/* The litany. aria-hidden marquee, static list for readers. */}
-      <Fact claim={product.ingredients}>
-        {(list) => (
-          <>
-            <ul className="sr-only">
-              {list.map((i) => (
-                <li key={i}>{i}</li>
-              ))}
-            </ul>
-            <div
-              aria-hidden
-              className="mt-14 flex overflow-hidden border-y border-cream-line py-6"
-            >
-              <div className="si-marquee flex w-max flex-none items-baseline">
-                {[0, 1].map((copy) => (
-                  <span key={copy} className="flex items-baseline">
-                    {list.map((item) => (
-                      <span
-                        key={`${copy}-${item}`}
-                        className="mx-8 flex items-baseline gap-8 whitespace-nowrap font-display text-title italic tracking-display text-gold-deep"
-                      >
-                        {item}
-                        <span className="inline-block h-2 w-2 flex-none self-center bg-ember" />
-                      </span>
-                    ))}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-      </Fact>
+      <IngredientBanner className="mt-14" />
 
       <Container>
         <div className="mt-20 grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">

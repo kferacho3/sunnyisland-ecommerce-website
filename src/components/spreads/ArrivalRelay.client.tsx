@@ -82,6 +82,7 @@ export function ArrivalRelay({ className }: { className?: string }) {
           onCanPlay={() => setFilmReady(true)}
           className={cn(
             "absolute inset-0 h-full w-full object-cover transition-opacity duration-slow ease-si",
+            "object-center lg:object-[38%_center]",
             filmReady ? "opacity-100" : "opacity-0",
           )}
         >
@@ -96,13 +97,22 @@ export function ArrivalRelay({ className }: { className?: string }) {
       ) : null}
 
       {/* Scrims — the type column always sits on near-solid ink. */}
+      {/* Scrims. The horizontal one holds the left column at near-solid ink
+          so nothing in the film competes with the headline or the form. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/80 via-ink/35 to-ink"
+        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/70 via-transparent to-ink"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink via-ink/60 to-transparent lg:via-ink/30"
+        className={cn(
+          "pointer-events-none absolute inset-0",
+          // Explicit stops, not a three-token gradient: the copy column needs
+          // SOLID ink under it, with the film emerging only past the halfway
+          // mark. A soft via- ramp leaves the wordmark legible behind the H1.
+          "bg-[linear-gradient(90deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink))_30%,rgb(var(--si-ink)/0.82)_52%,rgb(var(--si-ink)/0.25)_78%,transparent_100%)]",
+          "lg:bg-[linear-gradient(90deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink))_44%,rgb(var(--si-ink)/0.7)_62%,transparent_88%)]",
+        )}
       />
 
       {showFilm ? (
