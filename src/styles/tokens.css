@@ -53,6 +53,7 @@
   --si-font-body:
     var(--font-inter-tight), -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
+  --si-font-script: var(--font-script), "Snell Roundhand", cursive;
   --si-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Fluid scale. Clamped so a 320px phone and a 4K display both read well. */
@@ -127,11 +128,11 @@
   --si-z-overlay: 70;
 }
 
-
 /* ------------------------------------------------ forge lighting (§dark) */
 /* Spotlight from above — the smithy's single lamp. */
 .si-forge {
-  background-image: radial-gradient(
+  background-image:
+    radial-gradient(
       52% 44% at 50% 0%,
       rgb(255 214 170 / 0.09) 0%,
       rgb(var(--si-ember) / 0.04) 45%,
@@ -188,6 +189,28 @@ h3 {
   text-transform: uppercase;
   color: rgb(var(--si-text-on-cream-muted));
   padding: 0.75rem 0.25rem;
+}
+
+/* Re-points the light surface tokens for a subtree rendered on ink. The
+   inquiry form is authored once against --si-cream-*; this lets it run on the
+   dark ground without a parallel dark-mode implementation. */
+.si-invert {
+  --si-cream: 20 13 8;
+  --si-cream-raised: 27 18 11;
+  --si-cream-sunk: 14 9 5;
+  --si-cream-line: 62 45 30;
+  --si-text-on-cream: 249 240 224;
+  --si-text-on-cream-muted: 186 164 137;
+}
+
+/* The wellness message — the brand's one script voice. Script needs more
+   leading than a grotesque or the ascenders and descenders collide. */
+.si-script {
+  font-family: var(--si-font-script);
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0.01em;
+  text-transform: none;
 }
 
 /* Hollow display line — the film-overlay signature. Solid fallback where

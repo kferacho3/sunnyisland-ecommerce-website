@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Inter_Tight } from "next/font/google";
+import { Archivo, Great_Vibes, Inter_Tight } from "next/font/google";
 
 import "./globals.css";
 
@@ -16,6 +16,18 @@ const archivo = Archivo({
   display: "swap",
   variable: "--font-archivo",
   axes: ["wdth"],
+});
+
+/**
+ * One script face, used for exactly one thing: the wellness message printed
+ * on every bottle. Reserving it for that single voice is what keeps it
+ * feeling like a signature rather than decoration.
+ */
+const greatVibes = Great_Vibes({
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+  variable: "--font-script",
 });
 
 const interTight = Inter_Tight({
@@ -63,7 +75,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${archivo.variable} ${interTight.variable}`}
+      className={`${archivo.variable} ${greatVibes.variable} ${interTight.variable}`}
       suppressHydrationWarning
     >
       <body>{children}</body>

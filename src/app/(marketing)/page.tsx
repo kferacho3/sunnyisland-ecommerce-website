@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 
-import { Button, TextLink } from "@/components/core/Button";
 import { Container } from "@/components/core/Container";
 import { Eyebrow } from "@/components/core/Section";
-import { ART, FullBleedBand } from "@/components/media/FullBleed";
+import { QuickInquiry } from "@/components/forms/QuickInquiry.client";
 import { MotionRefresh } from "@/components/motion/Reveal.client";
 import { ProofRail } from "@/components/marketing/ProofRail";
 import { ArrivalRelay } from "@/components/spreads/ArrivalRelay.client";
@@ -12,7 +12,7 @@ import { Craft } from "@/components/spreads/Craft";
 import { Origin } from "@/components/spreads/Origin";
 import { Table } from "@/components/spreads/Table";
 import { Trade } from "@/components/spreads/Trade";
-import { CTA, proofPoints } from "@/content/site";
+import { proofPoints } from "@/content/site";
 
 export const metadata: Metadata = {
   title: "Caribbean heat, made for tables and shelves",
@@ -54,14 +54,11 @@ export default function HomePage() {
             Trinidad&nbsp;&amp;&nbsp;Tobago.
           </p>
 
-          <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-            <Button href={CTA.href} size="lg" variant="outline">
-              {CTA.label}
-            </Button>
-            <TextLink href="/story" onInk>
-              The story
-            </TextLink>
-          </div>
+          {/* The fast lane. Anyone with a real brief still gets the
+              adaptive form at the foot of the page. */}
+          <Suspense fallback={null}>
+            <QuickInquiry className="mt-10" />
+          </Suspense>
         </Container>
       </section>
 
@@ -83,10 +80,6 @@ export default function HomePage() {
 
       {/* ── IV. THE TABLE ──────────────────────────────────────────── */}
       <Table />
-
-      {/* Interlude — the sunset still, complete: the band takes its height
-          from the artwork's own ratio, so nothing is ever cropped away. */}
-      <FullBleedBand media={ART.sunsetJars} />
 
       {/* ── V. TRADE ───────────────────────────────────────────────── */}
       <Trade />

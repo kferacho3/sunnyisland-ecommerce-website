@@ -258,7 +258,14 @@ export function CheckField({
           onChange={(e) => onChange(e.target.checked)}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
-          className="mt-0.5 h-5 w-5 flex-none accent-[rgb(var(--si-gold))]"
+          className={cn(
+            "mt-0.5 h-5 w-5 flex-none appearance-none border bg-transparent",
+            "accent-[rgb(var(--si-gold))] transition-colors duration-fast ease-si",
+            "checked:border-gold checked:bg-gold",
+            "checked:after:block checked:after:text-center checked:after:text-[0.8rem]",
+            "checked:after:leading-[1.05rem] checked:after:text-ink checked:after:content-['✓']",
+            error ? BAD : "border-cream-line hover:border-gold",
+          )}
         />
         <span>{label}</span>
       </label>

@@ -41,6 +41,7 @@ export default {
       fontFamily: {
         display: "var(--si-font-display)",
         body: "var(--si-font-body)",
+        script: "var(--si-font-script)",
         mono: "var(--si-font-mono)",
       },
       fontSize: {

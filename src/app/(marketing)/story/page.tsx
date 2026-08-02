@@ -117,11 +117,11 @@ export default function StoryPage() {
             <Fact claim={story.wellnessMessage}>
               {(m) => (
                 <>
-                  <blockquote className="mt-5">
-                    <p className="font-display text-title leading-title tracking-display text-on-cream">
-                      &ldquo;{m.quote}&rdquo;
+                  <blockquote className="mt-6">
+                    <p className="si-script max-w-[32rem] text-[clamp(1.6rem,1rem+1.9vw,2.6rem)] text-gold">
+                      {m.quote}
                     </p>
-                    <footer className="mt-6 font-body text-eyebrow font-semibold uppercase text-gold-deep">
+                    <footer className="mt-7 font-body text-eyebrow font-semibold uppercase text-on-cream-muted">
                       {m.attribution}
                     </footer>
                   </blockquote>

@@ -30,11 +30,11 @@ export function SiteFooter() {
           {/* Closing gesture: the wellness line printed on every bottle. */}
           <Fact claim={story.wellnessMessage}>
             {(m) => (
-              <blockquote className="mx-auto max-w-narrow text-center">
-                <p className="font-display text-title leading-title tracking-display text-on-ink">
-                  &ldquo;{m.quote}&rdquo;
+              <blockquote className="mx-auto max-w-[46rem] text-center">
+                <p className="si-script text-[clamp(1.75rem,1rem+2.2vw,2.9rem)] text-gold">
+                  {m.quote}
                 </p>
-                <footer className="mt-5 font-body text-eyebrow font-semibold uppercase text-gold-deep">
+                <footer className="mt-8 font-body text-eyebrow font-semibold uppercase text-on-ink-muted">
                   {m.attribution}
                 </footer>
               </blockquote>

@@ -1,14 +1,20 @@
+import Image from "next/image";
 import Link from "next/link";
+import { Suspense } from "react";
 
 import { Container } from "@/components/core/Container";
 import { Eyebrow } from "@/components/core/Section";
-import { ART, FullBleedGround } from "@/components/media/FullBleed";
+import { InquiryForm } from "@/components/forms/InquiryForm.client";
+import { ART } from "@/components/media/FullBleed";
 import { Lines, Settle } from "@/components/motion/Reveal.client";
 
 /**
- * SPREAD V — TRADE. The tasting-room close: inquiry as an appointment, not a
- * checkout. Three doors, each opening the form with the buyer preselected.
- * Ends on the wellness message printed on every bottle.
+ * SPREAD V — TRADE. The close, and the site's main conversion surface.
+ *
+ * The sunset product artwork is this section's own hero rather than a band
+ * passing by above it: the jars sit behind the invitation, and the full
+ * adaptive form sits directly underneath. A visitor who scrolled the whole
+ * page never has to navigate anywhere to convert.
  */
 
 const DOORS = [
@@ -31,63 +37,97 @@ const DOORS = [
 
 export function Trade() {
   return (
-    <section
-      id="trade"
-      className="si-grain relative isolate overflow-hidden bg-ink py-section text-on-ink"
-    >
-      {/* The brand's own panel art as the ground — complete at full width,
-          held far back so the doors stay legible. */}
-      <FullBleedGround media={ART.panelGround} opacity={42} />
-      <div aria-hidden className="si-rake absolute inset-0" />
+    <section id="trade" className="relative isolate bg-ink text-on-ink">
+      {/* The product at full artwork ratio — nothing cropped — with the
+          invitation set inside it rather than after it. */}
+      <div
+        className="relative w-full overflow-hidden"
+        style={{
+          aspectRatio: `${ART.sunsetJars.width} / ${ART.sunsetJars.height}`,
+        }}
+      >
+        <Image
+          src={ART.sunsetJars.src}
+          alt={ART.sunsetJars.alt}
+          fill
+          sizes="100vw"
+          className="si-media object-cover"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-b from-ink via-ink/20 to-ink"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-r from-ink via-ink/45 to-transparent lg:via-ink/15"
+        />
 
+        <Container className="absolute inset-0 flex flex-col justify-center">
+          <div className="max-w-[34rem]">
+            <Eyebrow onInk>Work with us</Eyebrow>
+            <Lines
+              as="h2"
+              className="mt-5 font-display text-display tracking-display text-on-ink"
+            >
+              Pull up a chair.
+            </Lines>
+            <Settle className="mt-6">
+              <p className="max-w-[44ch] text-lede text-on-ink-muted">
+                Tell us what you need and a person answers — no account, no
+                cart, no autoresponder. Chefs and retailers welcome.
+              </p>
+            </Settle>
+          </div>
+        </Container>
+      </div>
+
+      {/* Three doors, for anyone who wants to skip to their path. */}
       <Container className="relative">
-        <Eyebrow onInk>Work with us</Eyebrow>
-        <Lines
-          as="h2"
-          className="mt-6 max-w-[12ch] font-display text-display-xl text-on-ink"
-        >
-          Pull up a chair.
-        </Lines>
-        <Settle className="mt-8">
-          <p className="max-w-[52ch] text-lede text-on-ink-muted">
-            Tell us what you need and a person answers — no account, no cart, no
-            autoresponder. Chefs and retailers welcome.
-          </p>
-        </Settle>
-
-        <div className="mt-16 grid gap-px overflow-hidden border border-ink-line bg-ink-line md:grid-cols-3">
+        <div className="grid gap-px border-y border-ink-line bg-ink-line md:grid-cols-3">
           {DOORS.map((door, i) => (
             <Link
               key={door.title}
               href={door.href}
-              className="group/door relative bg-ink-raised p-8 transition-colors duration-medium ease-si hover:bg-ink sm:p-10"
+              className="group/door bg-ink p-8 transition-colors duration-medium ease-si hover:bg-ink-raised sm:p-9"
             >
-              <Settle delay={i * 0.07}>
+              <Settle delay={i * 0.06}>
                 <span className="font-mono text-eyebrow font-semibold text-gold-deep">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <h3 className="mt-5 text-balance font-display text-heading tracking-display text-on-ink transition-colors duration-fast ease-si group-hover/door:text-gold">
+                <h3 className="mt-4 text-balance font-display text-heading tracking-display text-on-ink transition-colors duration-fast ease-si group-hover/door:text-gold">
                   {door.title}
                 </h3>
                 <p className="mt-3 text-[0.9375rem] text-on-ink-muted">
                   {door.line}
                 </p>
-                <span className="mt-8 inline-flex items-center gap-2 font-body text-[0.9375rem] font-semibold text-on-ink">
-                  Start the conversation
-                  <span
-                    aria-hidden
-                    className="transition-transform duration-medium ease-si group-hover/door:translate-x-1"
-                  >
-                    &rarr;
-                  </span>
-                </span>
               </Settle>
             </Link>
           ))}
         </div>
+      </Container>
 
-        {/* The wellness message lives in the footer — the sitewide ending.
-            Repeating it here doubled it on the homepage. */}
+      {/* The full adaptive form, in place — the page's real conversion. */}
+      <Container width="narrow" className="relative py-section-tight">
+        <div className="mb-12">
+          <Eyebrow onInk>Start here</Eyebrow>
+          <Lines
+            as="h3"
+            className="mt-5 font-display text-title tracking-display text-on-ink"
+          >
+            Tell us what you need.
+          </Lines>
+        </div>
+
+        {/* The form is authored against the light surface tokens. This is the
+            one place it runs on ink, so those tokens are re-pointed for this
+            subtree rather than forking a second copy of the form. */}
+        <div className="si-invert">
+          <Suspense
+            fallback={<p className="text-on-ink-muted">Loading the form…</p>}
+          >
+            <InquiryForm />
+          </Suspense>
+        </div>
       </Container>
     </section>
   );
