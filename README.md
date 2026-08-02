@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sunny Island Pepper Sauce
 
-## Getting Started
+Inquiry-first brand site. Next.js 15 (App Router) · React 19 · Tailwind ·
+GSAP · React Three Fiber.
 
-First, run the development server:
+## Deployment
+
+**AWS Amplify Hosting**, served through CloudFront. Verified from response
+headers (`x-amz-cf-id`, `via: … cloudfront.net`) and DNS
+(`www` → `d1dhs3iq026j2p.cloudfront.net`).
+
+`amplify.yml` in the repo root defines the build. It exists because Amplify
+injects environment variables into the build container but **not** into the
+Next.js SSR compute — so it writes the named keys into `.env.production` at
+build time. Without it, `/api/inquiries` returns `503` even when every value
+is set correctly in the console.
+
+Check what the running server can actually see:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+curl -s https://www.sunnyislandpepper.com/api/health | jq
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Presence and length only — never values.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Local
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install --legacy-peer-deps   # RC peer pins in the R3F stack
+cp .env.example .env.local       # then fill in RESEND_API_KEY
+npm run dev
+```
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Local dev server |
+| `npm run build` | Production build (runs lint + typecheck) |
+| `node scripts/qa-capture.mjs <url> <out.png> [w] [h] [anchor] [settleMs] [scrollPx]` | Screenshot QA with real scrolling |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+`GET /api/preview-email` renders the customer acknowledgement in the browser
+(dev only; 404s in production).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Documentation
 
-## Deploy on Vercel
+| Doc | Contents |
+|---|---|
+| `docs/design/2026-08-02-creative-direction.md` | The design system and page architecture |
+| `docs/design/2026-08-02-research-audit.md` | Reference research behind it |
+| `docs/content-truth-ledger.md` | Every claim, its evidence, and its status |
+| `docs/image-manifest.md` | Per-image usage rules |
+| `docs/inquiry-system.md` | The inquiry pipeline |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Content integrity
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Every displayed fact is a `Claim<T>` (`src/content/claim.ts`): `approved` with
+a recorded source, or `pending`, which renders nothing. Components accept only
+`Claim<T>`, so an unverified value cannot reach the DOM. Product facts come
+from the physical label, not from memory.

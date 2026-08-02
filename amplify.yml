@@ -1,0 +1,40 @@
+# AWS Amplify Hosting — Next.js SSR (WEB_COMPUTE)
+#
+# Why this file exists: environment variables set in the Amplify console are
+# injected into the BUILD container, but they are not automatically present in
+# the SSR compute runtime. A Next.js server route reading process.env at
+# request time therefore sees undefined, and /api/inquiries returns its
+# configuration error (503) even though the values are configured correctly.
+#
+# The documented fix is to materialise them into .env.production during the
+# build so Next bundles them into the server output. Only the keys listed here
+# are copied — never the whole environment.
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci --legacy-peer-deps
+    build:
+      commands:
+        # Server-only secrets. Values are never echoed.
+        - |
+          for key in RESEND_API_KEY INQUIRY_FROM INQUIRY_TO_CONSUMER \
+                     INQUIRY_TO_WHOLESALE INQUIRY_TO_RETAIL INQUIRY_TO_OTHER \
+                     DATABASE_URL NEXT_PUBLIC_SITE_URL; do
+            if [ -n "${!key}" ]; then
+              echo "$key=${!key}" >> .env.production
+              echo "  wrote $key to .env.production"
+            else
+              echo "  WARNING: $key is not set in the Amplify environment"
+            fi
+          done
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - node_modules/**/*
+      - .next/cache/**/*

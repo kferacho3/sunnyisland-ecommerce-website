@@ -28,6 +28,55 @@ function mulberry(seed: number) {
 
 /* ----------------------------------------------------------------- scene */
 
+/**
+ * The island's silhouette, as a revolved profile: [radius, height] from the
+ * outer skirt up to the crater floor. Concave flanks, a defined rim, and a
+ * sunken crater — the shape a volcano actually has.
+ *
+ * This is the single source of truth for BOTH the mesh and the physics: the
+ * eruption's ground collision samples the same curve the lathe renders, so a
+ * pepper can never land through the surface it appears to hit.
+ */
+export const ISLAND_PROFILE: THREE.Vector2[] = [
+  new THREE.Vector2(6.9, -0.55),
+  new THREE.Vector2(6.5, 0.02),
+  new THREE.Vector2(5.6, 0.22),
+  new THREE.Vector2(4.6, 0.42),
+  new THREE.Vector2(3.7, 0.95),
+  new THREE.Vector2(2.95, 1.6),
+  new THREE.Vector2(2.3, 2.3),
+  new THREE.Vector2(1.72, 2.95),
+  new THREE.Vector2(1.22, 3.45),
+  new THREE.Vector2(0.9, 3.82),
+  new THREE.Vector2(0.74, 3.98),
+  new THREE.Vector2(0.6, 3.82),
+  new THREE.Vector2(0.56, 3.74),
+  new THREE.Vector2(0, 3.72),
+];
+
+/**
+ * Surface height at a world XZ, by interpolating the profile.
+ *
+ * The profile doubles back over the crater rim, so only the OUTER descending
+ * run is used for collision — a pepper falling outside the rim must land on
+ * the flank, not teleport to the crater floor because the radius matched.
+ */
+export function groundHeight(x: number, z: number): number {
+  const r = Math.hypot(x, z);
+  if (r >= ISLAND_PROFILE[0].x) return -1.2; // open water
+  // Walk the outer flank from the skirt up to the rim.
+  for (let i = 0; i < 10; i++) {
+    const a = ISLAND_PROFILE[i];
+    const b = ISLAND_PROFILE[i + 1];
+    if (r <= a.x && r >= b.x) {
+      const t = (a.x - r) / Math.max(1e-6, a.x - b.x);
+      return a.y + (b.y - a.y) * t;
+    }
+  }
+  // Inside the rim: the crater floor.
+  return 3.74;
+}
+
 const C = {
   sea: "#160b07",
   seaLit: "#2a120a",
@@ -164,7 +213,7 @@ function Jar({ progress }: { progress: { current: number } }) {
     // its label to meet you.
     const p = THREE.MathUtils.clamp((progress.current - 0.5) / 0.4, 0, 1);
     const e = 1 - Math.pow(1 - p, 3);
-    g.position.y = 0.55 + 0.4 * e;
+    g.position.y = 0.34 + 0.34 * e;
     g.rotation.y = -1.1 + 1.45 * e;
     // The jar belongs to the landing beat — before that it is not on stage.
     g.scale.setScalar(0.0034 * e);
@@ -172,7 +221,7 @@ function Jar({ progress }: { progress: { current: number } }) {
 
   // The raw GLB is ~300 units tall (see legacy PepperSauce.tsx scale=0.0075).
   return (
-    <group ref={group} position={[2.6, 0.55, 3.4]} scale={0.0034}>
+    <group ref={group} position={[3.6, 0.34, 4.6]} scale={0.0034}>
       <JarModel />
     </group>
   );
@@ -233,8 +282,8 @@ function Rig({
     const b = THREE.MathUtils.smoothstep(p, 0.55, 1);
 
     const angle = -0.45 + a * 1.05;
-    const radius = 13.5 - a * 6.6;
-    const height = 2.5 - a * 0.7;
+    const radius = 20.5 - a * 8.2;
+    const height = 5.4 - a * 1.6;
 
     const ox = Math.sin(angle) * radius;
     const oy = height;
@@ -242,9 +291,9 @@ function Rig({
 
     // The landing pose: over the shallows, looking back at the jar on the
     // beach with the island rising behind it.
-    const ex = 5.1;
-    const ey = 1.05;
-    const ez = 6.3;
+    const ex = 6.4;
+    const ey = 1.35;
+    const ez = 7.8;
 
     camera.position.set(
       THREE.MathUtils.lerp(ox, ex, b) + drift.current.x * 0.5,
@@ -253,9 +302,9 @@ function Rig({
     );
 
     look.set(
-      THREE.MathUtils.lerp(0, 2.6, b),
-      THREE.MathUtils.lerp(0.9 - 0.15 * a, 0.95, b),
-      THREE.MathUtils.lerp(0, 3.4, b),
+      THREE.MathUtils.lerp(0, 3.6, b),
+      THREE.MathUtils.lerp(2.1 - 0.3 * a, 1.15, b),
+      THREE.MathUtils.lerp(0, 4.6, b),
     );
     camera.lookAt(look);
   });
@@ -275,18 +324,20 @@ function IslandScene({
     return [0, 1, 2, 3].map((i) => ({
       // Offset out of the landing sector so the final beat frames the jar,
       // not a boulder.
-      pos: [
-        Math.sin(i * 2.2 + 2.1) * (5.2 + rnd()),
-        0.16,
-        Math.cos(i * 2.2 + 2.1) * (5.4 + rnd()),
-      ] as [number, number, number],
+      ...(() => {
+        const x = Math.sin(i * 2.2 + 2.1) * (5.2 + rnd());
+        const z = Math.cos(i * 2.2 + 2.1) * (5.4 + rnd());
+        return {
+          pos: [x, groundHeight(x, z) + 0.05, z] as [number, number, number],
+        };
+      })(),
       s: 0.2 + rnd() * 0.3,
     }));
   }, []);
 
   return (
     <>
-      <fog attach="fog" args={["#080503", 16, 36]} />
+      <fog attach="fog" args={["#080503", 22, 48]} />
       <ambientLight intensity={0.35} color="#ffd9b0" />
       {/* Sunset key, low across the water. */}
       <directionalLight
@@ -299,7 +350,7 @@ function IslandScene({
 
       {/* The sea. */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-        <circleGeometry args={[34, 40]} />
+        <circleGeometry args={[46, 44]} />
         <meshStandardMaterial
           color={C.sea}
           flatShading
@@ -313,34 +364,45 @@ function IslandScene({
         <meshBasicMaterial color="#5a1f0c" transparent opacity={0.9} />
       </mesh>
 
-      {/* The island: beach shelf, earth, peak, ember tip. */}
-      <mesh position={[0, 0.12, 0]}>
-        <coneGeometry args={[6.4, 0.9, 9]} />
-        <meshStandardMaterial color={C.sand} flatShading />
+      {/* The island as ONE lathed form. Three stacked cones read as stacked
+          pyramids because each has its own hard silhouette break; a single
+          revolved profile gives the concave flank and crater rim a real
+          volcano has. Profile lives in ISLAND_PROFILE so the ground-collision
+          solver and the mesh cannot disagree. */}
+      <mesh>
+        <latheGeometry args={[ISLAND_PROFILE, 11]} />
+        <meshStandardMaterial
+          color={C.earth}
+          flatShading
+          vertexColors={false}
+        />
       </mesh>
-      <mesh position={[-0.4, 0.9, -0.6]}>
-        <coneGeometry args={[4.4, 2.4, 8]} />
-        <meshStandardMaterial color={C.earth} flatShading />
+
+      {/* Beach ring — the wet sand shelf where the land meets the water. */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.06, 0]}>
+        <ringGeometry args={[4.6, 6.5, 11]} />
+        <meshStandardMaterial
+          color={C.sand}
+          flatShading
+          side={THREE.DoubleSide}
+        />
       </mesh>
-      <mesh position={[-0.7, 2.6, -1]}>
-        <coneGeometry args={[2.1, 2.6, 7]} />
-        <meshStandardMaterial color={C.peak} flatShading />
-      </mesh>
-      <mesh position={[-0.7, 3.95, -1]}>
-        <coneGeometry args={[0.5, 0.5, 6]} />
+
+      {/* Molten crater floor, sunk inside the rim. */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 3.74, 0]}>
+        <circleGeometry args={[0.56, 9]} />
         <meshStandardMaterial
           color={C.lava}
           emissive={C.lava}
-          emissiveIntensity={2.4}
-          flatShading
+          emissiveIntensity={2.6}
         />
       </mesh>
       {/* The vent's own glow, so the eruption launches out of light. */}
       <pointLight
-        position={[-0.7, 4.15, -1]}
+        position={[0, 3.95, 0]}
         color={C.lava}
-        intensity={9}
-        distance={7}
+        intensity={11}
+        distance={8}
         decay={2}
       />
 
@@ -351,10 +413,26 @@ function IslandScene({
         </mesh>
       ))}
 
-      <Palm position={[2.1, 0.5, 2.2]} lean={-0.12} />
-      <Palm position={[3.4, 0.42, 1.2]} lean={0.16} scale={0.85} />
-      <Palm position={[-2.6, 0.5, 3.1]} lean={0.1} scale={1.1} />
-      <Palm position={[-4, 0.45, -0.6]} lean={-0.2} scale={0.9} />
+      {/* Seated on the lathed surface via the shared solver, so no palm
+          floats above the sand or sinks into the flank. */}
+      {(
+        [
+          { x: 3.2, z: 2.9, lean: -0.12, scale: 1 },
+          { x: 4.3, z: 0.6, lean: 0.16, scale: 0.85 },
+          { x: -3.1, z: 3.6, lean: 0.1, scale: 1.1 },
+          { x: -4.6, z: -1.1, lean: -0.2, scale: 0.9 },
+          { x: 0.9, z: 4.4, lean: 0.08, scale: 0.95 },
+          { x: -1.6, z: -4.2, lean: -0.14, scale: 0.8 },
+        ] as const
+      ).map((t, i) => (
+        <Palm
+          key={i}
+          position={[t.x, groundHeight(t.x, t.z) - 0.1, t.z]}
+          lean={t.lean}
+          scale={t.scale}
+          seed={i}
+        />
+      ))}
 
       <Embers />
       {/* useGLTF suspends — without a boundary neither the jar nor the
@@ -383,7 +461,7 @@ export default function IslandStage({
     <Canvas
       frameloop="demand"
       dpr={dpr}
-      camera={{ position: [0, 2.4, 15.5], fov: 38 }}
+      camera={{ position: [0, 5.4, 20.5], fov: 38 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       onCreated={({ invalidate }) => {
         onReady(invalidate);

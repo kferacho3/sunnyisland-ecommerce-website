@@ -49,17 +49,43 @@ the warning is logged.
 
 ## Environment
 
-Copy `.env.example` to `.env.local`. Production values go in Vercel's Environment Variables.
+Copy `.env.example` to `.env.local`.
+
+**Production is AWS Amplify Hosting behind CloudFront** (verified: responses
+carry `x-amz-cf-id` and `via: … cloudfront.net`, and DNS is a CNAME to
+`d1dhs3iq026j2p.cloudfront.net`). Not Vercel.
+
+Set the values in the Amplify console, then note the platform gotcha below.
 
 | Variable | Required | Notes |
 |---|---|---|
-| `RESEND_API_KEY` | yes | Send-only key is correct and sufficient |
+| `RESEND_API_KEY` | yes | Send-only key is correct and sufficient. Must be listed in `amplify.yml` |
 | `INQUIRY_FROM` | yes | Must use a domain verified in Resend |
 | `INQUIRY_TO_CONSUMER` | no | Defaults to `info@sunnyislandpepper.com` |
 | `INQUIRY_TO_WHOLESALE` | no | Same default — split later without a code change |
 | `INQUIRY_TO_RETAIL` | no | Same default |
 | `INQUIRY_TO_OTHER` | no | Same default; also receives `feedback` |
 | `DATABASE_URL` | no | When set, enables the lead store (not yet implemented) |
+
+### ⚠️ Amplify: console variables do not reach the SSR runtime
+
+Amplify injects environment variables into the **build container**, not into
+the Next.js **compute** that serves requests. A server route reading
+`process.env` at request time therefore sees `undefined`, and
+`/api/inquiries` answers `503` even though the values are configured
+correctly.
+
+`amplify.yml` in the repo root fixes this by writing the named keys into
+`.env.production` during the build, so Next bundles them into the server
+output. After adding it, trigger a fresh deploy.
+
+Verify from production without exposing anything:
+
+```
+curl -s https://www.sunnyislandpepper.com/api/health | jq
+```
+
+It reports presence and length per variable — never values.
 
 ### ⚠️ Domain verification is required before launch
 
