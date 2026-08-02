@@ -134,50 +134,65 @@ export function CustomerAckEmail({
             </Text>
           </Section>
 
-          <Section style={{ padding: "30px 28px 0" }}>
-            <Text style={t.paragraph}>{lede}</Text>
+          <Section style={{ padding: "32px 28px 0" }}>
+            <Text style={{ ...t.paragraph, marginBottom: "26px" }}>{lede}</Text>
 
             <Text
-              style={{ ...t.eyebrow, color: t.color.goldDim, marginTop: "4px" }}
+              style={{
+                ...t.eyebrow,
+                color: t.color.goldDim,
+                margin: "0 0 14px 0",
+              }}
             >
               What happens next
             </Text>
 
-            {/* Two columns rather than padded text with a negative margin —
-                Outlook drops negative margins and would collapse the number
-                onto the copy. */}
-            {steps.map((s, idx) => (
-              <Row key={s} style={{ marginBottom: "14px" }}>
-                <Column
-                  style={{
-                    width: "34px",
-                    verticalAlign: "top",
-                    paddingTop: "2px",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontFamily: t.font.mono,
-                      fontSize: "13px",
-                      fontWeight: 700,
-                      color: t.color.ember,
-                      margin: 0,
-                    }}
-                  >
-                    {String(idx + 1).padStart(2, "0")}
-                  </Text>
-                </Column>
-                <Column style={{ verticalAlign: "top" }}>
-                  <Text style={{ ...t.paragraph, margin: 0 }}>{s}</Text>
-                </Column>
-              </Row>
-            ))}
+            {/* Two columns, spaced with cell padding rather than margin on the
+                Row. Each Row is its own <table>, and tables do not honour
+                margin reliably across clients — the previous marginBottom
+                compounded with two stacked section paddings and the rule's own
+                margin into a ~50px hole under the last step. Negative margins
+                are avoided for the same reason Outlook needs the two columns:
+                it drops them, which would collapse the number onto the copy. */}
+            {steps.map((s, idx) => {
+              const last = idx === steps.length - 1;
+              const cell = {
+                verticalAlign: "top" as const,
+                paddingBottom: last ? "0" : "13px",
+              };
+              return (
+                <Row key={s}>
+                  <Column style={{ ...cell, width: "32px", paddingTop: "3px" }}>
+                    <Text
+                      style={{
+                        fontFamily: t.font.mono,
+                        fontSize: "12px",
+                        fontWeight: 700,
+                        color: t.color.ember,
+                        margin: 0,
+                      }}
+                    >
+                      {String(idx + 1).padStart(2, "0")}
+                    </Text>
+                  </Column>
+                  <Column style={cell}>
+                    <Text style={{ ...t.paragraph, margin: 0 }}>{s}</Text>
+                  </Column>
+                </Row>
+              );
+            })}
           </Section>
 
           {/* Quote their own message back — proves it arrived intact. */}
-          <Section style={{ padding: "14px 28px 0" }}>
-            <Hr style={t.hr} />
-            <Text style={{ ...t.eyebrow, color: t.color.goldDim }}>
+          <Section style={{ padding: "0 28px" }}>
+            <Hr style={{ ...t.hr, margin: "28px 0 22px" }} />
+            <Text
+              style={{
+                ...t.eyebrow,
+                color: t.color.goldDim,
+                margin: "0 0 12px 0",
+              }}
+            >
               What you sent us
             </Text>
             <Section
@@ -196,8 +211,8 @@ export function CustomerAckEmail({
             </Section>
           </Section>
 
-          <Section style={{ padding: "24px 28px 0" }}>
-            <Text style={t.paragraph}>
+          <Section style={{ padding: "22px 28px 0" }}>
+            <Text style={{ ...t.paragraph, margin: 0 }}>
               Need to add something? Just reply to this email — it reaches us
               directly, and quoting{" "}
               <span style={{ fontFamily: t.font.mono, color: t.color.ink }}>
