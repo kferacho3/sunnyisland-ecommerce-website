@@ -6,6 +6,7 @@ import {
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
   Row,
@@ -16,6 +17,7 @@ import * as React from "react";
 
 import { BUYER_LABELS, type Inquiry } from "@/lib/inquiries/schema";
 import { previewFor, priorityFor } from "@/lib/inquiries/routing";
+import { emailAsset } from "./assets";
 import * as t from "./theme";
 
 export interface InternalInquiryEmailProps {
@@ -118,6 +120,15 @@ export function InternalInquiryEmail({
             style={{ backgroundColor: t.color.ink, padding: "26px 28px 22px" }}
           >
             <Row>
+              <Column style={{ width: "44px", verticalAlign: "top" }}>
+                <Img
+                  src={emailAsset.mark}
+                  alt=""
+                  width="34"
+                  height="34"
+                  style={{ display: "block", border: 0 }}
+                />
+              </Column>
               <Column>
                 <Text
                   style={{
