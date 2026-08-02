@@ -1,18 +1,22 @@
 import {
   Body,
+  Column,
   Container,
   Head,
   Heading,
   Hr,
   Html,
+  Img,
   Link,
   Preview,
+  Row,
   Section,
   Text,
 } from "@react-email/components";
 import * as React from "react";
 
 import type { BuyerType, Inquiry } from "@/lib/inquiries/schema";
+import { emailAsset, emailLink } from "./assets";
 import * as t from "./theme";
 
 export interface CustomerAckEmailProps {
@@ -77,19 +81,49 @@ export function CustomerAckEmail({
       <Preview>{`We've got your inquiry — reference ${reference}`}</Preview>
       <Body style={t.body}>
         <Container style={t.card}>
-          {/* Cinematic header, matching the site's dark hero */}
+          {/* Masthead. The flame band is a real <img>, not a CSS background —
+              Outlook renders through Word, which ignores background-image on
+              block elements. It is flattened onto the ink colour so the seam
+              stays invisible if images are blocked. */}
+          <Section style={{ backgroundColor: t.color.ink, padding: 0 }}>
+            <Img
+              src={emailAsset.band}
+              alt=""
+              width="600"
+              height="140"
+              style={{
+                display: "block",
+                width: "100%",
+                maxWidth: "600px",
+                height: "auto",
+                border: 0,
+              }}
+            />
+          </Section>
+
           <Section
             style={{
               backgroundColor: t.color.ink,
-              padding: "36px 28px 30px",
+              padding: "0 28px 32px",
               textAlign: "center" as const,
             }}
           >
+            <Img
+              src={emailAsset.mark}
+              alt="Sunny Island Pepper Sauce"
+              width="72"
+              height="72"
+              style={{
+                display: "block",
+                margin: "-36px auto 18px",
+                border: 0,
+              }}
+            />
             <Text
               style={{
                 ...t.eyebrow,
                 color: t.color.gold,
-                margin: "0 0 10px 0",
+                margin: "0 0 12px 0",
               }}
             >
               Sunny Island Pepper Sauce
@@ -106,12 +140,12 @@ export function CustomerAckEmail({
             >
               We&rsquo;ve got it, {firstName}.
             </Heading>
-            <Text style={{ ...t.referenceChip, marginTop: "18px" }}>
+            <Text style={{ ...t.referenceChip, marginTop: "20px" }}>
               {reference}
             </Text>
           </Section>
 
-          <Section style={{ padding: "28px 28px 0" }}>
+          <Section style={{ padding: "30px 28px 0" }}>
             <Text style={t.paragraph}>{lede}</Text>
 
             <Text
@@ -119,38 +153,40 @@ export function CustomerAckEmail({
             >
               What happens next
             </Text>
+
+            {/* Two columns rather than padded text with a negative margin —
+                Outlook drops negative margins and would collapse the number
+                onto the copy. */}
             {steps.map((s, idx) => (
-              <Section key={s} style={{ marginBottom: "12px" }}>
-                <Text
+              <Row key={s} style={{ marginBottom: "14px" }}>
+                <Column
                   style={{
-                    ...t.paragraph,
-                    margin: 0,
-                    paddingLeft: "30px",
-                    position: "relative" as const,
+                    width: "34px",
+                    verticalAlign: "top",
+                    paddingTop: "2px",
                   }}
                 >
-                  <span
+                  <Text
                     style={{
-                      display: "inline-block" as const,
-                      width: "20px",
-                      marginLeft: "-30px",
-                      marginRight: "10px",
-                      color: t.color.ember,
                       fontFamily: t.font.mono,
                       fontSize: "13px",
                       fontWeight: 700,
+                      color: t.color.ember,
+                      margin: 0,
                     }}
                   >
                     {String(idx + 1).padStart(2, "0")}
-                  </span>
-                  {s}
-                </Text>
-              </Section>
+                  </Text>
+                </Column>
+                <Column style={{ verticalAlign: "top" }}>
+                  <Text style={{ ...t.paragraph, margin: 0 }}>{s}</Text>
+                </Column>
+              </Row>
             ))}
           </Section>
 
-          {/* Quote their own message back — proves it arrived intact */}
-          <Section style={{ padding: "8px 28px 0" }}>
+          {/* Quote their own message back — proves it arrived intact. */}
+          <Section style={{ padding: "14px 28px 0" }}>
             <Hr style={t.hr} />
             <Text style={{ ...t.eyebrow, color: t.color.goldDim }}>
               What you sent us
@@ -171,7 +207,7 @@ export function CustomerAckEmail({
             </Section>
           </Section>
 
-          <Section style={{ padding: "22px 28px 0" }}>
+          <Section style={{ padding: "24px 28px 0" }}>
             <Text style={t.paragraph}>
               Need to add something? Just reply to this email — it reaches us
               directly, and quoting{" "}
@@ -182,15 +218,23 @@ export function CustomerAckEmail({
             </Text>
           </Section>
 
-          {/* Brand sign-off, drawn from the message printed on the label */}
+          {/* Sign-off, using the wreath from the label and the message printed
+              on every bottle. */}
           <Section
             style={{
               backgroundColor: t.color.ink,
-              padding: "26px 28px",
-              marginTop: "22px",
+              padding: "34px 28px 30px",
+              marginTop: "26px",
               textAlign: "center" as const,
             }}
           >
+            <Img
+              src={emailAsset.ornament}
+              alt=""
+              width="96"
+              height="96"
+              style={{ display: "block", margin: "0 auto 18px", border: 0 }}
+            />
             <Text
               style={{
                 fontFamily: t.font.display,
@@ -198,7 +242,7 @@ export function CustomerAckEmail({
                 lineHeight: "27px",
                 color: t.color.cream,
                 fontStyle: "italic" as const,
-                margin: "0 0 10px 0",
+                margin: "0 0 12px 0",
               }}
             >
               &ldquo;Your well-being is your greatest treasure; health,
@@ -211,11 +255,33 @@ export function CustomerAckEmail({
           </Section>
 
           <Section
-            style={{ padding: "20px 28px 26px", textAlign: "center" as const }}
+            style={{ padding: "22px 28px 28px", textAlign: "center" as const }}
           >
-            <Text style={t.footerText}>
+            <Text style={{ ...t.footerText, marginBottom: "10px" }}>
               Five generations. St. Vincent to Trinidad &amp; Tobago, now in the
               United States.
+            </Text>
+            <Text style={{ ...t.footerText, marginBottom: "10px" }}>
+              <Link
+                href={emailLink.sauce}
+                style={{ color: t.color.ember, textDecoration: "none" }}
+              >
+                The Sauce
+              </Link>
+              {"  ·  "}
+              <Link
+                href={emailLink.partners}
+                style={{ color: t.color.ember, textDecoration: "none" }}
+              >
+                Partners
+              </Link>
+              {"  ·  "}
+              <Link
+                href={emailLink.story}
+                style={{ color: t.color.ember, textDecoration: "none" }}
+              >
+                Our Story
+              </Link>
             </Text>
             <Text style={t.footerText}>
               <Link
@@ -226,7 +292,7 @@ export function CustomerAckEmail({
               </Link>
               {"  ·  "}
               <Link
-                href="https://www.instagram.com/sunnyislandpepper"
+                href={emailLink.instagram}
                 style={{ color: t.color.ember, textDecoration: "none" }}
               >
                 @sunnyislandpepper

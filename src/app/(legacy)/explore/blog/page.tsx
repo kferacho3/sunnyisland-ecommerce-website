@@ -1,5 +1,5 @@
 // app/explore/blog/page.tsx
-import { blogData, enrichArticle } from "../../../data/blogData";
+import { blogData, enrichArticle } from "@/data/blogData";
 import BlogPageClient from "./components/BlogPageClient";
 // [Keep all the interfaces and types]
 interface Article {

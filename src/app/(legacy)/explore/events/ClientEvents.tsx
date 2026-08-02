@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import type { EventItem } from "../../../data/eventsData";
+import type { EventItem } from "@/data/eventsData";
 
 export interface Section {
   term: string;
