@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { Container } from "@/components/core/Container";
@@ -28,6 +29,20 @@ export default function RecipesPage() {
       <MotionRefresh />
 
       <section className="si-grain relative isolate overflow-hidden bg-ink py-section-tight">
+        {/* Illustrated island scenery — decorative ground only, never captioned
+            as a real place (docs/image-manifest.md). */}
+        <Image
+          src="/brand/concept/story-ground.webp"
+          alt=""
+          aria-hidden
+          fill
+          sizes="100vw"
+          className="si-media absolute inset-0 -z-10 object-cover opacity-40"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-r from-ink via-ink/75 to-ink/35"
+        />
         <div aria-hidden className="si-rake absolute inset-0" />
         <Container className="relative">
           <Eyebrow onInk>House recipes</Eyebrow>

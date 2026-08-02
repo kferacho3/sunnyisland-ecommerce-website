@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 
 import { Button, TextLink } from "@/components/core/Button";
 import { Container } from "@/components/core/Container";
@@ -78,6 +79,21 @@ export default function HomePage() {
 
       {/* ── IV. THE TABLE ──────────────────────────────────────────── */}
       <Table />
+
+      {/* Interlude — the brand's sunset still, full bleed, film-graded. */}
+      <div className="relative h-[38svh] min-h-[16rem] overflow-hidden border-y border-ink-line bg-ink">
+        <Image
+          src="/brand/concept/sauce-product-hero.webp"
+          alt="Jars of Sunny Island Pepper Sauce on dark stone before a sunset opening."
+          fill
+          sizes="100vw"
+          className="si-media object-cover"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-b from-ink/55 via-transparent to-ink/70"
+        />
+      </div>
 
       {/* ── V. TRADE ───────────────────────────────────────────────── */}
       <Trade />

@@ -211,7 +211,7 @@ export default async function RecipePage({
         <div aria-hidden className="si-rake absolute inset-0" />
         <Container className="relative">
           <Image
-            src="/brand/flame-mark-512.webp"
+            src="/brand/symbol-192.webp"
             alt=""
             width={56}
             height={56}

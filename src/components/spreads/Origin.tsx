@@ -36,7 +36,7 @@ const TIMELINE = [
 export function Origin() {
   return (
     <ClipHandoff className="bg-cream text-on-cream">
-      <section id="origin" className="py-section">
+      <section id="origin" className="relative overflow-hidden py-section">
         <Container>
           <Eyebrow>Our origin</Eyebrow>
 

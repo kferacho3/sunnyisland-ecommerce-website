@@ -16,14 +16,17 @@
   /* ---------------------------------------------------------------- ground */
   /* Two grounds only. Ink is where the product performs; cream is where
      facts are stated. Anything else dilutes the contrast between them. */
-  --si-ink: 11 13 13;
-  --si-ink-raised: 22 25 26;
-  --si-ink-line: 38 43 44;
+  /* Retinted 2026-08-02: sampled from the brand artwork rather than neutral
+     paper. Ink carries the artwork's espresso cast; "cream" is now sun-warmed
+     sand. The neutral gallery palette read generic against art this warm. */
+  --si-ink: 18 12 7;
+  --si-ink-raised: 30 20 13;
+  --si-ink-line: 52 38 26;
 
-  --si-cream: 250 246 239;
-  --si-cream-raised: 255 253 250;
-  --si-cream-sunk: 244 238 228;
-  --si-cream-line: 232 225 213;
+  --si-cream: 247 233 208;
+  --si-cream-raised: 253 246 232;
+  --si-cream-sunk: 240 221 189;
+  --si-cream-line: 224 204 170;
 
   /* ----------------------------------------------------------------- brand */
   --si-gold: 252 192 0;
@@ -32,10 +35,10 @@
   --si-maroon: 120 0 36;
 
   /* ------------------------------------------------------------------ text */
-  --si-text-on-ink: 250 246 239;
-  --si-text-on-ink-muted: 154 158 159;
-  --si-text-on-cream: 17 20 20;
-  --si-text-on-cream-muted: 92 98 98;
+  --si-text-on-ink: 249 240 224;
+  --si-text-on-ink-muted: 181 160 134;
+  --si-text-on-cream: 33 22 12;
+  --si-text-on-cream-muted: 110 87 62;
 
   /* ----------------------------------------------------------------- state */
   --si-focus: var(--si-gold);

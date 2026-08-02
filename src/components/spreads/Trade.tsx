@@ -1,10 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 
-import { Fact } from "@/components/content/Fact";
 import { Container } from "@/components/core/Container";
 import { Eyebrow } from "@/components/core/Section";
 import { Lines, Settle } from "@/components/motion/Reveal.client";
-import { story } from "@/content/story";
 
 /**
  * SPREAD V — TRADE. The tasting-room close: inquiry as an appointment, not a
@@ -36,6 +35,16 @@ export function Trade() {
       id="trade"
       className="si-grain relative isolate overflow-hidden bg-ink py-section text-on-ink"
     >
+      {/* The brand's own panel art as the ground — debossed badge, ember
+          ribbons — held far back so the doors stay legible. */}
+      <Image
+        src="/brand/concept/partners-panel-ground.webp"
+        alt=""
+        aria-hidden
+        fill
+        sizes="100vw"
+        className="si-media absolute inset-0 -z-10 object-cover opacity-45"
+      />
       <div aria-hidden className="si-rake absolute inset-0" />
 
       <Container className="relative">
@@ -84,18 +93,8 @@ export function Trade() {
           ))}
         </div>
 
-        <Fact claim={story.wellnessMessage}>
-          {(m) => (
-            <Settle className="mx-auto mt-24 max-w-narrow text-center">
-              <p className="font-display text-title leading-title tracking-display text-on-ink [font-variation-settings:var(--si-voice-quote)]">
-                &ldquo;{m.quote}&rdquo;
-              </p>
-              <p className="mt-5 font-body text-eyebrow font-semibold uppercase text-gold-deep">
-                {m.attribution}
-              </p>
-            </Settle>
-          )}
-        </Fact>
+        {/* The wellness message lives in the footer — the sitewide ending.
+            Repeating it here doubled it on the homepage. */}
       </Container>
     </section>
   );

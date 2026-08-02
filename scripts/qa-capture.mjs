@@ -16,7 +16,9 @@ const browser = await chromium.launch();
 const page = await browser.newPage({
   viewport: { width: +w, height: +h },
 });
-await page.goto(url, { waitUntil: "networkidle" });
+await page.goto(url, { waitUntil: "load", timeout: 45000 });
+// Let hydration finish before anchoring — Next can reset scroll during it.
+await page.waitForTimeout(900);
 if (anchor) {
   await page.evaluate(
     (sel) => document.querySelector(sel)?.scrollIntoView({ block: "start" }),

@@ -46,7 +46,7 @@ export default async function ThankYouPage({
 
       <Container className="relative text-center">
         <Image
-          src="/brand/flame-mark-512.webp"
+          src="/brand/symbol-192.webp"
           alt=""
           width={72}
           height={72}

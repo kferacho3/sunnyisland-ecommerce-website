@@ -45,7 +45,7 @@ export function SiteFooter() {
             <div>
               <Link href="/" className="inline-flex items-center gap-3">
                 <Image
-                  src="/brand/flame-mark-256.webp"
+                  src="/brand/symbol-192.webp"
                   alt=""
                   width={40}
                   height={40}

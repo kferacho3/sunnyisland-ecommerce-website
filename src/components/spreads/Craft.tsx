@@ -29,7 +29,7 @@ export function Craft() {
   return (
     <section
       id="craft"
-      className="overflow-hidden bg-cream-sunk py-section text-on-cream"
+      className="relative overflow-hidden bg-cream-sunk py-section text-on-cream"
     >
       <Container>
         <Eyebrow>What&rsquo;s in the jar</Eyebrow>

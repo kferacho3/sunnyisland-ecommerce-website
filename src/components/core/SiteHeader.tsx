@@ -24,12 +24,12 @@ export function SiteHeader() {
             aria-label="Sunny Island Pepper Sauce — home"
           >
             <Image
-              src="/brand/flame-mark-256.webp"
+              src="/brand/symbol-96.webp"
               alt=""
-              width={36}
-              height={36}
+              width={40}
+              height={40}
               priority
-              className="h-9 w-9 object-contain"
+              className="h-10 w-10 object-contain"
             />
             <span className="font-display text-[1.0625rem] leading-none tracking-display text-on-ink">
               Sunny Island

@@ -23,8 +23,8 @@ export const emailAsset = {
    * build time is the only approach that renders identically everywhere.
    */
   header: `${ORIGIN}/brand/email/header.jpg`,
-  /** Flame mark, transparent, extracted from the physical label artwork. */
-  mark: `${ORIGIN}/brand/email/flame-mark.png`,
+  /** THE logo: the Sunny Island sun-and-palm symbol, transparent PNG. */
+  mark: `${ORIGIN}/brand/email/symbol.png`,
   /** Wide flame/ember band, flattened onto ink. */
   band: `${ORIGIN}/brand/email/band.jpg`,
   /** Pepper-and-foliage wreath from the label, used as a closing ornament. */

@@ -10,7 +10,7 @@ export default function NotFound() {
       <div aria-hidden className="si-rake absolute inset-0" />
       <Container className="relative text-center">
         <Image
-          src="/brand/flame-mark-512.webp"
+          src="/brand/symbol-192.webp"
           alt=""
           width={64}
           height={64}
