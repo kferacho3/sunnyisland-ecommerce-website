@@ -5,7 +5,16 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 
 /**
- * SPREAD I — ARRIVAL. The film hero.
+ * SPREAD I — ARRIVAL. The film panel.
+ *
+ * This fills its own grid column rather than the whole hero. That is the
+ * whole design: the jar and the wordmark are dead-centre in the footage, so
+ * any layout that runs type across the film puts the headline on top of the
+ * product no matter how hard the scrim is pushed. Giving the film a column
+ * makes the overlap structurally impossible instead of merely dark.
+ *
+ * Consequently there are no scrims here beyond the edge blends that stop the
+ * panel from reading as a pasted-in rectangle.
  *
  * Film-only by design: the site allows itself ONE WebGL context, and the
  * island chapter owns it. Poster-first; the film never loads under reduced
@@ -58,7 +67,7 @@ export function ArrivalRelay({ className }: { className?: string }) {
   const showFilm = mode !== "static";
 
   return (
-    <div className={cn("absolute inset-0 overflow-hidden", className)}>
+    <div className={cn("absolute inset-0 overflow-hidden bg-ink", className)}>
       {/* Poster: first paint and the permanent reduced-motion state. */}
       <img
         src={SRC.poster}
@@ -82,7 +91,6 @@ export function ArrivalRelay({ className }: { className?: string }) {
           onCanPlay={() => setFilmReady(true)}
           className={cn(
             "absolute inset-0 h-full w-full object-cover transition-opacity duration-slow ease-si",
-            "object-center lg:object-[38%_center]",
             filmReady ? "opacity-100" : "opacity-0",
           )}
         >
@@ -96,23 +104,26 @@ export function ArrivalRelay({ className }: { className?: string }) {
         </video>
       ) : null}
 
-      {/* Scrims — the type column always sits on near-solid ink. */}
-      {/* Scrims. The horizontal one holds the left column at near-solid ink
-          so nothing in the film competes with the headline or the form. */}
+      {/* Edge blends only. Each one dissolves a boundary of the panel into the
+          ink around it; none of them cross the product. Vertical below the
+          lg breakpoint (copy sits under the film), horizontal above it (copy
+          sits beside the film). */}
+      {/* Multi-stop ramps rather than Tailwind's two-token `from-/to-`
+          gradients. The footage's black is a few points lighter than
+          `--si-ink`, so a linear fade to transparent lands on a step the eye
+          reads as a pasted-in rectangle edge. Easing the falloff out over a
+          long tail hides the boundary entirely. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/70 via-transparent to-ink"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(0deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink)/0.55)_42%,transparent_100%)] xl:h-48"
       />
       <div
         aria-hidden
-        className={cn(
-          "pointer-events-none absolute inset-0",
-          // Explicit stops, not a three-token gradient: the copy column needs
-          // SOLID ink under it, with the film emerging only past the halfway
-          // mark. A soft via- ramp leaves the wordmark legible behind the H1.
-          "bg-[linear-gradient(90deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink))_30%,rgb(var(--si-ink)/0.82)_52%,rgb(var(--si-ink)/0.25)_78%,transparent_100%)]",
-          "lg:bg-[linear-gradient(90deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink))_44%,rgb(var(--si-ink)/0.7)_62%,transparent_88%)]",
-        )}
+        className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-[linear-gradient(180deg,rgb(var(--si-ink)/0.9)_0%,rgb(var(--si-ink)/0.4)_46%,transparent_100%)]"
+      />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-0 hidden w-[42%] bg-[linear-gradient(90deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink)/0.88)_20%,rgb(var(--si-ink)/0.5)_50%,rgb(var(--si-ink)/0.16)_76%,transparent_100%)] xl:block"
       />
 
       {showFilm ? (
