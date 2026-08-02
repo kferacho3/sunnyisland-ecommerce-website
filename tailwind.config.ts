@@ -44,6 +44,10 @@ export default {
         mono: "var(--si-font-mono)",
       },
       fontSize: {
+        "display-xl": [
+          "var(--si-text-display-xl)",
+          { lineHeight: "0.92", letterSpacing: "-0.02em" },
+        ],
         hero: ["var(--si-text-hero)", { lineHeight: "var(--si-leading-hero)" }],
         display: [
           "var(--si-text-display)",

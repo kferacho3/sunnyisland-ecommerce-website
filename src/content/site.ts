@@ -28,10 +28,17 @@ export const site = {
   address: pending("Is the production address intended to be public?"),
 } as const;
 
+/**
+ * Experience-named navigation (research: Atomix pattern), with the one
+ * structural inversion the audit demands: DTC brands bury wholesale in the
+ * footer because the cart converts; our conversion IS the trade inquiry, so
+ * trade sits in the header.
+ */
 export const nav = [
-  { href: "/sauce", label: "Sauce" },
-  { href: "/partners", label: "Partners" },
-  { href: "/story", label: "Story" },
+  { href: "/sauce", label: "The Sauce" },
+  { href: "/recipes", label: "Recipes" },
+  { href: "/story", label: "The Story" },
+  { href: "/partners", label: "For Chefs & Retailers" },
 ] as const;
 
 export const CTA = {

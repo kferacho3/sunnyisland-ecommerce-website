@@ -21,7 +21,13 @@ const MODEL_URL =
 
 const SETTLE_Y = Math.PI * 0.16;
 
-function Bottle({ onReady }: { onReady: () => void }) {
+function Bottle({
+  onReady,
+  modelScale,
+}: {
+  onReady: () => void;
+  modelScale: number;
+}) {
   const group = useRef<Group>(null);
   const { scene } = useGLTF(MODEL_URL);
   const { invalidate } = useThree();
@@ -112,12 +118,21 @@ function Bottle({ onReady }: { onReady: () => void }) {
 
   return (
     <group ref={group} position={[0, -0.35, 0]}>
-      <primitive object={scene} scale={2.1} />
+      <primitive object={scene} scale={modelScale} />
     </group>
   );
 }
 
-export default function ProductViewer({ onReady }: { onReady: () => void }) {
+export default function ProductViewer({
+  onReady,
+  cameraZ = 3.1,
+  scale = 2.1,
+}: {
+  onReady: () => void;
+  /** Hero relay pulls back slightly to match the film's final pose. */
+  cameraZ?: number;
+  scale?: number;
+}) {
   const [dpr, setDpr] = useState(1);
 
   useEffect(() => {
@@ -131,7 +146,7 @@ export default function ProductViewer({ onReady }: { onReady: () => void }) {
     <Canvas
       frameloop="demand"
       dpr={dpr}
-      camera={{ position: [0, 0.1, 3.1], fov: 32 }}
+      camera={{ position: [0, 0.1, cameraZ], fov: 32 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ touchAction: "pan-y" }}
     >
@@ -148,7 +163,7 @@ export default function ProductViewer({ onReady }: { onReady: () => void }) {
         color="#8FB8D8"
       />
       <Environment preset="studio" environmentIntensity={0.35} />
-      <Bottle onReady={onReady} />
+      <Bottle onReady={onReady} modelScale={scale} />
     </Canvas>
   );
 }

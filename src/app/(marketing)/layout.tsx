@@ -1,3 +1,4 @@
+import { BrandFilters } from "@/components/core/BrandFilters";
 import { SiteFooter } from "@/components/core/SiteFooter";
 import { SiteHeader } from "@/components/core/SiteHeader";
 
@@ -14,6 +15,7 @@ export default function MarketingLayout({
       >
         Skip to content
       </a>
+      <BrandFilters />
       <SiteHeader />
       <main id="main">{children}</main>
       <SiteFooter />

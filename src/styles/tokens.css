@@ -43,17 +43,19 @@
 
   /* ------------------------------------------------------------ typography */
   --si-font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
-  --si-font-body: var(--font-inter-tight), -apple-system, BlinkMacSystemFont,
-    "Segoe UI", sans-serif;
+  --si-font-body:
+    var(--font-inter-tight), -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
   --si-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Fluid scale. Clamped so a 320px phone and a 4K display both read well. */
-  /* Capped at 3.5rem. Measured against the real layout, not guessed: the hero
-     text column is ~44% of a 78rem container (~550px), so each 1rem of type
-     costs roughly 2.6 characters per line. 8rem and 5.5rem both set the
-     headline one word per line; 3.5rem sets it on three. */
+  /* Ember Cadence scale (creative direction §5). rem-mixed clamps only —
+     pure-vw type breaks user zoom (WCAG 1.4.4). display-xl is the spread
+     voice: viewport-wide Fraunces on its own line, never in a text column.
+     hero stays measured for the split-hero column (~550px). */
+  --si-text-display-xl: clamp(3.25rem, 1.5rem + 11vw, 12rem);
   --si-text-hero: clamp(2.375rem, 1.7rem + 2.2vw, 3.5rem);
-  --si-text-display: clamp(2.25rem, 1.2rem + 4.6vw, 5rem);
+  --si-text-display: clamp(2.5rem, 1.25rem + 6vw, 7rem);
   --si-text-title: clamp(1.75rem, 1.2rem + 2.4vw, 3rem);
   --si-text-heading: clamp(1.35rem, 1.1rem + 1.1vw, 1.875rem);
   --si-text-lede: clamp(1.0625rem, 1rem + 0.5vw, 1.375rem);
@@ -88,12 +90,15 @@
 
   /* ------------------------------------------------------------- elevation */
   --si-shadow-sm: 0 1px 2px rgb(var(--si-ink) / 0.06);
-  --si-shadow: 0 2px 8px rgb(var(--si-ink) / 0.08),
+  --si-shadow:
+    0 2px 8px rgb(var(--si-ink) / 0.08),
     0 12px 32px -12px rgb(var(--si-ink) / 0.14);
-  --si-shadow-lift: 0 4px 14px rgb(var(--si-ink) / 0.1),
+  --si-shadow-lift:
+    0 4px 14px rgb(var(--si-ink) / 0.1),
     0 24px 56px -20px rgb(var(--si-ink) / 0.22);
   /* Warm key light, the same one that rakes the bottle in the viewer. */
-  --si-glow-gold: 0 0 0 1px rgb(var(--si-gold) / 0.28),
+  --si-glow-gold:
+    0 0 0 1px rgb(var(--si-gold) / 0.28),
     0 8px 40px -12px rgb(var(--si-gold) / 0.45);
 
   /* ---------------------------------------------------------------- motion */
@@ -110,6 +115,72 @@
   --si-z-header: 50;
   --si-z-nav: 60;
   --si-z-overlay: 70;
+}
+
+/* ------------------------------------------------- Fraunces voices (§5) */
+:root {
+  --si-voice-display: "opsz" 144, "SOFT" 40, "WONK" 1;
+  --si-voice-quote: "opsz" 72, "SOFT" 60, "WONK" 0;
+  --si-voice-body: "opsz" 14, "SOFT" 0, "WONK" 0;
+}
+
+/* ------------------------------------ photographic treatment (§6) */
+/* One grade for every photograph on the site — one brand eye. */
+.si-media {
+  filter: contrast(1.06) saturate(0.82) sepia(0.16) brightness(1.02);
+}
+
+/* Archive plate: how the real kitchen photos are allowed to appear —
+   small, matted, captioned, slightly settled. Never full-bleed. */
+.si-plate {
+  background: rgb(var(--si-cream-raised));
+  border: 1px solid rgb(var(--si-cream-line));
+  box-shadow: var(--si-shadow);
+  padding: 0.625rem 0.625rem 0;
+  max-width: 420px;
+}
+.si-plate > figcaption {
+  font-family: var(--si-font-body);
+  font-size: 0.6875rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: rgb(var(--si-text-on-cream-muted));
+  padding: 0.75rem 0.25rem;
+}
+
+/* Hollow display line — the film-overlay signature. Solid fallback where
+   text-stroke is unsupported. */
+.si-hollow {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(var(--si-gold));
+}
+@supports not (-webkit-text-stroke: 1px black) {
+  .si-hollow {
+    color: rgb(var(--si-gold));
+  }
+}
+
+/* Signature reveal — the one clip shape, derived from the round badge.
+   Everything that reveals, reveals through this. */
+.si-clip-seed {
+  clip-path: circle(0% at 50% 62%);
+}
+.si-clip-open {
+  clip-path: circle(140% at 50% 62%);
+}
+
+/* Ingredient marquee — 60s+; fast marquees read carnival, slow reads
+   editorial. Paused entirely under reduced motion via the global gate. */
+@keyframes si-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.si-marquee {
+  animation: si-marquee 64s linear infinite;
 }
 
 /* Motion is choreography, not decoration — so it is fully removable. */
