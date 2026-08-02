@@ -13,9 +13,19 @@ const ORIGIN = (
 ).replace(/\/$/, "");
 
 export const emailAsset = {
+  /**
+   * Full masthead: the Sunny Island symbol centred over mirrored flame art,
+   * composited into a single image.
+   *
+   * Deliberately one file rather than a badge layered over a background. Email
+   * has no reliable way to overlap two images — Gmail strips negative margins
+   * and Outlook ignores background-image on block elements — so compositing at
+   * build time is the only approach that renders identically everywhere.
+   */
+  header: `${ORIGIN}/brand/email/header.jpg`,
   /** Flame mark, transparent, extracted from the physical label artwork. */
   mark: `${ORIGIN}/brand/email/flame-mark.png`,
-  /** Wide flame/ember band, flattened onto ink for the header. */
+  /** Wide flame/ember band, flattened onto ink. */
   band: `${ORIGIN}/brand/email/band.jpg`,
   /** Pepper-and-foliage wreath from the label, used as a closing ornament. */
   ornament: `${ORIGIN}/brand/email/ornament.jpg`,

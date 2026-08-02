@@ -81,16 +81,16 @@ export function CustomerAckEmail({
       <Preview>{`We've got your inquiry — reference ${reference}`}</Preview>
       <Body style={t.body}>
         <Container style={t.card}>
-          {/* Masthead. The flame band is a real <img>, not a CSS background —
-              Outlook renders through Word, which ignores background-image on
-              block elements. It is flattened onto the ink colour so the seam
-              stays invisible if images are blocked. */}
+          {/* Masthead — one composited image, full bleed across the card.
+              The badge is baked into it rather than layered on top: Gmail
+              strips the negative margin that would pull a separate mark up
+              over the art, and Outlook ignores background-image entirely. */}
           <Section style={{ backgroundColor: t.color.ink, padding: 0 }}>
             <Img
-              src={emailAsset.band}
-              alt=""
+              src={emailAsset.header}
+              alt="Sunny Island Pepper Sauce"
               width="600"
-              height="140"
+              height="220"
               style={{
                 display: "block",
                 width: "100%",
@@ -104,21 +104,10 @@ export function CustomerAckEmail({
           <Section
             style={{
               backgroundColor: t.color.ink,
-              padding: "0 28px 32px",
+              padding: "30px 28px 34px",
               textAlign: "center" as const,
             }}
           >
-            <Img
-              src={emailAsset.mark}
-              alt="Sunny Island Pepper Sauce"
-              width="72"
-              height="72"
-              style={{
-                display: "block",
-                margin: "-36px auto 18px",
-                border: 0,
-              }}
-            />
             <Text
               style={{
                 ...t.eyebrow,
