@@ -243,7 +243,7 @@ export function InquiryForm() {
                 aria-pressed={on}
                 onClick={() => pickBuyer(b)}
                 className={cn(
-                  "rounded-lg border p-5 text-left transition-all duration-medium ease-si",
+                  "border p-5 text-left transition-all duration-medium ease-si",
                   on
                     ? "border-gold bg-cream-raised shadow-gold"
                     : "border-cream-line bg-cream-raised hover:border-gold",
@@ -266,7 +266,7 @@ export function InquiryForm() {
           ref={summaryRef}
           tabIndex={-1}
           role="alert"
-          className="mt-8 rounded border border-maroon bg-cream-raised p-5"
+          className="mt-8 border border-maroon bg-cream-raised p-5"
         >
           <p className="font-body text-sm font-semibold text-maroon">
             {formError}

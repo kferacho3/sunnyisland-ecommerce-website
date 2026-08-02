@@ -19,7 +19,7 @@ const ArticleList: React.FC<ArticleListProps> = ({ articles }) => {
       {articles.map((article) => (
         <div
           key={article.id}
-          className="flex border rounded overflow-hidden shadow hover:shadow-lg transition"
+          className="flex border overflow-hidden shadow hover:shadow-lg transition"
         >
           <Link href={article.url} target="_blank" rel="noopener noreferrer">
             <img
@@ -37,7 +37,7 @@ const ArticleList: React.FC<ArticleListProps> = ({ articles }) => {
               <p className="text-gray-700">{article.description}</p>
             </div>
             <Link href={article.url} target="_blank" rel="noopener noreferrer">
-              <button className="bg-red-500 text-white mt-4 px-3 py-1 rounded hover:bg-red-600 transition">
+              <button className="bg-red-500 text-white mt-4 px-3 py-1 hover:bg-red-600 transition">
                 READ MORE
               </button>
             </Link>

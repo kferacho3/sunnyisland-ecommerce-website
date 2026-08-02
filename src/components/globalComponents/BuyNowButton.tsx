@@ -52,7 +52,7 @@ export default function BuyNowButton({
     <button
       onClick={handleBuyNow}
       disabled={loading}
-      className="px-6 py-3 bg-green-500 text-white rounded font-semibold uppercase"
+      className="px-6 py-3 bg-green-500 text-white font-semibold uppercase"
     >
       {loading ? "Processing..." : "Buy Now"}
     </button>

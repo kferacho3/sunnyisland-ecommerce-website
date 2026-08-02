@@ -85,7 +85,7 @@ export default function StoryPage() {
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
             <div
               key={n}
-              className="relative aspect-[4/5] overflow-hidden rounded border border-ink-line"
+              className="relative aspect-[4/5] overflow-hidden border border-ink-line"
             >
               <Image
                 src={`https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/locations${n}.webp`}
@@ -108,7 +108,7 @@ export default function StoryPage() {
               alt="The 'A Special Message' panel printed on every Sunny Island Pepper Sauce label."
               fill
               sizes="(max-width: 1024px) 70vw, 380px"
-              className="rounded-lg object-contain"
+              className="object-contain"
             />
           </div>
 

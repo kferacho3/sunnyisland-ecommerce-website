@@ -1,8 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
 
 import { Container } from "@/components/core/Container";
 import { Eyebrow } from "@/components/core/Section";
+import { ART, FullBleedGround } from "@/components/media/FullBleed";
 import { Lines, Settle } from "@/components/motion/Reveal.client";
 
 /**
@@ -35,16 +35,9 @@ export function Trade() {
       id="trade"
       className="si-grain relative isolate overflow-hidden bg-ink py-section text-on-ink"
     >
-      {/* The brand's own panel art as the ground — debossed badge, ember
-          ribbons — held far back so the doors stay legible. */}
-      <Image
-        src="/brand/concept/partners-panel-ground.webp"
-        alt=""
-        aria-hidden
-        fill
-        sizes="100vw"
-        className="si-media absolute inset-0 -z-10 object-cover opacity-45"
-      />
+      {/* The brand's own panel art as the ground — complete at full width,
+          held far back so the doors stay legible. */}
+      <FullBleedGround media={ART.panelGround} opacity={42} />
       <div aria-hidden className="si-rake absolute inset-0" />
 
       <Container className="relative">
@@ -62,7 +55,7 @@ export function Trade() {
           </p>
         </Settle>
 
-        <div className="mt-16 grid gap-px overflow-hidden rounded-lg border border-ink-line bg-ink-line md:grid-cols-3">
+        <div className="mt-16 grid gap-px overflow-hidden border border-ink-line bg-ink-line md:grid-cols-3">
           {DOORS.map((door, i) => (
             <Link
               key={door.title}
@@ -73,7 +66,7 @@ export function Trade() {
                 <span className="font-mono text-eyebrow font-semibold text-gold-deep">
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <h3 className="mt-5 font-display text-title tracking-display text-on-ink transition-colors duration-fast ease-si group-hover/door:text-gold">
+                <h3 className="mt-5 text-balance font-display text-heading tracking-display text-on-ink transition-colors duration-fast ease-si group-hover/door:text-gold">
                   {door.title}
                 </h3>
                 <p className="mt-3 text-[0.9375rem] text-on-ink-muted">

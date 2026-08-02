@@ -148,7 +148,7 @@ export default function Footer() {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     required
-                    className="w-full pl-12 pr-4 py-2.5 sm:py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:outline-none focus:border-orange-500 transition-colors text-sm sm:text-base"
+                    className="w-full pl-12 pr-4 py-2.5 sm:py-3 bg-gray-800/50 border border-gray-700 focus:outline-none focus:border-orange-500 transition-colors text-sm sm:text-base"
                   />
                 </div>
                 <motion.button
@@ -156,7 +156,7 @@ export default function Footer() {
                   disabled={isLoading || isSubscribed}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base"
+                  className="px-6 sm:px-8 py-2.5 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 text-sm sm:text-base"
                 >
                   {isSubscribed ? (
                     <>
@@ -218,7 +218,7 @@ export default function Footer() {
                       whileInView={{ opacity: 1, y: 0 }}
                       transition={{ duration: 0.3, delay: index * 0.1 }}
                       whileHover={{ y: -3 }}
-                      className="w-9 h-9 sm:w-10 sm:h-10 bg-gray-800 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 rounded-lg flex items-center justify-center transition-all group"
+                      className="w-9 h-9 sm:w-10 sm:h-10 bg-gray-800 hover:bg-gradient-to-r hover:from-orange-500 hover:to-red-500 flex items-center justify-center transition-all group"
                       aria-label={social.label}
                     >
                       <social.icon className="text-base sm:text-lg group-hover:text-white transition-colors" />
@@ -397,7 +397,7 @@ export default function Footer() {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Gradient orbs */}
         <motion.div
-          className="absolute -bottom-32 -left-32 w-64 h-64 rounded-full"
+          className="absolute -bottom-32 -left-32 w-64 h-64"
           style={{
             background:
               "radial-gradient(circle, rgba(251, 146, 60, 0.1) 0%, transparent 70%)",
@@ -414,7 +414,7 @@ export default function Footer() {
           }}
         />
         <motion.div
-          className="absolute -top-32 -right-32 w-64 h-64 rounded-full"
+          className="absolute -top-32 -right-32 w-64 h-64"
           style={{
             background:
               "radial-gradient(circle, rgba(239, 68, 68, 0.1) 0%, transparent 70%)",

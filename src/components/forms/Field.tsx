@@ -13,7 +13,7 @@ import { cn } from "@/lib/cn";
  */
 
 const CONTROL =
-  "w-full rounded border bg-cream-raised px-4 py-3 font-body text-[0.9375rem] text-on-cream " +
+  "w-full border bg-cream-raised px-4 py-3 font-body text-[0.9375rem] text-on-cream " +
   "min-h-[2.75rem] transition-colors duration-fast ease-si " +
   "placeholder:text-on-cream-muted/60 " +
   "focus:border-gold focus:outline-none focus-visible:outline-none";
@@ -210,7 +210,7 @@ export function ChipGroup({
               aria-pressed={on}
               onClick={() => onToggle(o.value)}
               className={cn(
-                "min-h-[2.75rem] rounded-pill border px-4 font-body text-sm transition-colors duration-fast ease-si",
+                "min-h-[2.75rem] border px-4 font-body text-sm transition-colors duration-fast ease-si",
                 on
                   ? "border-gold bg-gold text-ink"
                   : "border-cream-line bg-cream-raised text-on-cream hover:border-gold",

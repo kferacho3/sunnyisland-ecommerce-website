@@ -285,7 +285,7 @@ function EventCard({
 
         <div className="relative w-full h-full flex flex-col p-6">
           {/* Image section with premium overlay */}
-          <div className="relative w-full h-48 rounded-xl overflow-hidden mb-4 group-hover:scale-[1.02] transition-transform duration-500">
+          <div className="relative w-full h-48 overflow-hidden mb-4 group-hover:scale-[1.02] transition-transform duration-500">
             <Image
               src={thumb}
               alt={ev.title}
@@ -363,7 +363,7 @@ function EventCard({
             {/* Premium action button */}
             {isTruncated && (
               <button
-                className="mt-3 self-end px-4 py-1.5 bg-amber-600 text-white text-sm rounded-full hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg"
+                className="mt-3 self-end px-4 py-1.5 bg-amber-600 text-white text-sm hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-md hover:shadow-lg"
                 onClick={(e) => {
                   e.stopPropagation();
                   setModalEvent(ev);
@@ -399,12 +399,12 @@ function Modal({ event, onClose }: { event: EventItem; onClose: () => void }) {
       onClick={onClose}
     >
       <div
-        className="bg-white rounded-2xl shadow-2xl relative w-full max-w-4xl max-h-[90vh] overflow-hidden animate-modalSlideIn"
+        className="bg-white shadow-2xl relative w-full max-w-4xl max-h-[90vh] overflow-hidden animate-modalSlideIn"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Premium close button */}
         <button
-          className="absolute top-6 right-6 w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-white shadow-lg transition-all duration-300 z-10"
+          className="absolute top-6 right-6 w-10 h-10 bg-white/90 backdrop-blur-sm flex items-center justify-center text-slate-600 hover:text-slate-900 hover:bg-white shadow-lg transition-all duration-300 z-10"
           onClick={onClose}
         >
           <svg
@@ -439,7 +439,7 @@ function Modal({ event, onClose }: { event: EventItem; onClose: () => void }) {
                 {event.title}
               </h2>
               <div className="flex items-center gap-4 text-white/90">
-                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm">
+                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 text-sm">
                   {event.theme}
                 </span>
                 <span className="text-sm">
@@ -510,7 +510,7 @@ function Modal({ event, onClose }: { event: EventItem; onClose: () => void }) {
                   href={event.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-8 py-3 bg-amber-600 text-white rounded-full hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center gap-2 px-8 py-3 bg-amber-600 text-white hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
                 >
                   <span className="font-semibold">Get Tickets</span>
                   <svg
@@ -608,7 +608,7 @@ export default function ClientEvents({
       )}
 
       {/* Premium Filter Bar */}
-      <div className="mb-12 bg-white/80 backdrop-blur-md rounded-2xl shadow-xl p-6">
+      <div className="mb-12 bg-white/80 backdrop-blur-md shadow-xl p-6">
         <div className="grid md:grid-cols-3 gap-4">
           <div className="relative">
             <label
@@ -621,7 +621,7 @@ export default function ClientEvents({
               id="location"
               value={filterLocation}
               onChange={(e) => setFilterLocation(e.target.value)}
-              className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
+              className="w-full px-4 py-3 bg-white border border-slate-200 text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
             >
               <option value="All">All Locations</option>
               <option value="Georgia">Georgia</option>
@@ -641,7 +641,7 @@ export default function ClientEvents({
               type="date"
               value={filterDate}
               onChange={(e) => setFilterDate(e.target.value)}
-              className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
+              className="w-full px-4 py-3 bg-white border border-slate-200 text-slate-900 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
             />
           </div>
 
@@ -658,7 +658,7 @@ export default function ClientEvents({
               value={filterTheme}
               onChange={(e) => setFilterTheme(e.target.value)}
               placeholder="e.g., food, arts, festival"
-              className="w-full px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
+              className="w-full px-4 py-3 bg-white border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-300"
             />
           </div>
         </div>
@@ -668,7 +668,7 @@ export default function ClientEvents({
       {featuredEvent && (
         <div className="mb-16">
           <div className="text-center mb-8">
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 rounded-full text-sm font-medium">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-800 text-sm font-medium">
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
@@ -683,7 +683,7 @@ export default function ClientEvents({
             <div className="outer-border">
               <div className="mid-border">
                 <div className="inner-border">
-                  <div className="relative bg-white/95 backdrop-blur-xl rounded-xl overflow-hidden shadow-2xl">
+                  <div className="relative bg-white/95 backdrop-blur-xl overflow-hidden shadow-2xl">
                     <div className="grid md:grid-cols-2 gap-8 p-8 md:p-12">
                       <div className="space-y-6">
                         <h2 className="text-4xl md:text-5xl font-bold text-slate-900 leading-tight">
@@ -748,7 +748,7 @@ export default function ClientEvents({
                           {featuredEvent.description}
                         </p>
 
-                        <button className="inline-flex items-center gap-2 px-6 py-3 bg-amber-600 text-white rounded-full hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
+                        <button className="inline-flex items-center gap-2 px-6 py-3 bg-amber-600 text-white hover:bg-amber-700 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl">
                           <span className="font-semibold">Learn More</span>
                           <svg
                             className="w-5 h-5"
@@ -766,7 +766,7 @@ export default function ClientEvents({
                         </button>
                       </div>
 
-                      <div className="relative h-64 md:h-auto rounded-xl overflow-hidden">
+                      <div className="relative h-64 md:h-auto overflow-hidden">
                         <Image
                           src={useThumbnail(
                             featuredEvent.title,
@@ -791,7 +791,7 @@ export default function ClientEvents({
       {/* Sunny Island Section */}
       <div className="mb-16">
         <SunnyIslandBorder>
-          <div className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 rounded-xl p-12 text-center">
+          <div className="bg-gradient-to-br from-amber-50 via-yellow-50 to-orange-50 p-12 text-center">
             <h2 className="text-4xl font-bold text-slate-900 mb-4">
               Sunny Island Experiences
             </h2>
@@ -799,7 +799,7 @@ export default function ClientEvents({
               Exclusive culinary adventures and premium dining experiences
               curated for the most discerning food enthusiasts
             </p>
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-amber-100 text-amber-800 rounded-full">
+            <div className="inline-flex items-center gap-2 px-6 py-3 bg-amber-100 text-amber-800">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -853,7 +853,7 @@ export default function ClientEvents({
               <h2 className="text-3xl font-bold text-slate-200 mb-2">
                 {section.term}
               </h2>
-              <div className="h-1 w-24 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"></div>
+              <div className="h-1 w-24 bg-gradient-to-r from-amber-500 to-orange-500"></div>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
@@ -870,7 +870,7 @@ export default function ClientEvents({
             {section.events.length > visibleCount && (
               <div className="flex justify-center mt-8">
                 <button
-                  className="inline-flex items-center gap-2 px-8 py-3 bg-slate-900 text-white rounded-full hover:bg-slate-800 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="inline-flex items-center gap-2 px-8 py-3 bg-slate-900 text-white hover:bg-slate-800 transform hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
                   onClick={() => setVisibleCount(visibleCount + 8)}
                 >
                   <span className="font-semibold">Load More Events</span>

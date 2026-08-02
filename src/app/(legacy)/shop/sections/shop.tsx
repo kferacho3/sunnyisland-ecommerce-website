@@ -146,7 +146,7 @@ export default function ShopSection() {
                   initial={{ y: -10, opacity: 0 }}
                   animate={{ y: 0, opacity: 1 }}
                   transition={{ duration: 0.35, delay: 0.2 }}
-                  className="absolute top-4 right-4 bg-red-600 text-white px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide shadow-md"
+                  className="absolute top-4 right-4 bg-red-600 text-white px-4 py-1.5 text-xs font-semibold tracking-wide shadow-md"
                 >
                   PRE-ORDER
                 </motion.span>
@@ -161,7 +161,7 @@ export default function ShopSection() {
                     key={idx}
                     onClick={() => setSelectedImage(idx)}
                     whileTap={{ scale: 0.96 }}
-                    className={`relative w-20 h-20 flex-shrink-0 rounded-xl overflow-hidden border-2 transition-colors
+                    className={`relative w-20 h-20 flex-shrink-0 overflow-hidden border-2 transition-colors
                       ${
                         selectedImage === idx
                           ? "border-orange-500 shadow-lg"
@@ -219,7 +219,7 @@ export default function ShopSection() {
                       whileHover={{ y: -2 }}
                       whileTap={{ scale: 0.97 }}
                       onClick={() => setSelectedVariant(node.id)}
-                      className={`rounded-lg border-2 px-4 py-3 text-left transition-colors
+                      className={`border-2 px-4 py-3 text-left transition-colors
                         ${
                           selectedVariant === node.id
                             ? "border-orange-500 bg-orange-50 dark:bg-orange-900/25 text-orange-600 dark:text-orange-300"
@@ -242,7 +242,7 @@ export default function ShopSection() {
                 Quantity
               </label>
               <div className="flex items-center gap-4">
-                <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg">
+                <div className="flex items-center bg-gray-100 dark:bg-gray-800">
                   <button
                     onClick={() => handleQty("sub")}
                     className="p-3 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
@@ -276,7 +276,7 @@ export default function ShopSection() {
                 <motion.button
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.97 }}
-                  className="w-full py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold rounded-xl shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3"
+                  className="w-full py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-bold shadow-lg hover:shadow-xl transition-all flex items-center justify-center gap-3"
                 >
                   <FiShoppingBag className="text-xl" />
                   <span>Buy Now – ${variant?.price.amount}</span>
@@ -287,7 +287,7 @@ export default function ShopSection() {
                 <motion.button
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.97 }}
-                  className="w-full py-4 bg-gray-900 dark:bg-gray-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                  className="w-full py-4 bg-gray-900 dark:bg-gray-800 text-white font-semibold shadow-lg hover:shadow-xl transition-all"
                 >
                   View All Products
                 </motion.button>

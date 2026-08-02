@@ -95,7 +95,7 @@ export function ProductStage({ className }: { className?: string }) {
     <div
       ref={hostRef}
       className={cn(
-        "relative isolate aspect-[4/5] w-full overflow-hidden rounded-lg",
+        "relative isolate aspect-[4/5] w-full overflow-hidden",
         className,
       )}
     >

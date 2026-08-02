@@ -266,7 +266,7 @@ export default function SectionParallax() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="relative px-12 py-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold text-lg rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group"
+            className="relative px-12 py-4 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group"
           >
             <span className="relative z-10 flex items-center justify-center gap-3">
               View Our Products
@@ -285,7 +285,7 @@ export default function SectionParallax() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="relative px-12 py-4 bg-white dark:bg-gray-900 text-orange-600 dark:text-orange-400 font-bold text-lg rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group border-2 border-orange-500"
+            className="relative px-12 py-4 bg-white dark:bg-gray-900 text-orange-600 dark:text-orange-400 font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden group border-2 border-orange-500"
           >
             <span className="relative z-10 flex items-center justify-center gap-3">
               Shop Now

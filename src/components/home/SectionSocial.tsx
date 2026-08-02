@@ -108,7 +108,7 @@ export default function SectionSocial() {
         {[...Array(8)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute w-32 h-32 rounded-full"
+            className="absolute w-32 h-32"
             style={{
               background: `radial-gradient(circle, ${
                 [
@@ -161,7 +161,7 @@ export default function SectionSocial() {
             transition={{ type: "spring", stiffness: 300 }}
           >
             <div className="relative">
-              <div className="absolute inset-0 bg-orange-500/20 blur-xl rounded-full" />
+              <div className="absolute inset-0 bg-orange-500/20 blur-xl" />
               <Image
                 src="/SunnyIslandSymbol.png"
                 alt="Sunny Island Symbol"
@@ -198,7 +198,7 @@ export default function SectionSocial() {
                 onMouseLeave={() => setHoveredCard(null)}
               >
                 <motion.div
-                  className={`relative overflow-hidden rounded-2xl ${platform.bgColor} ${platform.gradient} p-1 h-full`}
+                  className={`relative overflow-hidden ${platform.bgColor} ${platform.gradient} p-1 h-full`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.98 }}
                   style={{
@@ -208,7 +208,7 @@ export default function SectionSocial() {
                         : `0 10px 25px -10px ${platform.shadowColor}`,
                   }}
                 >
-                  <div className="relative bg-gray-900/90 backdrop-blur-sm rounded-2xl p-4 h-full flex flex-col">
+                  <div className="relative bg-gray-900/90 backdrop-blur-sm p-4 h-full flex flex-col">
                     {/* Platform Icon */}
                     <div className="absolute top-3 right-3 z-20">
                       <motion.div
@@ -218,14 +218,14 @@ export default function SectionSocial() {
                             : { rotate: 0 }
                         }
                         transition={{ duration: 0.5 }}
-                        className={`p-2 rounded-lg bg-white/10 backdrop-blur-sm ${platform.textColor}`}
+                        className={`p-2 bg-white/10 backdrop-blur-sm ${platform.textColor}`}
                       >
                         <platform.icon size={20} />
                       </motion.div>
                     </div>
 
                     {/* Image Container */}
-                    <div className="relative aspect-square mb-4 overflow-hidden rounded-lg">
+                    <div className="relative aspect-square mb-4 overflow-hidden">
                       <motion.div
                         className="absolute inset-0"
                         animate={
@@ -279,7 +279,7 @@ export default function SectionSocial() {
 
                     {/* Animated border glow */}
                     <motion.div
-                      className={`absolute inset-0 rounded-2xl ${platform.bgColor} ${platform.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+                      className={`absolute inset-0 ${platform.bgColor} ${platform.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
                       style={{ padding: "2px", margin: "-1px" }}
                     />
                   </div>
@@ -296,7 +296,7 @@ export default function SectionSocial() {
           transition={{ duration: 0.6, delay: 0.8 }}
           className="text-center"
         >
-          <div className="inline-flex flex-col sm:flex-row items-center gap-4 bg-white/5 backdrop-blur-sm px-8 py-6 rounded-2xl border border-white/10">
+          <div className="inline-flex flex-col sm:flex-row items-center gap-4 bg-white/5 backdrop-blur-sm px-8 py-6 border border-white/10">
             <div className="text-left">
               <h3 className="text-xl font-bold text-white mb-1">
                 Stay Connected
@@ -308,7 +308,7 @@ export default function SectionSocial() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all"
+              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-xl hover:shadow-2xl transition-all"
             >
               Follow All
             </motion.button>

@@ -13,7 +13,7 @@ export default function FormInput({ label, ...props }: FormInputProps) {
       )}
       <input
         {...props}
-        className="border border-gray-300 dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-black text-sm outline-none focus:border-secondary transition duration-150 dark:text-white"
+        className="border border-gray-300 dark:border-gray-600 px-3 py-2 bg-white dark:bg-black text-sm outline-none focus:border-secondary transition duration-150 dark:text-white"
       />
     </div>
   );

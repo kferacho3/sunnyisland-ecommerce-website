@@ -20,7 +20,7 @@ export default function BlogError({
         </p>
         <button
           onClick={reset}
-          className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all"
+          className="px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all"
         >
           Try Again
         </button>

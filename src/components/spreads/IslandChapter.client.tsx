@@ -182,12 +182,12 @@ export function IslandChapter() {
           <p className="font-body text-eyebrow font-semibold uppercase text-gold">
             The island
           </p>
-          <h2 className="mt-6 font-display text-display-xl text-on-ink">
+          <h2 className="mt-6 font-display text-display text-on-ink">
             Born on an island. Landed in the jar.
           </h2>
           <Link
             href="/sauce"
-            className="mt-10 inline-flex min-h-[3.25rem] items-center rounded-pill bg-gold px-7 font-body font-semibold text-ink"
+            className="mt-10 inline-flex min-h-[3.25rem] items-center bg-gold px-7 font-body font-semibold text-ink"
           >
             Meet the jar
           </Link>
@@ -244,13 +244,13 @@ export function IslandChapter() {
             <p className="font-body text-eyebrow font-semibold uppercase text-gold">
               {c.eyebrow}
             </p>
-            <p className="mt-4 max-w-[16ch] font-display text-display tracking-display text-on-ink">
+            <p className="mt-4 max-w-[18ch] font-display text-title uppercase tracking-display text-on-ink">
               {c.line}
             </p>
             {"cta" in c && c.cta ? (
               <Link
                 href="/sauce"
-                className="pointer-events-auto mt-8 inline-flex min-h-[3rem] items-center rounded-pill bg-gold px-6 font-body font-semibold text-ink"
+                className="pointer-events-auto mt-8 inline-flex min-h-[3rem] items-center bg-gold px-6 font-body font-semibold text-ink"
               >
                 Meet the jar
               </Link>

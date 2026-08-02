@@ -46,7 +46,7 @@ export default function StickyAccessibility() {
       >
         <button
           onClick={() => setOpen(true)}
-          className="bg-secondary text-black px-3 py-2 rounded-full shadow hover:opacity-80 transition"
+          className="bg-secondary text-black px-3 py-2 shadow hover:opacity-80 transition"
         >
           <FiUserCheck size={20} />
         </button>
@@ -69,7 +69,7 @@ export default function StickyAccessibility() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              className="w-80 max-w-[90%] bg-white dark:bg-gray-800 text-black dark:text-white p-4 rounded shadow-lg relative"
+              className="w-80 max-w-[90%] bg-white dark:bg-gray-800 text-black dark:text-white p-4 shadow-lg relative"
             >
               <div className="flex justify-between items-center mb-3">
                 <h2 className="text-sm font-bold">Accessibility Options</h2>

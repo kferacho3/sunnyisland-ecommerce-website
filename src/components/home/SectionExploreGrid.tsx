@@ -315,13 +315,13 @@ function WidgetCard({ widget, index, tileSize }: WidgetCardProps) {
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* ─────────────  glass card  ───────────── */}
-        <div className="relative h-full w-full overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-lg border border-gray-700/50 shadow-2xl">
+        <div className="relative h-full w-full overflow-hidden bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-lg border border-gray-700/50 shadow-2xl">
           {/* animated border (GPU-friendly) */}
           <div
-            className={`absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300 ${isHovered ? "opacity-100 animate-gradientShift" : "opacity-0"}`}
+            className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${isHovered ? "opacity-100 animate-gradientShift" : "opacity-0"}`}
             style={{ padding: 2 }}
           >
-            <div className="h-full w-full rounded-2xl bg-gray-900" />
+            <div className="h-full w-full bg-gray-900" />
           </div>
 
           {/* background image */}
@@ -349,7 +349,7 @@ function WidgetCard({ widget, index, tileSize }: WidgetCardProps) {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05 + 0.1, duration: 0.4 }}
-                className="px-3 py-1 bg-white/10 backdrop-blur-md rounded-full border border-white/20 text-xs font-medium text-white/90"
+                className="px-3 py-1 bg-white/10 backdrop-blur-md border border-white/20 text-xs font-medium text-white/90"
               >
                 {widget.category ?? "Explore"}
               </motion.span>
@@ -610,7 +610,7 @@ export default function SectionExploreGrid() {
                 onClick={handlePrevPage}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="group relative overflow-hidden px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-full shadow-xl transition-all duration-300 text-sm sm:text-base"
+                className="group relative overflow-hidden px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-xl transition-all duration-300 text-sm sm:text-base"
               >
                 <span className="relative z-10 flex items-center gap-1 sm:gap-2">
                   <FiArrowLeft className="transition-transform duration-300 group-hover:-translate-x-1" />
@@ -622,7 +622,7 @@ export default function SectionExploreGrid() {
                 onClick={handleRefresh}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="group relative overflow-hidden px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-full shadow-xl transition-all duration-300 text-sm sm:text-base"
+                className="group relative overflow-hidden px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold shadow-xl transition-all duration-300 text-sm sm:text-base"
               >
                 <span className="relative z-10 flex items-center gap-1 sm:gap-2">
                   <FiRefreshCw className="transition-transform duration-300 group-hover:rotate-180" />
@@ -634,7 +634,7 @@ export default function SectionExploreGrid() {
               onClick={handleNextPage}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="group relative overflow-hidden px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold rounded-full shadow-xl transition-all duration-300 text-sm sm:text-base"
+              className="group relative overflow-hidden px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-blue-500 to-cyan-500 text-white font-semibold shadow-xl transition-all duration-300 text-sm sm:text-base"
             >
               <span className="relative z-10 flex items-center gap-1 sm:gap-2">
                 Next
@@ -647,7 +647,7 @@ export default function SectionExploreGrid() {
             {[...Array(totalSecondaryPages)].map((_, idx) => (
               <motion.div
                 key={`page-indicator-${idx}`} // ← add a prefix so it's never just "0" or "1"
-                className={`h-2 rounded-full transition-all duration-300 ${
+                className={`h-2 transition-all duration-300 ${
                   idx === secondaryPage
                     ? "w-8 bg-gradient-to-r from-blue-400 to-cyan-400"
                     : "w-2 bg-gray-600 hover:bg-gray-500"
@@ -666,7 +666,7 @@ export default function SectionExploreGrid() {
         {[...Array(5)].map((_, i) => (
           <motion.div
             key={`float-${secondaryPage}-${i}`} // ← include page so keys don’t collide on re-render
-            className="absolute w-64 h-64 rounded-full"
+            className="absolute w-64 h-64"
             style={{
               background: `radial-gradient(circle, ${
                 [

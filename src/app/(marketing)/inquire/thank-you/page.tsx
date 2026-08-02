@@ -63,7 +63,7 @@ export default async function ThankYouPage({
 
         {reference ? (
           <p className="mt-8">
-            <span className="inline-block rounded-pill border border-gold/35 bg-gold/10 px-5 py-2.5 font-mono text-sm tracking-[0.08em] text-gold">
+            <span className="inline-block border border-gold/35 bg-gold/10 px-5 py-2.5 font-mono text-sm tracking-[0.08em] text-gold">
               {reference}
             </span>
           </p>

@@ -197,7 +197,7 @@ export default function SupportUsPage() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500/10 to-pink-500/10 backdrop-blur-md rounded-full mb-8 border border-white/10"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500/10 to-pink-500/10 backdrop-blur-md mb-8 border border-white/10"
             >
               <RiSparklingFill className="w-5 h-5 text-yellow-400 animate-pulse" />
               <span className="text-sm font-semibold bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
@@ -252,11 +252,11 @@ export default function SupportUsPage() {
               transition={{ delay: 0.7, duration: 0.8 }}
               className="flex flex-col sm:flex-row gap-4 justify-center mt-8"
             >
-              <button className="px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-500 font-semibold hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25 transition-all inline-flex items-center gap-2 group">
+              <button className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 font-semibold hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25 transition-all inline-flex items-center gap-2 group">
                 Get Started
                 <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
-              <button className="px-8 py-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 font-semibold hover:bg-white/20 transition-all">
+              <button className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 font-semibold hover:bg-white/20 transition-all">
                 Learn More
               </button>
             </motion.div>
@@ -299,7 +299,7 @@ export default function SupportUsPage() {
                     className="space-y-4"
                   >
                     <div
-                      className={`inline-flex p-4 rounded-2xl bg-gradient-to-br ${slides[currentSlide].accentColor} shadow-2xl`}
+                      className={`inline-flex p-4 bg-gradient-to-br ${slides[currentSlide].accentColor} shadow-2xl`}
                     >
                       {slides[currentSlide].icon}
                     </div>
@@ -331,7 +331,7 @@ export default function SupportUsPage() {
                     {slides[currentSlide].features.map((feature, idx) => (
                       <div
                         key={idx}
-                        className="flex items-center gap-3 p-4 bg-gray-900/50 rounded-xl border border-gray-800 hover:border-gray-700 transition-colors"
+                        className="flex items-center gap-3 p-4 bg-gray-900/50 border border-gray-800 hover:border-gray-700 transition-colors"
                       >
                         <div
                           className={`text-gradient-to-r ${slides[currentSlide].accentColor} bg-clip-text text-transparent`}
@@ -353,7 +353,7 @@ export default function SupportUsPage() {
                     className="flex flex-col sm:flex-row items-start sm:items-center gap-6"
                   >
                     <div className="flex items-center gap-4">
-                      <div className="p-3 bg-gray-900/50 rounded-xl">
+                      <div className="p-3 bg-gray-900/50">
                         <BsGraphUpArrow className="w-6 h-6 text-green-400" />
                       </div>
                       <div>
@@ -369,7 +369,7 @@ export default function SupportUsPage() {
                       </div>
                     </div>
                     <button
-                      className={`px-8 py-4 rounded-full bg-gradient-to-r ${slides[currentSlide].accentColor} font-semibold hover:scale-105 hover:shadow-lg transition-all inline-flex items-center gap-2 group`}
+                      className={`px-8 py-4 bg-gradient-to-r ${slides[currentSlide].accentColor} font-semibold hover:scale-105 hover:shadow-lg transition-all inline-flex items-center gap-2 group`}
                     >
                       {slides[currentSlide].cta}
                       <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -413,7 +413,7 @@ export default function SupportUsPage() {
 
                     {/* Floating Elements */}
                     <motion.div
-                      className="absolute -top-8 -right-8 w-32 h-32 rounded-full bg-gradient-to-br from-orange-400/20 to-pink-400/20 blur-2xl"
+                      className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-br from-orange-400/20 to-pink-400/20 blur-2xl"
                       animate={{
                         y: [0, -20, 0],
                         x: [0, 10, 0],
@@ -421,7 +421,7 @@ export default function SupportUsPage() {
                       transition={{ duration: 4, repeat: Infinity }}
                     />
                     <motion.div
-                      className="absolute -bottom-8 -left-8 w-40 h-40 rounded-full bg-gradient-to-br from-purple-400/20 to-blue-400/20 blur-2xl"
+                      className="absolute -bottom-8 -left-8 w-40 h-40 bg-gradient-to-br from-purple-400/20 to-blue-400/20 blur-2xl"
                       animate={{
                         y: [0, 20, 0],
                         x: [0, -10, 0],
@@ -438,7 +438,7 @@ export default function SupportUsPage() {
           <div className="flex items-center justify-between mt-16">
             <button
               onClick={() => handleSlideChange("prev")}
-              className="p-4 rounded-full bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:bg-gray-800/50 hover:border-gray-700 transition-all group"
+              className="p-4 bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:bg-gray-800/50 hover:border-gray-700 transition-all group"
               aria-label="Previous slide"
             >
               <FiChevronLeft className="w-6 h-6 group-hover:-translate-x-1 transition-transform" />
@@ -450,7 +450,7 @@ export default function SupportUsPage() {
                 <button
                   key={idx}
                   onClick={() => handleSlideChange(idx)}
-                  className={`h-2 rounded-full transition-all ${
+                  className={`h-2 transition-all ${
                     idx === currentSlide
                       ? "w-12 bg-gradient-to-r from-orange-400 to-pink-400"
                       : "w-2 bg-gray-700 hover:bg-gray-600"
@@ -462,7 +462,7 @@ export default function SupportUsPage() {
 
             <button
               onClick={() => handleSlideChange("next")}
-              className="p-4 rounded-full bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:bg-gray-800/50 hover:border-gray-700 transition-all group"
+              className="p-4 bg-gray-900/50 backdrop-blur-sm border border-gray-800 hover:bg-gray-800/50 hover:border-gray-700 transition-all group"
               aria-label="Next slide"
             >
               <FiChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
@@ -481,7 +481,7 @@ export default function SupportUsPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-md rounded-full mb-4 border border-white/10">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-md mb-4 border border-white/10">
               <HiOutlineSparkles className="w-4 h-4 text-purple-400" />
               <span className="text-sm font-semibold text-purple-400">
                 Expand Your Impact
@@ -508,7 +508,7 @@ export default function SupportUsPage() {
               <div className="absolute inset-0 bg-gradient-to-r from-blue-600/20 to-purple-600/20 rounded-3xl blur-2xl group-hover:blur-3xl transition-all" />
               <div className="relative h-full bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl rounded-3xl p-8 border border-gray-700/50 hover:border-gray-600/50 transition-all">
                 <div className="flex items-start gap-4 mb-6">
-                  <div className="p-4 rounded-2xl bg-gradient-to-br from-blue-600 to-purple-600 shadow-2xl">
+                  <div className="p-4 bg-gradient-to-br from-blue-600 to-purple-600 shadow-2xl">
                     <FiBriefcase className="w-8 h-8" />
                   </div>
                   <div>
@@ -544,7 +544,7 @@ export default function SupportUsPage() {
                   ))}
                 </div>
 
-                <button className="w-full py-4 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 font-semibold hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25 transition-all inline-flex items-center justify-center gap-2 group">
+                <button className="w-full py-4 bg-gradient-to-r from-blue-600 to-purple-600 font-semibold hover:scale-105 hover:shadow-lg hover:shadow-purple-500/25 transition-all inline-flex items-center justify-center gap-2 group">
                   Explore Careers
                   <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -562,7 +562,7 @@ export default function SupportUsPage() {
               <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 to-red-600/20 rounded-3xl blur-2xl group-hover:blur-3xl transition-all" />
               <div className="relative h-full bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl rounded-3xl p-8 border border-gray-700/50 hover:border-gray-600/50 transition-all">
                 <div className="flex items-start gap-4 mb-6">
-                  <div className="p-4 rounded-2xl bg-gradient-to-br from-orange-600 to-red-600 shadow-2xl">
+                  <div className="p-4 bg-gradient-to-br from-orange-600 to-red-600 shadow-2xl">
                     <RiRestaurantLine className="w-8 h-8" />
                   </div>
                   <div>
@@ -587,7 +587,7 @@ export default function SupportUsPage() {
                     "Keep it culturally authentic & creative",
                   ].map((requirement, idx) => (
                     <div key={idx} className="flex items-start gap-3">
-                      <div className="w-2 h-2 rounded-full bg-gradient-to-r from-orange-400 to-red-400 mt-2 flex-shrink-0" />
+                      <div className="w-2 h-2 bg-gradient-to-r from-orange-400 to-red-400 mt-2 flex-shrink-0" />
                       <span className="text-gray-300 text-sm">
                         {requirement}
                       </span>
@@ -595,7 +595,7 @@ export default function SupportUsPage() {
                   ))}
                 </div>
 
-                <button className="w-full py-4 rounded-full bg-gradient-to-r from-orange-600 to-red-600 font-semibold hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25 transition-all inline-flex items-center justify-center gap-2 group">
+                <button className="w-full py-4 bg-gradient-to-r from-orange-600 to-red-600 font-semibold hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25 transition-all inline-flex items-center justify-center gap-2 group">
                   Submit Your Recipe
                   <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -616,7 +616,7 @@ export default function SupportUsPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/10 to-blue-500/10 backdrop-blur-md rounded-full mb-4 border border-white/10">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/10 to-blue-500/10 backdrop-blur-md mb-4 border border-white/10">
               <BsGraphUpArrow className="w-4 h-4 text-green-400" />
               <span className="text-sm font-semibold text-green-400">
                 Our Impact
@@ -665,10 +665,10 @@ export default function SupportUsPage() {
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
                 className="relative group"
               >
-                <div className="absolute inset-0 bg-gradient-to-br from-gray-800/50 to-gray-900/50 rounded-2xl blur-xl group-hover:blur-2xl transition-all" />
-                <div className="relative bg-gray-900/80 backdrop-blur-sm rounded-2xl p-6 border border-gray-800 hover:border-gray-700 transition-all text-center">
+                <div className="absolute inset-0 bg-gradient-to-br from-gray-800/50 to-gray-900/50 blur-xl group-hover:blur-2xl transition-all" />
+                <div className="relative bg-gray-900/80 backdrop-blur-sm p-6 border border-gray-800 hover:border-gray-700 transition-all text-center">
                   <div
-                    className={`inline-flex p-3 rounded-xl bg-gradient-to-br ${stat.color} mb-4`}
+                    className={`inline-flex p-3 bg-gradient-to-br ${stat.color} mb-4`}
                   >
                     {stat.icon}
                   </div>
@@ -695,7 +695,7 @@ export default function SupportUsPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur-md rounded-full mb-4 border border-white/10">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 backdrop-blur-md mb-4 border border-white/10">
               <FiHeart className="w-4 h-4 text-yellow-400" />
               <span className="text-sm font-semibold text-yellow-400">
                 What People Say
@@ -733,7 +733,7 @@ export default function SupportUsPage() {
                 whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
-                className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50"
+                className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl p-6 border border-gray-700/50"
               >
                 <div className="flex gap-1 mb-4">
                   {[...Array(5)].map((_, i) => (
@@ -770,7 +770,7 @@ export default function SupportUsPage() {
             <div className="absolute inset-0 bg-gradient-to-r from-orange-500/20 via-pink-500/20 to-purple-500/20 blur-3xl" />
 
             <div className="relative bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl rounded-3xl p-12 border border-gray-700/50">
-              <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full mb-6">
+              <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm mb-6">
                 <HiOutlineSparkles className="w-4 h-4 text-yellow-400" />
                 <span className="text-sm font-medium">Thank You</span>
               </span>
@@ -786,11 +786,11 @@ export default function SupportUsPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-500 font-semibold hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25 transition-all inline-flex items-center gap-2 group">
+                <button className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 font-semibold hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25 transition-all inline-flex items-center gap-2 group">
                   Start Supporting Today
                   <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
-                <button className="px-8 py-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 font-semibold hover:bg-white/20 transition-all inline-flex items-center gap-2">
+                <button className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 font-semibold hover:bg-white/20 transition-all inline-flex items-center gap-2">
                   <FiShare2 className="w-5 h-5" />
                   Share This Page
                 </button>

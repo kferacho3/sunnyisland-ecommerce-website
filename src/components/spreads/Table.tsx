@@ -82,7 +82,7 @@ export function Table() {
             ).map((t, i) => (
               <Settle key={t.src} delay={i * 0.08}>
                 <figure
-                  className="si-plate mx-auto rounded-sm"
+                  className="si-plate mx-auto"
                   style={{ rotate: t.rotate }}
                 >
                   <div className="relative aspect-square overflow-hidden">

@@ -1,19 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter_Tight } from "next/font/google";
+import { Archivo, Inter_Tight } from "next/font/google";
 
 import "./globals.css";
 
 /**
- * Two families, two roles. Fraunces carries the editorial, food-forward voice
- * at display sizes; Inter Tight handles anything a buyer has to actually read.
- * Both self-hosted by next/font, so there is no render-blocking request and no
- * layout shift when they land.
+ * Two families, two roles. Archivo — a variable grotesque — carries every
+ * display line in uppercase at light-to-regular weight, which is the register
+ * TRUFF and its tier use: authority from scale and spacing, not from a serif.
+ * Inter Tight handles anything a buyer has to actually read.
+ *
+ * Both self-hosted by next/font: no render-blocking request, no layout shift.
  */
-const fraunces = Fraunces({
+const archivo = Archivo({
   subsets: ["latin"],
   display: "swap",
-  variable: "--font-fraunces",
-  axes: ["SOFT", "WONK", "opsz"],
+  variable: "--font-archivo",
+  axes: ["wdth"],
 });
 
 const interTight = Inter_Tight({
@@ -61,7 +63,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${fraunces.variable} ${interTight.variable}`}
+      className={`${archivo.variable} ${interTight.variable}`}
       suppressHydrationWarning
     >
       <body>{children}</body>

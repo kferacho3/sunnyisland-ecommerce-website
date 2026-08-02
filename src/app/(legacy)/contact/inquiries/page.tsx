@@ -318,14 +318,14 @@ ${message}
               <div
                 className={`
                 absolute inset-0 bg-gradient-to-r ${card.gradient} 
-                rounded-2xl opacity-0 group-hover:opacity-100 
+                opacity-0 group-hover:opacity-100 
                 transition-opacity duration-300 blur-xl
               `}
               />
 
               <div
                 className={`
-                relative bg-white dark:bg-gray-800 rounded-2xl p-8 
+                relative bg-white dark:bg-gray-800 p-8 
                 shadow-lg hover:shadow-2xl transition-all duration-300 
                 border border-gray-100 dark:border-gray-700
               `}
@@ -336,7 +336,7 @@ ${message}
                     <div
                       className={`
                       w-16 h-16 bg-gradient-to-r ${card.gradient} 
-                      rounded-xl flex items-center justify-center mb-6
+                      flex items-center justify-center mb-6
                     `}
                     >
                       <card.icon className="text-white text-2xl" />
@@ -355,7 +355,7 @@ ${message}
                         className={`
                           flex items-center justify-center gap-2 px-4 py-3 
                           bg-gradient-to-r ${card.gradient} ${card.hoverGradient}
-                          text-white rounded-xl font-semibold transition-all
+                          text-white font-semibold transition-all
                         `}
                       >
                         <FiMail />
@@ -364,7 +364,7 @@ ${message}
                       <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 rounded-xl font-semibold text-gray-700 dark:text-gray-300"
+                        className="w-full px-4 py-3 bg-gray-100 dark:bg-gray-700 font-semibold text-gray-700 dark:text-gray-300"
                         disabled
                       >
                         <FaPhone className="inline mr-2" />
@@ -377,7 +377,7 @@ ${message}
                     <div
                       className={`
                       w-16 h-16 bg-gradient-to-r ${card.gradient} 
-                      rounded-xl flex items-center justify-center mb-6
+                      flex items-center justify-center mb-6
                     `}
                     >
                       <card.icon className="text-white text-2xl" />
@@ -398,7 +398,7 @@ ${message}
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.9 }}
                           className={`
-                            w-12 h-12 bg-gray-100 dark:bg-gray-700 rounded-full 
+                            w-12 h-12 bg-gray-100 dark:bg-gray-700 
                             flex items-center justify-center text-gray-600 dark:text-gray-400
                             hover:bg-gray-200 dark:hover:bg-gray-600 ${social.color}
                             transition-all duration-300
@@ -414,7 +414,7 @@ ${message}
                     <div
                       className={`
                       w-16 h-16 bg-gradient-to-r ${card.gradient} 
-                      rounded-xl flex items-center justify-center mb-6
+                      flex items-center justify-center mb-6
                     `}
                     >
                       <card.icon className="text-white text-2xl" />
@@ -431,7 +431,7 @@ ${message}
                       whileTap={{ scale: 0.98 }}
                       className={`
                         w-full px-4 py-3 bg-gradient-to-r ${card.gradient} ${card.hoverGradient}
-                        text-white rounded-xl font-semibold shadow-lg hover:shadow-xl
+                        text-white font-semibold shadow-lg hover:shadow-xl
                         transition-all duration-300
                       `}
                     >
@@ -478,7 +478,7 @@ ${message}
 
                 {/* Sliding Background */}
                 <motion.div
-                  className="absolute top-1 bottom-1 bg-gradient-to-r from-orange-500 to-red-500 rounded-full"
+                  className="absolute top-1 bottom-1 bg-gradient-to-r from-orange-500 to-red-500"
                   initial={false}
                   animate={{
                     x: activeTab === "individual" ? "0%" : "100%",
@@ -509,7 +509,7 @@ ${message}
                         <input
                           type="text"
                           required
-                          className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                          className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                           value={indivName}
                           onChange={(e) => setIndivName(e.target.value)}
                           placeholder="John Doe"
@@ -526,7 +526,7 @@ ${message}
                         <input
                           type="email"
                           required
-                          className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                          className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                           value={indivEmail}
                           onChange={(e) => setIndivEmail(e.target.value)}
                           placeholder="john@example.com"
@@ -541,7 +541,7 @@ ${message}
                     </label>
                     <select
                       required
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all appearance-none cursor-pointer"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all appearance-none cursor-pointer"
                       value={indivSubject}
                       onChange={(e) => setIndivSubject(e.target.value)}
                     >
@@ -565,7 +565,7 @@ ${message}
                       <textarea
                         required
                         rows={5}
-                        className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-none"
+                        className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-none"
                         value={indivMessage}
                         onChange={(e) => setIndivMessage(e.target.value)}
                         placeholder="Tell us how we can help..."
@@ -580,14 +580,14 @@ ${message}
                     whileTap={{ scale: 0.98 }}
                     className={`
                       w-full md:w-auto px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 
-                      text-white font-semibold rounded-xl shadow-lg hover:shadow-xl 
+                      text-white font-semibold shadow-lg hover:shadow-xl 
                       transition-all duration-300 flex items-center justify-center gap-3
                       disabled:opacity-50 disabled:cursor-not-allowed
                     `}
                   >
                     {isSubmitting ? (
                       <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
+                        <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent" />
                         Sending...
                       </>
                     ) : (
@@ -622,7 +622,7 @@ ${message}
                         <input
                           type="text"
                           required
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                           value={wholesaleData.company}
                           onChange={(e) =>
                             setWholesaleData({
@@ -641,7 +641,7 @@ ${message}
                           <FaGlobe className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                           <input
                             type="url"
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                             value={wholesaleData.website}
                             onChange={(e) =>
                               setWholesaleData({
@@ -661,7 +661,7 @@ ${message}
                       </label>
                       <select
                         required
-                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all appearance-none cursor-pointer"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all appearance-none cursor-pointer"
                         value={wholesaleData.businessType}
                         onChange={(e) =>
                           setWholesaleData({
@@ -694,7 +694,7 @@ ${message}
                         <input
                           type="text"
                           required
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                           value={wholesaleData.firstName}
                           onChange={(e) =>
                             setWholesaleData({
@@ -712,7 +712,7 @@ ${message}
                         <input
                           type="text"
                           required
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                           value={wholesaleData.lastName}
                           onChange={(e) =>
                             setWholesaleData({
@@ -733,7 +733,7 @@ ${message}
                         <input
                           type="email"
                           required
-                          className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                          className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                           value={wholesaleData.emailAddress}
                           onChange={(e) =>
                             setWholesaleData({
@@ -760,7 +760,7 @@ ${message}
                       <input
                         type="text"
                         required
-                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                         value={wholesaleData.address1}
                         onChange={(e) =>
                           setWholesaleData({
@@ -777,7 +777,7 @@ ${message}
                       </label>
                       <input
                         type="text"
-                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                        className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                         value={wholesaleData.address2}
                         onChange={(e) =>
                           setWholesaleData({
@@ -796,7 +796,7 @@ ${message}
                         <input
                           type="text"
                           required
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                           value={wholesaleData.city}
                           onChange={(e) =>
                             setWholesaleData({
@@ -814,7 +814,7 @@ ${message}
                         <input
                           type="text"
                           required
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                           value={wholesaleData.state}
                           onChange={(e) =>
                             setWholesaleData({
@@ -832,7 +832,7 @@ ${message}
                         <input
                           type="text"
                           required
-                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                          className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                           value={wholesaleData.zipCode}
                           onChange={(e) =>
                             setWholesaleData({
@@ -853,7 +853,7 @@ ${message}
                     <textarea
                       required
                       rows={5}
-                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-none"
+                      className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-none"
                       value={wholesaleData.message}
                       onChange={(e) =>
                         setWholesaleData({
@@ -866,11 +866,11 @@ ${message}
                   </div>
 
                   {/* Agreement Checkbox */}
-                  <div className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-4">
+                  <div className="bg-orange-50 dark:bg-orange-900/20 p-4">
                     <label className="flex items-start gap-3 cursor-pointer">
                       <input
                         type="checkbox"
-                        className="mt-1 w-5 h-5 text-orange-600 bg-gray-100 border-gray-300 rounded focus:ring-orange-500 focus:ring-2"
+                        className="mt-1 w-5 h-5 text-orange-600 bg-gray-100 border-gray-300 focus:ring-orange-500 focus:ring-2"
                         checked={wholesaleData.agreeToSubscribe}
                         onChange={(e) =>
                           setWholesaleData({
@@ -895,14 +895,14 @@ ${message}
                     whileTap={{ scale: 0.98 }}
                     className={`
                       w-full md:w-auto px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 
-                      text-white font-semibold rounded-xl shadow-lg hover:shadow-xl 
+                      text-white font-semibold shadow-lg hover:shadow-xl 
                       transition-all duration-300 flex items-center justify-center gap-3
                       disabled:opacity-50 disabled:cursor-not-allowed
                     `}
                   >
                     {isSubmitting ? (
                       <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent" />
+                        <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent" />
                         Submitting...
                       </>
                     ) : (
@@ -928,7 +928,7 @@ ${message}
             exit={{ opacity: 0, y: 50, scale: 0.9 }}
             className="fixed bottom-8 right-8 z-50"
           >
-            <div className="bg-green-500 text-white px-6 py-4 rounded-xl shadow-2xl flex items-center gap-3">
+            <div className="bg-green-500 text-white px-6 py-4 shadow-2xl flex items-center gap-3">
               <FiCheckCircle className="text-2xl" />
               <div>
                 <p className="font-semibold">Success!</p>

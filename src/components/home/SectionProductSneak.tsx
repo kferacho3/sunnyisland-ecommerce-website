@@ -167,9 +167,9 @@ export default function SectionProductSneak() {
               transition={{ duration: 0.5, delay: 0.2 }}
             >
               <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-400 rounded-2xl blur-xl opacity-20" />
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-400 to-red-400 blur-xl opacity-20" />
 
-                <div className="relative bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
+                <div className="relative bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl shadow-2xl border border-gray-200 dark:border-gray-800 overflow-hidden">
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                     {/* ----- PRODUCT IMAGE SECTION (hover-triggered only) ----- */}
                     <motion.div
@@ -218,7 +218,7 @@ export default function SectionProductSneak() {
                           />
                           {imageLoaded && (
                             <motion.div
-                              className="absolute -bottom-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full p-2 shadow-lg will-change-transform"
+                              className="absolute -bottom-2 -right-2 bg-gradient-to-r from-orange-500 to-red-500 text-white p-2 shadow-lg will-change-transform"
                               initial={{ opacity: 0, scale: 0 }}
                               animate={{ opacity: 1, scale: 1 }}
                               transition={{ duration: 0.3 }}
@@ -274,7 +274,7 @@ export default function SectionProductSneak() {
                         <select
                           value={selectedVariant}
                           onChange={(e) => handleVariantChange(e.target.value)}
-                          className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-lg focus:border-orange-500 focus:outline-none transition-all"
+                          className="w-full px-3 py-2 text-sm bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-orange-500 focus:outline-none transition-all"
                         >
                           {product.variants.edges.map(({ node }: any) => (
                             <option key={node.id} value={node.id}>
@@ -297,7 +297,7 @@ export default function SectionProductSneak() {
                         <div className="flex items-center gap-2">
                           <button
                             onClick={() => handleQuantityChange(quantity - 1)}
-                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center text-sm"
+                            className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center text-sm"
                           >
                             -
                           </button>
@@ -306,7 +306,7 @@ export default function SectionProductSneak() {
                           </span>
                           <button
                             onClick={() => handleQuantityChange(quantity + 1)}
-                            className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center text-sm"
+                            className="w-7 h-7 sm:w-8 sm:h-8 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center justify-center text-sm"
                           >
                             +
                           </button>
@@ -325,7 +325,7 @@ export default function SectionProductSneak() {
                           onClick={handleAddToCart}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          className="relative w-full overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-2.5 sm:py-3 text-sm sm:text-base rounded-xl shadow-xl transition-all group"
+                          className="relative w-full overflow-hidden bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold py-2.5 sm:py-3 text-sm sm:text-base shadow-xl transition-all group"
                         >
                           <AnimatePresence mode="wait">
                             {addedToCart ? (
@@ -364,7 +364,7 @@ export default function SectionProductSneak() {
                         <div className="grid grid-cols-2 gap-2">
                           <Link
                             href="https://sunnyislandpepper.myshopify.com/products/sunny-island-pepper-sauce-classic-gold"
-                            className="group relative overflow-hidden px-3 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold rounded-lg transition-all text-xs sm:text-sm flex items-center justify-center gap-1.5"
+                            className="group relative overflow-hidden px-3 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-semibold transition-all text-xs sm:text-sm flex items-center justify-center gap-1.5"
                           >
                             <span>View Details</span>
                             <FiEye className="text-sm sm:text-base group-hover:scale-110 transition-transform" />
@@ -372,7 +372,7 @@ export default function SectionProductSneak() {
 
                           <Link
                             href="/shop"
-                            className="group relative px-3 py-2 border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white font-semibold rounded-lg transition-all text-xs sm:text-sm flex items-center justify-center gap-1.5"
+                            className="group relative px-3 py-2 border-2 border-gray-900 dark:border-white text-gray-900 dark:text-white font-semibold transition-all text-xs sm:text-sm flex items-center justify-center gap-1.5"
                           >
                             <span>More Info</span>
                             <GiChiliPepper className="text-sm sm:text-base group-hover:rotate-12 transition-transform" />
@@ -410,12 +410,12 @@ export default function SectionProductSneak() {
               className="mt-4 sm:mt-6 flex flex-col sm:flex-row items-center justify-between gap-3"
             >
               {/* Customer Reviews - More compact */}
-              <div className="flex items-center gap-2 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm px-3 py-2 rounded-full">
+              <div className="flex items-center gap-2 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm px-3 py-2">
                 <div className="flex -space-x-2">
                   {[...Array(3)].map((_, i) => (
                     <div
                       key={i}
-                      className="w-5 h-5 rounded-full bg-gradient-to-br from-orange-400 to-red-400 border border-white dark:border-gray-800"
+                      className="w-5 h-5 bg-gradient-to-br from-orange-400 to-red-400 border border-white dark:border-gray-800"
                     />
                   ))}
                 </div>
@@ -455,7 +455,7 @@ export default function SectionProductSneak() {
 
         {/* Animated glow effects - Smaller */}
         <motion.div
-          className="absolute top-1/4 left-1/4 w-48 h-48 bg-orange-400/10 rounded-full blur-3xl"
+          className="absolute top-1/4 left-1/4 w-48 h-48 bg-orange-400/10 blur-3xl"
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -467,7 +467,7 @@ export default function SectionProductSneak() {
           }}
         />
         <motion.div
-          className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-red-400/10 rounded-full blur-3xl"
+          className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-red-400/10 blur-3xl"
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.3, 0.5, 0.3],

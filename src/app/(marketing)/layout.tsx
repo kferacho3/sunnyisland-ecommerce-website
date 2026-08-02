@@ -11,7 +11,7 @@ export default function MarketingLayout({
     <>
       <a
         href="#main"
-        className="si-skip rounded-pill bg-gold px-5 py-3 font-body text-sm font-semibold text-ink"
+        className="si-skip bg-gold px-5 py-3 font-body text-sm font-semibold text-ink"
       >
         Skip to content
       </a>

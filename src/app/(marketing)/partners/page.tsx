@@ -58,7 +58,7 @@ export default function PartnersPage() {
             <div
               key={p.key}
               id={p.key}
-              className="flex flex-col rounded-lg border border-cream-line bg-cream-raised p-8 sm:p-10"
+              className="flex flex-col border border-cream-line bg-cream-raised p-8 sm:p-10"
             >
               <h2 className="font-display text-title tracking-display text-on-cream">
                 {p.title}
@@ -118,7 +118,7 @@ export default function PartnersPage() {
             {[1, 2, 3, 4, 5, 6].map((n) => (
               <div
                 key={n}
-                className="relative aspect-square overflow-hidden rounded border border-ink-line"
+                className="relative aspect-square overflow-hidden border border-ink-line"
               >
                 <Image
                   src={`https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/explore/locations/locations${n}.webp`}
@@ -146,7 +146,7 @@ export default function PartnersPage() {
       {/* Process */}
       <Section ground="cream-sunk">
         <SectionHeading eyebrow="How it goes" title="Four steps, no account." />
-        <ol className="mt-14 grid gap-px overflow-hidden rounded-lg border border-cream-line bg-cream-line sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="mt-14 grid gap-px overflow-hidden border border-cream-line bg-cream-line sm:grid-cols-2 lg:grid-cols-4">
           {partners.process.map((s) => (
             <li key={s.step} className="bg-cream-raised p-7">
               <span className="font-mono text-eyebrow font-semibold text-gold-deep">

@@ -96,7 +96,7 @@ export default function FAQPage() {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-orange-400 to-red-500 rounded-full mb-6"
+            className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-orange-400 to-red-500 mb-6"
           >
             <FiHelpCircle className="text-white text-3xl" />
           </motion.div>
@@ -123,7 +123,7 @@ export default function FAQPage() {
                 placeholder="Search for answers..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-14 pr-6 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-full shadow-lg focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-lg"
+                className="w-full pl-14 pr-6 py-4 bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 shadow-lg focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 transition-all duration-300 text-lg"
               />
               {searchQuery && (
                 <motion.button
@@ -151,7 +151,7 @@ export default function FAQPage() {
                 <button
                   key={index}
                   onClick={() => setSearchQuery(question)}
-                  className="text-sm px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-colors"
+                  className="text-sm px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 hover:bg-orange-200 dark:hover:bg-orange-900/50 transition-colors"
                 >
                   {question}
                 </button>
@@ -172,7 +172,7 @@ export default function FAQPage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 className={`
-                  px-6 py-2 rounded-full font-medium text-sm whitespace-nowrap transition-all
+                  px-6 py-2 font-medium text-sm whitespace-nowrap transition-all
                   ${
                     selectedCategory === category
                       ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
@@ -211,7 +211,7 @@ export default function FAQPage() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: sectionIndex * 0.1 }}
-                className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg overflow-hidden"
+                className="bg-white dark:bg-gray-800 shadow-lg overflow-hidden"
               >
                 {/* Section Header */}
                 <div className="px-8 py-6 bg-gradient-to-r from-orange-500/10 to-red-500/10 dark:from-orange-500/20 dark:to-red-500/20">
@@ -271,7 +271,7 @@ export default function FAQPage() {
                             animate={{ rotate: isOpen ? 180 : 0 }}
                             transition={{ duration: 0.3 }}
                             className={`
-                              flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center
+                              flex-shrink-0 w-8 h-8 flex items-center justify-center
                               ${
                                 isOpen
                                   ? "bg-gradient-to-r from-orange-500 to-red-500 text-white"
@@ -312,7 +312,7 @@ export default function FAQPage() {
               href="/contact/inquiries"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
+              className="bg-white dark:bg-gray-800 p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100 dark:border-gray-700"
             >
               <FiMail className="text-3xl text-orange-500 mb-3" />
               <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
@@ -327,7 +327,7 @@ export default function FAQPage() {
               href="/contact/inquiries"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="bg-gradient-to-r from-orange-500 to-red-500 rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-white"
+              className="bg-gradient-to-r from-orange-500 to-red-500 p-6 shadow-lg hover:shadow-xl transition-all duration-300 text-white"
             >
               <FiMessageCircle className="text-3xl mb-3" />
               <h3 className="font-semibold mb-2">Live Chat Support</h3>
@@ -381,7 +381,7 @@ export default function FAQPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 whileHover={{ y: -5 }}
-                className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-300"
+                className="bg-white dark:bg-gray-800 p-6 shadow-md hover:shadow-lg transition-all duration-300"
               >
                 <div className={`${resource.color} mb-4`}>{resource.icon}</div>
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-2">
@@ -404,7 +404,7 @@ export default function FAQPage() {
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
             onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-            className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-30"
+            className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-30"
           >
             <FiChevronDown className="rotate-180 text-xl" />
           </motion.button>

@@ -19,7 +19,7 @@ const ArticleGrid: React.FC<ArticleGridProps> = ({ articles }) => {
       {articles.map((article) => (
         <div
           key={article.id}
-          className="border rounded overflow-hidden shadow hover:shadow-lg transition"
+          className="border overflow-hidden shadow hover:shadow-lg transition"
         >
           <Link href={article.url} target="_blank" rel="noopener noreferrer">
             <img
@@ -33,7 +33,7 @@ const ArticleGrid: React.FC<ArticleGridProps> = ({ articles }) => {
             <h2 className="text-xl font-bold mb-2">{article.title}</h2>
             <p className="text-gray-700 mb-4">{article.description}</p>
             <Link href={article.url} target="_blank" rel="noopener noreferrer">
-              <button className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+              <button className="bg-red-500 text-white px-3 py-1 hover:bg-red-600 transition">
                 READ MORE
               </button>
             </Link>

@@ -103,8 +103,8 @@ function HeroSection() {
         transition={{ duration: 2, repeat: Infinity }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
-        <div className="w-6 h-10 border-2 border-white/50 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-white/50 rounded-full mt-2" />
+        <div className="w-6 h-10 border-2 border-white/50 flex justify-center">
+          <div className="w-1 h-3 bg-white/50 mt-2" />
         </div>
       </motion.div>
     </section>
@@ -144,7 +144,7 @@ function Sidebar({
       <motion.button
         initial={{ opacity: 0, scale: 0 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="lg:hidden fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full shadow-lg"
+        className="lg:hidden fixed bottom-6 right-6 z-50 p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
         onClick={() => setIsOpen(!isOpen)}
       >
         {isOpen ? (
@@ -173,7 +173,7 @@ function Sidebar({
       >
         <div className="p-6 lg:p-0 space-y-6">
           {/* Table of Contents */}
-          <nav className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl rounded-2xl p-6 border border-gray-200/20 dark:border-gray-700/30 shadow-xl">
+          <nav className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl p-6 border border-gray-200/20 dark:border-gray-700/30 shadow-xl">
             <h3 className="font-bold text-xl mb-6 bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent flex items-center gap-2">
               <HiSparkles className="text-orange-500" />
               Quick Navigation
@@ -193,14 +193,14 @@ function Sidebar({
                     <a
                       href={`#${id}`}
                       onClick={() => setIsOpen(false)}
-                      className={`group flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-300 ${
+                      className={`group flex items-center gap-3 px-3 py-2 transition-all duration-300 ${
                         isActive
                           ? "bg-gradient-to-r from-orange-500/10 to-red-500/10 text-orange-600 font-semibold"
                           : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-orange-500"
                       }`}
                     >
                       <span
-                        className={`w-2 h-2 rounded-full transition-all duration-300 flex-shrink-0 ${
+                        className={`w-2 h-2 transition-all duration-300 flex-shrink-0 ${
                           isActive
                             ? "bg-gradient-to-r from-orange-500 to-red-500 scale-125"
                             : "bg-gray-300 dark:bg-gray-600 group-hover:bg-orange-400"
@@ -244,11 +244,11 @@ function RecipeSponsorshipCard() {
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.4 }}
-      className="bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl p-[2px] shadow-xl"
+      className="bg-gradient-to-br from-orange-500 to-red-500 p-[2px] shadow-xl"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative bg-white dark:bg-gray-900 rounded-2xl p-5 overflow-hidden">
+      <div className="relative bg-white dark:bg-gray-900 p-5 overflow-hidden">
         {/* Animated background */}
         <motion.div
           className="absolute inset-0 opacity-5"
@@ -263,7 +263,7 @@ function RecipeSponsorshipCard() {
 
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-3">
-            <div className="p-2 bg-gradient-to-br from-orange-400 to-red-400 rounded-lg flex-shrink-0">
+            <div className="p-2 bg-gradient-to-br from-orange-400 to-red-400 flex-shrink-0">
               <GiChiliPepper className="text-xl text-white" />
             </div>
             <h3 className="text-lg font-bold bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">
@@ -304,7 +304,7 @@ function RecipeSponsorshipCard() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => (window.location.href = "/submit-recipe")}
-            className="w-full py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 group text-sm"
+            className="w-full py-2.5 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 group text-sm"
           >
             <span className="flex items-center justify-center gap-2">
               Submit Your Recipe
@@ -359,7 +359,7 @@ function SectionDisplay({
       {/* Background decoration */}
       <div className="absolute inset-0 pointer-events-none">
         <div
-          className={`absolute ${isEven ? "right-0" : "left-0"} top-1/2 -translate-y-1/2 w-64 sm:w-96 h-64 sm:h-96 rounded-full blur-3xl opacity-5 sm:opacity-10 ${
+          className={`absolute ${isEven ? "right-0" : "left-0"} top-1/2 -translate-y-1/2 w-64 sm:w-96 h-64 sm:h-96 blur-3xl opacity-5 sm:opacity-10 ${
             index % 3 === 0
               ? "bg-orange-500"
               : index % 3 === 1
@@ -380,7 +380,7 @@ function SectionDisplay({
             style={{ y: isEven ? y : undefined }}
             className="relative group"
           >
-            <div className="relative overflow-hidden rounded-2xl shadow-2xl">
+            <div className="relative overflow-hidden shadow-2xl">
               <Image
                 src={imageSrc}
                 alt={section.topline}
@@ -392,8 +392,8 @@ function SectionDisplay({
             </div>
 
             {/* Decorative elements */}
-            <div className="absolute -top-4 -right-4 w-16 sm:w-24 h-16 sm:h-24 bg-gradient-to-br from-orange-400 to-red-400 rounded-full blur-2xl opacity-30 sm:opacity-50" />
-            <div className="absolute -bottom-4 -left-4 w-20 sm:w-32 h-20 sm:h-32 bg-gradient-to-br from-yellow-400 to-orange-400 rounded-full blur-2xl opacity-30 sm:opacity-50" />
+            <div className="absolute -top-4 -right-4 w-16 sm:w-24 h-16 sm:h-24 bg-gradient-to-br from-orange-400 to-red-400 blur-2xl opacity-30 sm:opacity-50" />
+            <div className="absolute -bottom-4 -left-4 w-20 sm:w-32 h-20 sm:h-32 bg-gradient-to-br from-yellow-400 to-orange-400 blur-2xl opacity-30 sm:opacity-50" />
           </motion.div>
 
           {/* Content Section */}
@@ -433,7 +433,7 @@ function SectionDisplay({
                     viewport={{ once: true }}
                     className="flex items-start gap-3"
                   >
-                    <div className="mt-1 p-1 bg-gradient-to-br from-orange-400 to-red-400 rounded-lg flex-shrink-0">
+                    <div className="mt-1 p-1 bg-gradient-to-br from-orange-400 to-red-400 flex-shrink-0">
                       <GiNoodles className="w-3 h-3 sm:w-4 sm:h-4 text-white" />
                     </div>
                     <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300 flex-1">
@@ -448,7 +448,7 @@ function SectionDisplay({
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="group flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base"
+                  className="group flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 text-sm sm:text-base"
                 >
                   Learn More About Our Heritage
                   <FiArrowRight className="group-hover:translate-x-1 transition-transform" />

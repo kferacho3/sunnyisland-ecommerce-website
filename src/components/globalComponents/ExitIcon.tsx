@@ -31,7 +31,7 @@ export const Circle: React.FC<CircleProps> = ({ children, isDarkMode }) => {
     : "group-hover:bg-black";
   return (
     <div
-      className={`w-[50px] h-[50px] bg-[#FFFAF0] rounded-full m-auto shadow-[1px_1px_1px_#565656] relative transition-all duration-200 group-hover:origin-center ${hoverBgClass} group-hover:drop-shadow-[0_0_5px_white]`}
+      className={`w-[50px] h-[50px] bg-[#FFFAF0] m-auto shadow-[1px_1px_1px_#565656] relative transition-all duration-200 group-hover:origin-center ${hoverBgClass} group-hover:drop-shadow-[0_0_5px_white]`}
       style={{ transform: "scale(0.7)" }}
     >
       {children}

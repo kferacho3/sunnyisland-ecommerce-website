@@ -102,7 +102,7 @@ export default function Navbar() {
                 </button>
                 {activeDropdown === "shop" && (
                   <div
-                    className="absolute left-0 top-full mt-2 w-48 bg-black text-white rounded shadow-lg py-2 z-50"
+                    className="absolute left-0 top-full mt-2 w-48 bg-black text-white shadow-lg py-2 z-50"
                     onMouseEnter={() => openDropdown("shop")}
                   >
                     {/* New items under Shop */}
@@ -162,7 +162,7 @@ export default function Navbar() {
                 </button>
                 {activeDropdown === "explore" && (
                   <div
-                    className="absolute left-0 top-full mt-2 w-48 bg-black text-white rounded shadow-lg py-2 z-50"
+                    className="absolute left-0 top-full mt-2 w-48 bg-black text-white shadow-lg py-2 z-50"
                     onMouseEnter={() => openDropdown("explore")}
                   >
                     <div className="group">
@@ -269,7 +269,7 @@ export default function Navbar() {
                 </button>
                 {activeDropdown === "contact" && (
                   <div
-                    className="absolute left-0 top-full mt-2 w-48 bg-black text-white rounded shadow-lg py-2 z-50"
+                    className="absolute left-0 top-full mt-2 w-48 bg-black text-white shadow-lg py-2 z-50"
                     onMouseEnter={() => openDropdown("contact")}
                   >
                     <div className="group">
@@ -380,7 +380,7 @@ export default function Navbar() {
             >
               <FiShoppingCart className="w-5 h-5" />
               {cartItemCount > 0 && (
-                <span className="absolute -top-1 -right-2 bg-secondary text-black text-xs rounded-full px-1">
+                <span className="absolute -top-1 -right-2 bg-secondary text-black text-xs px-1">
                   {cartItemCount}
                 </span>
               )}

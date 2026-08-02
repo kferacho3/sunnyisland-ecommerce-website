@@ -60,7 +60,7 @@ export function Origin() {
             )}
           </Fact>
 
-          <ol className="mt-20 grid gap-px overflow-hidden rounded-lg border border-cream-line bg-cream-line md:grid-cols-4">
+          <ol className="mt-20 grid gap-px overflow-hidden border border-cream-line bg-cream-line md:grid-cols-4">
             {TIMELINE.map((t, i) => (
               <li key={t.when} className="bg-cream-raised p-7">
                 <Settle delay={i * 0.06}>

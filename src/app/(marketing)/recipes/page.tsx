@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import { Container } from "@/components/core/Container";
 import { Eyebrow } from "@/components/core/Section";
+import { ART, FullBleedGround } from "@/components/media/FullBleed";
 import {
   Lines,
   MotionRefresh,
@@ -29,16 +29,9 @@ export default function RecipesPage() {
       <MotionRefresh />
 
       <section className="si-grain relative isolate overflow-hidden bg-ink py-section-tight">
-        {/* Illustrated island scenery — decorative ground only, never captioned
-            as a real place (docs/image-manifest.md). */}
-        <Image
-          src="/brand/concept/story-ground.webp"
-          alt=""
-          aria-hidden
-          fill
-          sizes="100vw"
-          className="si-media absolute inset-0 -z-10 object-cover opacity-40"
-        />
+        {/* Illustrated island scenery — decorative ground only, never
+            captioned as a real place (docs/image-manifest.md). */}
+        <FullBleedGround media={ART.islandScenery} opacity={38} />
         <div
           aria-hidden
           className="absolute inset-0 bg-gradient-to-r from-ink via-ink/75 to-ink/35"

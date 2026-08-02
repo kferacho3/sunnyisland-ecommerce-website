@@ -28,7 +28,7 @@ export function BuyerPathCard({
     <Link
       href={href}
       className={cn(
-        "group/card relative flex flex-col overflow-hidden rounded-lg",
+        "group/card relative flex flex-col overflow-hidden",
         "border border-cream-line bg-cream-raised p-7 sm:p-8",
         "transition-[transform,box-shadow,border-color] duration-medium ease-si",
         "hover:-translate-y-1 hover:border-gold hover:shadow-lift",

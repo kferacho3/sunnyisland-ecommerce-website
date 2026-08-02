@@ -112,7 +112,7 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
           (_, i) => (
             <motion.div
               key={i}
-              className="absolute w-1 h-1 bg-orange-400/30 rounded-full"
+              className="absolute w-1 h-1 bg-orange-400/30"
               initial={{
                 x: Math.random() * viewport.width,
                 y: viewport.height + 10,
@@ -236,7 +236,7 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
               href="/explore/products"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="group relative px-6 sm:px-8 py-3 sm:py-4 overflow-hidden rounded-full font-bold text-sm sm:text-base md:text-lg transition-all duration-300"
+              className="group relative px-6 sm:px-8 py-3 sm:py-4 overflow-hidden font-bold text-sm sm:text-base md:text-lg transition-all duration-300"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-orange-500 to-yellow-400 opacity-90" />
               <span className="absolute inset-0 bg-gradient-to-r from-orange-600 to-red-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
@@ -264,7 +264,7 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
               href="/shop"
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.98 }}
-              className="group relative px-6 sm:px-8 py-3 sm:py-4 overflow-hidden rounded-full font-bold text-sm sm:text-base md:text-lg bg-white text-black border-2 border-white transition-all duration-300"
+              className="group relative px-6 sm:px-8 py-3 sm:py-4 overflow-hidden font-bold text-sm sm:text-base md:text-lg bg-white text-black border-2 border-white transition-all duration-300"
             >
               <span className="relative flex items-center justify-center gap-2 sm:gap-3">
                 Shop Now
@@ -284,7 +284,7 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
             onClick={onExploreClick}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.98 }}
-            className="group flex items-center gap-2 sm:gap-3 px-5 sm:px-6 py-2.5 sm:py-3 text-white/80 font-medium text-sm sm:text-base border border-white/30 rounded-full backdrop-blur-sm transition-all duration-300 hover:border-white hover:text-white"
+            className="group flex items-center gap-2 sm:gap-3 px-5 sm:px-6 py-2.5 sm:py-3 text-white/80 font-medium text-sm sm:text-base border border-white/30 backdrop-blur-sm transition-all duration-300 hover:border-white hover:text-white"
           >
             <span>Explore More</span>
             <motion.div
@@ -319,12 +319,12 @@ export default function SectionHero({ onExploreClick }: SectionHeroProps) {
         <motion.div
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Infinity }}
-          className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-white/30 rounded-full flex justify-center"
+          className="w-5 h-8 sm:w-6 sm:h-10 border-2 border-white/30 flex justify-center"
         >
           <motion.div
             animate={{ y: [0, 15, 0] }}
             transition={{ duration: 2, repeat: Infinity }}
-            className="w-0.5 h-2 sm:w-1 sm:h-3 bg-white/60 rounded-full mt-1.5 sm:mt-2"
+            className="w-0.5 h-2 sm:w-1 sm:h-3 bg-white/60 mt-1.5 sm:mt-2"
           />
         </motion.div>
       </motion.div>

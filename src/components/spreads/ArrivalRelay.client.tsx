@@ -109,7 +109,7 @@ export function ArrivalRelay({ className }: { className?: string }) {
         <button
           type="button"
           onClick={toggle}
-          className="absolute bottom-5 right-5 z-10 inline-flex h-11 w-11 items-center justify-center rounded-pill border border-on-ink/25 bg-ink/50 text-on-ink backdrop-blur-sm transition-colors duration-fast ease-si hover:border-gold hover:text-gold"
+          className="absolute bottom-5 right-5 z-10 inline-flex h-11 w-11 items-center justify-center border border-on-ink/25 bg-ink/50 text-on-ink backdrop-blur-sm transition-colors duration-fast ease-si hover:border-gold hover:text-gold"
         >
           <span className="sr-only">
             {playing ? "Pause background film" : "Play background film"}

@@ -71,7 +71,7 @@ export function MobileNav() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls="mobile-nav"
-        className="-mr-2 inline-flex h-11 w-11 items-center justify-center rounded text-on-ink md:hidden"
+        className="-mr-2 inline-flex h-11 w-11 items-center justify-center text-on-ink md:hidden"
       >
         <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
         <span aria-hidden className="relative block h-4 w-6">
@@ -114,7 +114,7 @@ export function MobileNav() {
           ))}
           <Link
             href={CTA.href}
-            className="mt-6 inline-flex min-h-[3.25rem] items-center justify-center rounded-pill bg-gold px-7 font-body font-semibold text-ink"
+            className="mt-6 inline-flex min-h-[3.25rem] items-center justify-center bg-gold px-7 font-body font-semibold text-ink"
           >
             {CTA.label}
           </Link>

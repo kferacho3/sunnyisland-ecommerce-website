@@ -40,7 +40,7 @@ export default function SaucePage() {
 
               <Fact claim={product.heroSize}>
                 {(size) => (
-                  <p className="mt-8 inline-block rounded-pill border border-gold/35 bg-gold/10 px-5 py-2.5 font-mono text-sm tracking-[0.06em] text-gold">
+                  <p className="mt-8 inline-block border border-gold/35 bg-gold/10 px-5 py-2.5 font-mono text-sm tracking-[0.06em] text-gold">
                     {size}
                   </p>
                 )}
@@ -119,7 +119,7 @@ export default function SaucePage() {
         />
         <Fact claim={product.waysToUse}>
           {(uses) => (
-            <div className="mt-14 grid gap-px overflow-hidden rounded-lg border border-cream-line bg-cream-line sm:grid-cols-2 lg:grid-cols-3">
+            <div className="mt-14 grid gap-px overflow-hidden border border-cream-line bg-cream-line sm:grid-cols-2 lg:grid-cols-3">
               {uses.map((u) => (
                 <div key={u.title} className="bg-cream-raised p-7">
                   <h3 className="font-display text-heading tracking-display text-on-cream">

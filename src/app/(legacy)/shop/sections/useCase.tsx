@@ -358,7 +358,7 @@ const HexagonItem = React.memo(
                 breakpoint === "mobile"
                   ? "text-[0.6rem] mt-1 px-2 py-0.5"
                   : "text-xs mt-2 px-3 py-1"
-              } bg-white/20 backdrop-blur-sm rounded-full font-medium hover:bg-white/30 transition-colors`}
+              } bg-white/20 backdrop-blur-sm font-medium hover:bg-white/30 transition-colors`}
               onClick={(e) => {
                 e.stopPropagation();
                 onClick(item);
@@ -578,7 +578,7 @@ export default function UseCaseSection() {
             disabled={isShaking}
             className={`
               relative px-10 py-4 bg-gradient-to-r from-orange-500 to-red-500 
-              text-white font-bold rounded-full shadow-2xl 
+              text-white font-bold shadow-2xl 
               hover:shadow-orange-500/25 transition-all duration-300
               disabled:opacity-50 disabled:cursor-not-allowed
               flex items-center gap-3 text-lg
@@ -591,7 +591,7 @@ export default function UseCaseSection() {
 
             {/* Shimmer effect */}
             <motion.div
-              className="absolute inset-0 rounded-full"
+              className="absolute inset-0"
               initial={{ x: "-100%", opacity: 0 }}
               animate={{ x: "100%", opacity: [0, 1, 0] }}
               transition={{
@@ -639,7 +639,7 @@ export default function UseCaseSection() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 1.2 + index * 0.1 }}
               whileHover={{ y: -5 }}
-              className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700 hover:border-orange-500/50 transition-all duration-300"
+              className="bg-gray-800/50 backdrop-blur-sm p-6 border border-gray-700 hover:border-orange-500/50 transition-all duration-300"
             >
               <div className="text-3xl mb-3">{card.icon}</div>
               <h3 className="text-xl font-semibold mb-2">{card.title}</h3>
@@ -663,7 +663,7 @@ export default function UseCaseSection() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-gray-800 rounded-2xl p-8 max-w-md w-full shadow-2xl"
+              className="bg-gray-800 p-8 max-w-md w-full shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center">
@@ -702,10 +702,10 @@ export default function UseCaseSection() {
                         </p>
 
                         {/* Gradient Heat Level Bar */}
-                        <div className="relative w-full h-8 bg-gray-700 rounded-full overflow-hidden">
+                        <div className="relative w-full h-8 bg-gray-700 overflow-hidden">
                           {/* Smooth gradient background */}
                           <div
-                            className="absolute inset-0 rounded-full"
+                            className="absolute inset-0"
                             style={{
                               background:
                                 "linear-gradient(to right, #10b981 0%, #22c55e 20%, #fbbf24 40%, #f97316 60%, #dc2626 80%, #000000 100%)",
@@ -719,7 +719,7 @@ export default function UseCaseSection() {
                               left: `${((selectedItem.intensity || 1) - 1) * 20}%`,
                             }}
                             transition={{ type: "spring", duration: 0.8 }}
-                            className="absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-white rounded-full shadow-lg border-2 border-gray-800"
+                            className="absolute top-1/2 -translate-y-1/2 w-6 h-6 bg-white shadow-lg border-2 border-gray-800"
                             style={{
                               marginLeft: "calc(10% - 12px)", // Center in each segment
                             }}
@@ -737,7 +737,7 @@ export default function UseCaseSection() {
                       </div>
 
                       {/* Scoville Details */}
-                      <div className="bg-gray-700/50 rounded-lg p-4">
+                      <div className="bg-gray-700/50 p-4">
                         <h4 className="text-sm font-semibold text-gray-300 mb-2">
                           Scoville Heat Units
                         </h4>
@@ -748,11 +748,11 @@ export default function UseCaseSection() {
 
                       {/* Additional Pepper Info */}
                       <div className="grid grid-cols-2 gap-3 text-sm">
-                        <div className="bg-gray-700/30 rounded-lg p-3">
+                        <div className="bg-gray-700/30 p-3">
                           <p className="text-gray-400 text-xs">Origin</p>
                           <p className="font-semibold">Various Regions</p>
                         </div>
-                        <div className="bg-gray-700/30 rounded-lg p-3">
+                        <div className="bg-gray-700/30 p-3">
                           <p className="text-gray-400 text-xs">Best Used In</p>
                           <p className="font-semibold">Sauces & Dishes</p>
                         </div>
@@ -763,7 +763,7 @@ export default function UseCaseSection() {
                 {selectedItem.type === "useCase" && (
                   <div className="mb-6 space-y-4">
                     {/* Use Case Details */}
-                    <div className="bg-gray-700/50 rounded-lg p-4">
+                    <div className="bg-gray-700/50 p-4">
                       <h4 className="text-sm font-semibold text-gray-300 mb-2">
                         Pro Tip
                       </h4>
@@ -774,7 +774,7 @@ export default function UseCaseSection() {
                     </div>
 
                     {/* Category Badge */}
-                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600/20 text-purple-400 rounded-full">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600/20 text-purple-400">
                       <span className="text-sm font-medium">
                         {selectedItem.category || "General Tip"}
                       </span>
@@ -788,7 +788,7 @@ export default function UseCaseSection() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => setSelectedItem(null)}
-                    className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white rounded-full font-semibold transition-colors"
+                    className="px-6 py-2 bg-gray-700 hover:bg-gray-600 text-white font-semibold transition-colors"
                   >
                     Close
                   </motion.button>
@@ -797,7 +797,7 @@ export default function UseCaseSection() {
                     <motion.button
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
-                      className="px-6 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full font-semibold shadow-lg"
+                      className="px-6 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-lg"
                     >
                       Learn More
                     </motion.button>

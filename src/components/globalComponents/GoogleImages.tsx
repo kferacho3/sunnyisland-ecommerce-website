@@ -69,7 +69,7 @@ const GoogleImages: React.FC<GoogleImagesProps> = ({
       />
       <button
         onClick={nextImage}
-        className="absolute bottom-2 right-2 bg-white bg-opacity-75 text-xs p-1 rounded shadow"
+        className="absolute bottom-2 right-2 bg-white bg-opacity-75 text-xs p-1 shadow"
       >
         Next
       </button>

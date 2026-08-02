@@ -57,7 +57,7 @@ export default function AddToCartButton({
     <button
       onClick={handleAddToCart}
       disabled={loading}
-      className="px-6 py-3 bg-orange-500 hover:bg-orange-400 text-white rounded font-semibold uppercase"
+      className="px-6 py-3 bg-orange-500 hover:bg-orange-400 text-white font-semibold uppercase"
     >
       {loading ? "Adding..." : "Add to Cart"}
     </button>

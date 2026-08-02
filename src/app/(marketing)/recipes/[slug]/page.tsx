@@ -193,7 +193,7 @@ export default async function RecipePage({
                 ))}
               </ol>
 
-              <div className="mt-10 rounded-lg border border-cream-line bg-cream-raised p-6">
+              <div className="mt-10 border border-cream-line bg-cream-raised p-6">
                 <h3 className="font-body text-eyebrow font-semibold uppercase text-gold-deep">
                   From the family
                 </h3>

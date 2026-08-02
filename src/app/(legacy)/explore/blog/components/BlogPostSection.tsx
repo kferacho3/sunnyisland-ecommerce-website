@@ -62,7 +62,7 @@ export default function BlogPostsSection({
             whileTap={{ scale: 0.95 }}
             onClick={handleLoadMore}
             disabled={isLoading}
-            className="group relative px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden"
+            className="group relative px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden"
           >
             <span className="relative z-10 flex items-center gap-3">
               {isLoading ? (

@@ -135,7 +135,7 @@ export default function RatingsReviewSection() {
               transition={{ delay: 0.2 }}
               className="lg:col-span-1"
             >
-              <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8">
+              <div className="bg-white dark:bg-gray-800 shadow-xl p-8">
                 {/* Overall Rating */}
                 <div className="text-center mb-8">
                   <div className="text-6xl font-bold text-gray-900 dark:text-white mb-2">
@@ -166,7 +166,7 @@ export default function RatingsReviewSection() {
                         className="text-yellow-400 fill-current"
                         size={16}
                       />
-                      <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-2 overflow-hidden">
+                      <div className="flex-1 bg-gray-200 dark:bg-gray-700 h-2 overflow-hidden">
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{
@@ -188,7 +188,7 @@ export default function RatingsReviewSection() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setShowReviewModal(true)}
-                  className="w-full py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  className="w-full py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                 >
                   Write a Review
                 </motion.button>
@@ -208,12 +208,12 @@ export default function RatingsReviewSection() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 * index }}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+                  className="bg-white dark:bg-gray-800 shadow-lg p-6 hover:shadow-xl transition-shadow"
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-start gap-4">
                       {/* User Avatar */}
-                      <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-400 rounded-full flex items-center justify-center text-white font-bold">
+                      <div className="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-400 flex items-center justify-center text-white font-bold">
                         {review.user.charAt(0)}
                       </div>
 
@@ -265,7 +265,7 @@ export default function RatingsReviewSection() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-semibold rounded-xl hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300"
+                className="w-full py-3 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-semibold hover:bg-gray-200 dark:hover:bg-gray-700 transition-all duration-300"
               >
                 Load More Reviews
               </motion.button>
@@ -288,7 +288,7 @@ export default function RatingsReviewSection() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl max-w-lg w-full p-8"
+              className="bg-white dark:bg-gray-800 shadow-2xl max-w-lg w-full p-8"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
@@ -299,7 +299,7 @@ export default function RatingsReviewSection() {
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setShowReviewModal(false)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
                   <FiX className="text-gray-600 dark:text-gray-400" />
                 </motion.button>
@@ -327,7 +327,7 @@ export default function RatingsReviewSection() {
                 </label>
                 <textarea
                   rows={4}
-                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
+                  className="w-full px-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 focus:ring-2 focus:ring-orange-500 focus:border-transparent resize-none"
                   placeholder="Tell us about your experience with Sunny Island Pepper Sauce..."
                 />
               </div>
@@ -336,7 +336,7 @@ export default function RatingsReviewSection() {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                className="w-full py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                className="w-full py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
               >
                 Submit Review
               </motion.button>

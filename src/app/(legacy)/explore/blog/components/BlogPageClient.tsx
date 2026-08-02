@@ -146,7 +146,7 @@ export default function BlogPageClient({
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="group px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden relative"
+                className="group px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden relative"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   <FaNewspaper />
@@ -190,8 +190,8 @@ export default function BlogPageClient({
           transition={{ duration: 2, repeat: Infinity }}
           className="absolute bottom-8 left-1/2 -translate-x-1/2"
         >
-          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-white/50 rounded-full mt-2" />
+          <div className="w-6 h-10 border-2 border-white/30 flex justify-center">
+            <div className="w-1 h-3 bg-white/50 mt-2" />
           </div>
         </motion.div>
       </section>
@@ -213,13 +213,13 @@ export default function BlogPageClient({
                   name="q"
                   placeholder="Search spicy content..."
                   defaultValue={query}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-full focus:border-orange-500 focus:outline-none transition-all duration-300 shadow-lg focus:shadow-xl"
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-orange-500 focus:outline-none transition-all duration-300 shadow-lg focus:shadow-xl"
                 />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transition-all"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 px-6 py-2 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all"
                 >
                   Search
                 </motion.button>
@@ -236,7 +236,7 @@ export default function BlogPageClient({
                   const newFilter = e.target.value;
                   window.location.href = `/explore/blog?view=${viewMode}${query ? `&q=${encodeURIComponent(query)}` : ""}${newFilter ? `&filter=${encodeURIComponent(newFilter)}` : ""}`;
                 }}
-                className="pl-12 pr-12 py-3 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-full focus:border-orange-500 focus:outline-none transition-all duration-300 shadow-lg cursor-pointer appearance-none"
+                className="pl-12 pr-12 py-3 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-orange-500 focus:outline-none transition-all duration-300 shadow-lg cursor-pointer appearance-none"
               >
                 <option value="">All Sources</option>
                 <option value="Wikipedia">Wikipedia</option>
@@ -250,12 +250,12 @@ export default function BlogPageClient({
             </div>
 
             {/* View Toggle */}
-            <div className="flex items-center bg-gray-100 dark:bg-gray-800 p-1 rounded-full shadow-lg">
+            <div className="flex items-center bg-gray-100 dark:bg-gray-800 p-1 shadow-lg">
               <Link href={gridLink}>
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className={`p-3 rounded-full transition-all duration-300 ${
+                  className={`p-3 transition-all duration-300 ${
                     viewMode === "grid"
                       ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
                       : "text-gray-500 hover:text-orange-500"
@@ -268,7 +268,7 @@ export default function BlogPageClient({
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className={`p-3 rounded-full transition-all duration-300 ${
+                  className={`p-3 transition-all duration-300 ${
                     viewMode === "list"
                       ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
                       : "text-gray-500 hover:text-orange-500"
@@ -291,7 +291,7 @@ export default function BlogPageClient({
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 rounded-full text-sm font-medium"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 text-sm font-medium"
                 >
                   Search: "{query}"
                   <Link
@@ -306,7 +306,7 @@ export default function BlogPageClient({
                 <motion.span
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 rounded-full text-sm font-medium"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300 text-sm font-medium"
                 >
                   Filter: {filterParam}
                   <Link
@@ -359,7 +359,7 @@ export default function BlogPageClient({
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full shadow-2xl hover:shadow-3xl transition-all duration-300"
+          className="p-4 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-2xl hover:shadow-3xl transition-all duration-300"
         >
           <svg
             className="w-6 h-6"

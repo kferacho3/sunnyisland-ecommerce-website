@@ -85,7 +85,7 @@ export default function CartDrawer({
         {cart && cart.checkoutUrl && (
           <a
             href={cart.checkoutUrl}
-            className="block text-center bg-orange-500 rounded py-2 mt-4"
+            className="block text-center bg-orange-500 py-2 mt-4"
           >
             Checkout
           </a>

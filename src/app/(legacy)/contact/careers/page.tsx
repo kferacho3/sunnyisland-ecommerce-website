@@ -257,7 +257,7 @@ export default function CareersPage() {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500/10 to-purple-500/10 backdrop-blur-md rounded-full mb-8 border border-white/10"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500/10 to-purple-500/10 backdrop-blur-md mb-8 border border-white/10"
             >
               <RiSparklingFill className="w-5 h-5 text-yellow-400 animate-pulse" />
               <span className="text-sm font-semibold bg-gradient-to-r from-orange-400 to-purple-400 bg-clip-text text-transparent">
@@ -339,7 +339,7 @@ export default function CareersPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-md rounded-full mb-4 border border-white/10">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-md mb-4 border border-white/10">
               <FiBriefcase className="w-4 h-4 text-purple-400" />
               <span className="text-sm font-semibold text-purple-400">
                 Open Positions
@@ -381,7 +381,7 @@ export default function CareersPage() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
 
                     {/* Badge */}
-                    <div className="absolute top-4 right-4 px-3 py-1 bg-black/50 backdrop-blur-sm rounded-full border border-white/20">
+                    <div className="absolute top-4 right-4 px-3 py-1 bg-black/50 backdrop-blur-sm border border-white/20">
                       <span className="text-xs font-semibold">
                         {typeof opp.openPositions === "number"
                           ? `${opp.openPositions} Openings`
@@ -391,7 +391,7 @@ export default function CareersPage() {
 
                     {/* Icon */}
                     <div
-                      className={`absolute bottom-4 left-4 p-3 rounded-2xl bg-gradient-to-br ${opp.accentColor} shadow-2xl`}
+                      className={`absolute bottom-4 left-4 p-3 bg-gradient-to-br ${opp.accentColor} shadow-2xl`}
                     >
                       {opp.icon}
                     </div>
@@ -450,7 +450,7 @@ export default function CareersPage() {
                                     key={idx}
                                     className="text-sm text-gray-300 flex items-start gap-2"
                                   >
-                                    <div className="w-1.5 h-1.5 rounded-full bg-gray-500 mt-1.5 flex-shrink-0" />
+                                    <div className="w-1.5 h-1.5 bg-gray-500 mt-1.5 flex-shrink-0" />
                                     {req}
                                   </li>
                                 ))}
@@ -463,7 +463,7 @@ export default function CareersPage() {
 
                     {/* CTA Button */}
                     <button
-                      className={`w-full py-3 rounded-full bg-gradient-to-r ${opp.accentColor} font-semibold hover:scale-105 hover:shadow-lg transition-all inline-flex items-center justify-center gap-2 group`}
+                      className={`w-full py-3 bg-gradient-to-r ${opp.accentColor} font-semibold hover:scale-105 hover:shadow-lg transition-all inline-flex items-center justify-center gap-2 group`}
                     >
                       {opp.cta}
                       <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -487,7 +487,7 @@ export default function CareersPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500/10 to-pink-500/10 backdrop-blur-md rounded-full mb-4 border border-white/10">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500/10 to-pink-500/10 backdrop-blur-md mb-4 border border-white/10">
               <HiOutlineSparkles className="w-4 h-4 text-orange-400" />
               <span className="text-sm font-semibold text-orange-400">
                 Our Culture
@@ -511,9 +511,9 @@ export default function CareersPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
-                className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50 hover:border-gray-600/50 transition-all text-center group"
+                className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl p-6 border border-gray-700/50 hover:border-gray-600/50 transition-all text-center group"
               >
-                <div className="inline-flex p-3 rounded-xl bg-gradient-to-br from-orange-500/20 to-pink-500/20 mb-4 group-hover:scale-110 transition-transform">
+                <div className="inline-flex p-3 bg-gradient-to-br from-orange-500/20 to-pink-500/20 mb-4 group-hover:scale-110 transition-transform">
                   {React.cloneElement(value.icon, {
                     className: "w-6 h-6 text-orange-400",
                   })}
@@ -539,7 +539,7 @@ export default function CareersPage() {
                   transition={{ delay: idx * 0.1, duration: 0.5 }}
                   className="flex items-start gap-4"
                 >
-                  <div className="p-2 rounded-lg bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex-shrink-0">
+                  <div className="p-2 bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex-shrink-0">
                     {React.cloneElement(benefit.icon, {
                       className: "w-5 h-5 text-purple-400",
                     })}
@@ -567,7 +567,7 @@ export default function CareersPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/10 to-blue-500/10 backdrop-blur-md rounded-full mb-4 border border-white/10">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-green-500/10 to-blue-500/10 backdrop-blur-md mb-4 border border-white/10">
               <FiHeart className="w-4 h-4 text-green-400" />
               <span className="text-sm font-semibold text-green-400">
                 Team Stories
@@ -608,7 +608,7 @@ export default function CareersPage() {
                 whileInView={{ y: 0, opacity: 1 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
-                className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50"
+                className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl p-6 border border-gray-700/50"
               >
                 <div className="flex gap-1 mb-4">
                   {[...Array(testimonial.rating)].map((_, i) => (
@@ -661,7 +661,7 @@ export default function CareersPage() {
                   ))}
                 </ul>
               </div>
-              <div className="relative h-96 rounded-2xl overflow-hidden">
+              <div className="relative h-96 overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-purple-500/20 z-10" />
                 <Image
                   src="https://sunnyisland.s3.us-east-2.amazonaws.com/media/images/contact/careers/SunnyIslandCareers.webp"
@@ -685,7 +685,7 @@ export default function CareersPage() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 backdrop-blur-md rounded-full mb-4 border border-white/10">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 backdrop-blur-md mb-4 border border-white/10">
               <IoMdRocket className="w-4 h-4 text-indigo-400" />
               <span className="text-sm font-semibold text-indigo-400">
                 Simple Process
@@ -740,16 +740,16 @@ export default function CareersPage() {
                   {/* Step Number */}
                   <div className="relative inline-flex">
                     <div
-                      className={`w-24 h-24 rounded-full bg-gradient-to-br ${process.color} p-[2px]`}
+                      className={`w-24 h-24 bg-gradient-to-br ${process.color} p-[2px]`}
                     >
-                      <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
+                      <div className="w-full h-full bg-black flex items-center justify-center">
                         <span className="text-3xl font-bold">
                           {process.step}
                         </span>
                       </div>
                     </div>
                     <div
-                      className={`absolute -bottom-2 -right-2 p-2 rounded-xl bg-gradient-to-br ${process.color}`}
+                      className={`absolute -bottom-2 -right-2 p-2 bg-gradient-to-br ${process.color}`}
                     >
                       {process.icon}
                     </div>
@@ -811,7 +811,7 @@ export default function CareersPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: idx * 0.1, duration: 0.5 }}
-                className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl rounded-2xl p-6 border border-gray-700/50"
+                className="bg-gradient-to-br from-gray-900/90 to-gray-800/90 backdrop-blur-xl p-6 border border-gray-700/50"
               >
                 <h4 className="font-semibold text-lg mb-2">{faq.question}</h4>
                 <p className="text-gray-400">{faq.answer}</p>
@@ -839,7 +839,7 @@ export default function CareersPage() {
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.2, duration: 0.6 }}
-                className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm rounded-full mb-8"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white/10 backdrop-blur-sm mb-8"
               >
                 <HiOutlineSparkles className="w-5 h-5 text-yellow-400" />
                 <span className="text-sm font-semibold">Ready to Join?</span>
@@ -856,11 +856,11 @@ export default function CareersPage() {
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button className="px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-500 font-semibold hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25 transition-all inline-flex items-center gap-2 group">
+                <button className="px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 font-semibold hover:scale-105 hover:shadow-lg hover:shadow-orange-500/25 transition-all inline-flex items-center gap-2 group">
                   Apply Now
                   <FiArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
-                <button className="px-8 py-4 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 font-semibold hover:bg-white/20 transition-all">
+                <button className="px-8 py-4 bg-white/10 backdrop-blur-sm border border-white/20 font-semibold hover:bg-white/20 transition-all">
                   Contact HR Team
                 </button>
               </div>
@@ -946,19 +946,19 @@ export default function CareersPage() {
               <div className="flex gap-4">
                 <a
                   href="#"
-                  className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
+                  className="p-2 bg-gray-800 hover:bg-gray-700 transition-colors"
                 >
                   <FiHeart className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
-                  className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
+                  className="p-2 bg-gray-800 hover:bg-gray-700 transition-colors"
                 >
                   <FiUsers className="w-5 h-5" />
                 </a>
                 <a
                   href="#"
-                  className="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition-colors"
+                  className="p-2 bg-gray-800 hover:bg-gray-700 transition-colors"
                 >
                   <FiGlobe className="w-5 h-5" />
                 </a>

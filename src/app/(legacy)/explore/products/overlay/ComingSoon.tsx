@@ -64,7 +64,7 @@ export const ComingSoonPopup = ({ product, onClose }: ComingSoonPopupProps) => {
       variants={popupVariants}
     >
       <div
-        className={`p-8 rounded-lg text-center ${gradient} bg-clip-text text-transparent`}
+        className={`p-8 text-center ${gradient} bg-clip-text text-transparent`}
         onClick={(e) => e.stopPropagation()}
       >
         <h2
@@ -110,7 +110,7 @@ export const ComingSoonPopup = ({ product, onClose }: ComingSoonPopupProps) => {
           })}
         </div>
         <button
-          className="mt-4 bg-white text-black px-6 py-2 rounded-full transition-all duration-300 font-bold italic"
+          className="mt-4 bg-white text-black px-6 py-2 transition-all duration-300 font-bold italic"
           onClick={onClose}
         >
           Close

@@ -58,7 +58,7 @@ export default function TermsOfServicePage() {
             className="hidden md:block sticky top-32 w-64 pr-6 border-r border-gray-300 max-h-[calc(100vh-120px)] overflow-y-auto"
             style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
           >
-            <div className="bg-white dark:bg-gray-900 p-4 rounded-lg shadow-xl">
+            <div className="bg-white dark:bg-gray-900 p-4 shadow-xl">
               <h2 className="text-2xl font-bold mb-4 text-primary uppercase">
                 Contents
               </h2>

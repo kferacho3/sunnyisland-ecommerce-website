@@ -168,7 +168,7 @@ export default function LocationsPage() {
                       <img
                         src={img.src}
                         alt={`Location ${index + 1}`}
-                        className="absolute object-cover rounded-lg hover:scale-105 transition-transform duration-300 shadow-md"
+                        className="absolute object-cover hover:scale-105 transition-transform duration-300 shadow-md"
                         style={img.style}
                       />
                     </Link>
@@ -204,7 +204,7 @@ export default function LocationsPage() {
       </section>
 
       {/* ========================= Kitchen Details ========================= */}
-      <section className="max-w-4xl mx-auto px-4 py-8 space-y-4 bg-black bg-opacity-40 rounded-lg shadow-lg">
+      <section className="max-w-4xl mx-auto px-4 py-8 space-y-4 bg-black bg-opacity-40 shadow-lg">
         <h2 className="text-2xl font-semibold">Our Oakland Park Kitchen</h2>
         <p className="text-sm md:text-base">
           <strong>Location:</strong> 4072 NE 5th Ter, Fort Lauderdale, FL 33334
@@ -236,7 +236,7 @@ export default function LocationsPage() {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {/* Atlanta, GA */}
-          <div className="p-6 bg-black bg-opacity-30 rounded-lg shadow-lg flex flex-col gap-4">
+          <div className="p-6 bg-black bg-opacity-30 shadow-lg flex flex-col gap-4">
             <h3 className="text-xl font-semibold tracking-wide">
               Atlanta, Georgia
             </h3>
@@ -246,14 +246,14 @@ export default function LocationsPage() {
               distribution partnerships.
             </p>
             <iframe
-              className="w-full h-60 rounded-md border-none"
+              className="w-full h-60 border-none"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d13277.30896430532!2d-84.39218549999999!3d33.7530685!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88f504635dbbe0c7%3A0xb273e7c722f6db47!2sAtlanta%2C%20GA!5e0!3m2!1sen!2sus!4v1676580499462!5m2!1sen!2sus"
               allowFullScreen
               loading="lazy"
             />
           </div>
           {/* Ft. Lauderdale, FL */}
-          <div className="p-6 bg-black bg-opacity-30 rounded-lg shadow-lg flex flex-col gap-4">
+          <div className="p-6 bg-black bg-opacity-30 shadow-lg flex flex-col gap-4">
             <h3 className="text-xl font-semibold tracking-wide">
               Ft. Lauderdale, Florida
             </h3>
@@ -263,7 +263,7 @@ export default function LocationsPage() {
               availability.
             </p>
             <iframe
-              className="w-full h-60 rounded-md border-none"
+              className="w-full h-60 border-none"
               src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14347.476105005318!2d-80.14073769999999!3d26.1224735!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88d901df837ae4e5%3A0x8e7ad2dce108484c!2sFort%20Lauderdale%2C%20FL!5e0!3m2!1sen!2sus!4v1676580565463!5m2!1sen!2sus"
               allowFullScreen
               loading="lazy"
@@ -273,7 +273,7 @@ export default function LocationsPage() {
       </section>
 
       {/* ========================= About Our Process ========================= */}
-      <section className="max-w-5xl mx-auto px-4 py-10 space-y-4 bg-black bg-opacity-30 rounded-lg shadow-lg">
+      <section className="max-w-5xl mx-auto px-4 py-10 space-y-4 bg-black bg-opacity-30 shadow-lg">
         <h2 className="text-2xl font-semibold text-center mb-4">
           Clean Cooking & Quality You Can Trust
         </h2>
@@ -294,7 +294,7 @@ export default function LocationsPage() {
 
       {/* ========================= (Optional) User Location Debug ========================= */}
       {userLocation && (
-        <div className="max-w-xl mx-auto px-4 py-6 mt-10 text-center bg-black bg-opacity-40 rounded-lg shadow-lg">
+        <div className="max-w-xl mx-auto px-4 py-6 mt-10 text-center bg-black bg-opacity-40 shadow-lg">
           <p className="text-xs">
             <strong>Your location (approx.):</strong> Latitude{" "}
             {userLocation.lat.toFixed(4)}, Longitude{" "}

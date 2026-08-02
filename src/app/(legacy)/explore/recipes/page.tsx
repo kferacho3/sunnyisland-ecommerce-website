@@ -412,7 +412,7 @@ const RecipesPage = () => {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveTab("established")}
                 className={`
-                  relative px-8 py-3 rounded-full font-semibold transition-all duration-300
+                  relative px-8 py-3 font-semibold transition-all duration-300
                   ${
                     activeTab === "established"
                       ? "bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg"
@@ -427,7 +427,7 @@ const RecipesPage = () => {
                 {activeTab === "established" && (
                   <motion.div
                     layoutId="activeTab"
-                    className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 rounded-full -z-10"
+                    className="absolute inset-0 bg-gradient-to-r from-orange-500 to-red-500 -z-10"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
@@ -438,7 +438,7 @@ const RecipesPage = () => {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setActiveTab("original")}
                 className={`
-                  relative px-8 py-3 rounded-full font-semibold transition-all duration-300
+                  relative px-8 py-3 font-semibold transition-all duration-300
                   ${
                     activeTab === "original"
                       ? "bg-gradient-to-r from-green-600 to-emerald-600 text-white shadow-lg"
@@ -485,7 +485,7 @@ const RecipesPage = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={refreshRecipes}
-                    className="group flex items-center gap-2 px-6 py-3 bg-gray-900 dark:bg-gray-800 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="group flex items-center gap-2 px-6 py-3 bg-gray-900 dark:bg-gray-800 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                   >
                     <FiRefreshCw className="transition-transform duration-300 group-hover:rotate-180" />
                     <span className="font-semibold">Shuffle Recipes</span>
@@ -495,7 +495,7 @@ const RecipesPage = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={toggleSortHearts}
-                    className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                   >
                     {sortAscending ? <FiTrendingUp /> : <FiTrendingDown />}
                     <span className="font-semibold">Sort by Popularity</span>
@@ -506,7 +506,7 @@ const RecipesPage = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={loadMoreRecipes}
-                      className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300"
+                      className="group flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                     >
                       <span className="font-semibold">Load More</span>
                       <FiArrowRight className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -598,7 +598,7 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden"
+        className="relative bg-white dark:bg-gray-800 shadow-2xl overflow-hidden"
       >
         <div className="grid md:grid-cols-2 gap-0">
           {/* Image Section */}
@@ -617,7 +617,7 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
               <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
-                className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg"
+                className="bg-white/90 backdrop-blur-sm px-4 py-2 shadow-lg"
               >
                 <span className="text-sm font-bold text-orange-600">
                   Featured Recipe
@@ -636,7 +636,7 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={handleFeaturedFavorite}
-                className={`p-3 rounded-full transition-colors ${
+                className={`p-3 transition-colors ${
                   favorites.includes(featuredRecipe.id)
                     ? "bg-pink-100 text-pink-600"
                     : "bg-gray-100 text-gray-400 hover:text-gray-600"
@@ -688,7 +688,7 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
               {featuredRecipe.difficulty && (
                 <span
                   className={`
-                  px-3 py-1 rounded-full text-xs font-semibold
+                  px-3 py-1 text-xs font-semibold
                   ${featuredRecipe.difficulty === "Easy" ? "bg-green-100 text-green-800" : ""}
                   ${featuredRecipe.difficulty === "Medium" ? "bg-yellow-100 text-yellow-800" : ""}
                   ${featuredRecipe.difficulty === "Hard" ? "bg-red-100 text-red-800" : ""}
@@ -727,7 +727,7 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={handleFeaturedHeart}
-                  className={`p-2 rounded-full transition-colors ${
+                  className={`p-2 transition-colors ${
                     userHasHearted(featuredRecipe.id)
                       ? "bg-red-100 text-red-600"
                       : "bg-gray-100 text-gray-400 hover:text-gray-600"
@@ -753,7 +753,7 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={() => onOpenModal(featuredRecipe)}
-              className="mt-auto w-full py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+              className="mt-auto w-full py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
             >
               View Full Recipe
               <FiChevronRight />
@@ -772,7 +772,7 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setViewMode("carousel")}
-            className={`p-2 rounded-full ${
+            className={`p-2 ${
               viewMode === "carousel"
                 ? "bg-gray-900 text-white dark:bg-gray-700"
                 : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
@@ -784,7 +784,7 @@ const FeaturedLayout: React.FC<FeaturedLayoutProps> = ({
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setViewMode("grid")}
-            className={`p-2 rounded-full ${
+            className={`p-2 ${
               viewMode === "grid"
                 ? "bg-gray-900 text-white dark:bg-gray-700"
                 : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"
@@ -884,7 +884,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
   return (
     <motion.div
       whileHover={{ y: -4 }}
-      className="relative bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden cursor-pointer group"
+      className="relative bg-white dark:bg-gray-800 shadow-lg overflow-hidden cursor-pointer group"
       onClick={onClick}
       onDoubleClick={onDoubleClick}
     >
@@ -904,7 +904,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
             onClick={handleFavorite}
-            className={`p-2 rounded-full backdrop-blur-sm transition-colors ${
+            className={`p-2 backdrop-blur-sm transition-colors ${
               isFavorited
                 ? "bg-pink-500/80 text-white"
                 : "bg-white/80 text-gray-700 hover:bg-white"
@@ -1026,7 +1026,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
       onClick={onClose}
     >
       <motion.div
-        className="relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden w-full max-w-4xl max-h-[90vh] shadow-2xl"
+        className="relative bg-white dark:bg-gray-800 overflow-hidden w-full max-w-4xl max-h-[90vh] shadow-2xl"
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
@@ -1109,7 +1109,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={handleHeartToggle}
-                  className={`p-2 rounded-full transition-colors ${
+                  className={`p-2 transition-colors ${
                     userHasHearted(recipe.id)
                       ? "bg-red-100 text-red-600"
                       : "bg-gray-100 text-gray-400 hover:text-gray-600"
@@ -1129,7 +1129,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
             {recipe.difficulty && (
               <span
                 className={`
-                px-4 py-1.5 rounded-full text-sm font-semibold
+                px-4 py-1.5 text-sm font-semibold
                 ${recipe.difficulty === "Easy" ? "bg-green-100 text-green-800" : ""}
                 ${recipe.difficulty === "Medium" ? "bg-yellow-100 text-yellow-800" : ""}
                 ${recipe.difficulty === "Hard" ? "bg-red-100 text-red-800" : ""}
@@ -1206,7 +1206,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       <span className="flex-shrink-0">
                         {getIngredientIcon(ingredient)}
@@ -1236,7 +1236,7 @@ const RecipeModal: React.FC<RecipeModalProps> = ({
                       transition={{ delay: index * 0.05 }}
                       className="flex gap-4"
                     >
-                      <span className="flex-shrink-0 w-8 h-8 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-full flex items-center justify-center font-semibold text-sm">
+                      <span className="flex-shrink-0 w-8 h-8 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 flex items-center justify-center font-semibold text-sm">
                         {index + 1}
                       </span>
                       <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
@@ -1265,13 +1265,13 @@ const OriginalRecipesPlaceholder: React.FC = () => {
       animate={{ opacity: 1, y: 0 }}
       className="max-w-4xl mx-auto"
     >
-      <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-8 md:p-12 shadow-xl">
+      <div className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-700 p-8 md:p-12 shadow-xl">
         <div className="text-center mb-8">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: "spring", duration: 0.6 }}
-            className="inline-flex items-center justify-center w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full mb-4"
+            className="inline-flex items-center justify-center w-20 h-20 bg-green-100 dark:bg-green-900/30 mb-4"
           >
             <TbSaladFilled className="text-green-600 dark:text-green-400 text-4xl" />
           </motion.div>
@@ -1284,14 +1284,14 @@ const OriginalRecipesPlaceholder: React.FC = () => {
             Exclusive culinary creations featuring our signature pepper sauce
           </p>
 
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 rounded-full mb-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 mb-8">
             <GiChiliPepper />
             <span className="font-semibold">Coming Soon</span>
           </div>
         </div>
 
         {/* Recipe Sponsorship Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-8 shadow-lg">
+        <div className="bg-white dark:bg-gray-800 p-8 shadow-lg">
           <h3 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white flex items-center gap-2">
             <GiHotSpices className="text-orange-500" />
             Recipe Sponsorship Program
@@ -1332,7 +1332,7 @@ const OriginalRecipesPlaceholder: React.FC = () => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg"
+                  className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700/50"
                 >
                   <span className="text-orange-500">{guideline.icon}</span>
                   <span className="text-gray-700 dark:text-gray-300">
@@ -1352,7 +1352,7 @@ const OriginalRecipesPlaceholder: React.FC = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => (window.location.href = "/contact/inquiries")}
-            className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+            className="w-full md:w-auto px-8 py-4 bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
           >
             Submit Your Recipe
             <FiArrowRight />

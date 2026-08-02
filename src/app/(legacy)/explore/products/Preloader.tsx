@@ -64,7 +64,7 @@ export default function Preloader({ onLoaded }: PreloaderProps) {
           <motion.img
             src="/media/SunnyIslandSymbol.png"
             alt="Sunny Island Symbol"
-            className="w-full h-full max-w-[300px] max-h-[300px] rounded-full object-contain"
+            className="w-full h-full max-w-[300px] max-h-[300px] object-contain"
             variants={imageVariants}
             initial="initial"
             animate="animate"
@@ -72,9 +72,9 @@ export default function Preloader({ onLoaded }: PreloaderProps) {
           <div className="text-white mt-4 text-lg font-medium">
             {progress.toFixed(0)}% loaded
           </div>
-          <div className="w-[80%] h-2 bg-gray-800 mt-4 rounded">
+          <div className="w-[80%] h-2 bg-gray-800 mt-4">
             <motion.div
-              className="h-full bg-white rounded"
+              className="h-full bg-white"
               variants={progressBarVariants}
               initial="initial"
               animate="animate"

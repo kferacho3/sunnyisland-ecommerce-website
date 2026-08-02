@@ -19,7 +19,7 @@ export default function StickyCookieConsent() {
       <div className="fixed bottom-4 left-4 z-50">
         <button
           onClick={() => setOpen(true)}
-          className="bg-secondary text-black px-3 py-2 rounded-full shadow hover:opacity-80 transition"
+          className="bg-secondary text-black px-3 py-2 shadow hover:opacity-80 transition"
         >
           <FiInfo size={20} />
         </button>
@@ -32,7 +32,7 @@ export default function StickyCookieConsent() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-16 left-4 w-[350px] bg-white dark:bg-gray-800 text-black dark:text-white p-4 rounded shadow-lg z-50"
+            className="fixed bottom-16 left-4 w-[350px] bg-white dark:bg-gray-800 text-black dark:text-white p-4 shadow-lg z-50"
           >
             <div className="flex justify-between items-center mb-3">
               <h2 className="text-sm font-bold">Cookie Notices & Consent</h2>
@@ -64,10 +64,10 @@ export default function StickyCookieConsent() {
               </ul>
 
               <p className="text-center mt-2">
-                <button className="bg-gray-300 dark:bg-gray-700 px-2 py-1 rounded text-xs mr-2">
+                <button className="bg-gray-300 dark:bg-gray-700 px-2 py-1 text-xs mr-2">
                   Reject All
                 </button>
-                <button className="bg-secondary text-black px-2 py-1 rounded text-xs">
+                <button className="bg-secondary text-black px-2 py-1 text-xs">
                   Confirm My Choices
                 </button>
               </p>

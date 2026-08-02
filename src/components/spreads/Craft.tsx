@@ -63,7 +63,7 @@ export function Craft() {
                         className="mx-8 flex items-baseline gap-8 whitespace-nowrap font-display text-title italic tracking-display text-gold-deep"
                       >
                         {item}
-                        <span className="inline-block h-2 w-2 flex-none self-center rounded-pill bg-ember" />
+                        <span className="inline-block h-2 w-2 flex-none self-center bg-ember" />
                       </span>
                     ))}
                   </span>
@@ -97,7 +97,7 @@ export function Craft() {
             {PLATES.map((p, i) => (
               <Settle key={p.n} delay={i * 0.05}>
                 <figure
-                  className="si-plate rounded-sm"
+                  className="si-plate"
                   style={{
                     rotate: `${(i % 3) - 1 === 0 ? 0.9 : ((i % 3) - 1) * 1.2}deg`,
                   }}

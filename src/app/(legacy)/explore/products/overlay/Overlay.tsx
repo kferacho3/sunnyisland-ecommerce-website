@@ -95,7 +95,7 @@ function ThreeDButton({
       {/* Background layer: mobile uses translate-y-1; sm: translate-y-3 */}
       <motion.div
         className={`
-          absolute inset-0 rounded-lg
+          absolute inset-0
           ${backgroundClasses}
           shadow-[0_0_0_2px] translate-y-1 sm:translate-y-3
           transition-transform duration-150 ease-out
@@ -105,7 +105,7 @@ function ThreeDButton({
       <button
         {...restProps}
         className={`
-          relative rounded-lg border-2
+          relative border-2
           ${buttonClasses}
           transition-transform duration-150 ease-out
           group hover:translate-y-1 active:translate-y-[0.375rem]
@@ -302,7 +302,7 @@ export function Overlay({
       {/* Info popup (common to both views) */}
       {activePanel === "info" && (
         <motion.div
-          className="fixed top-1/2 right-4 sm:right-10 bg-white p-4 sm:p-6 rounded-lg shadow-lg max-w-xs transition-all duration-300 z-50"
+          className="fixed top-1/2 right-4 sm:right-10 bg-white p-4 sm:p-6 shadow-lg max-w-xs transition-all duration-300 z-50"
           variants={popupVariants}
           initial="hiddenRight"
           animate="visible"
@@ -359,7 +359,7 @@ export function Overlay({
       {/* Scoville popup (common to both views) */}
       {activePanel === "scoville" && (
         <motion.div
-          className="fixed top-1/2 left-4 sm:left-10 bg-white p-4 sm:p-6 rounded-lg shadow-lg max-w-xs transition-all duration-300 z-50"
+          className="fixed top-1/2 left-4 sm:left-10 bg-white p-4 sm:p-6 shadow-lg max-w-xs transition-all duration-300 z-50"
           variants={popupVariants}
           initial="hiddenLeft"
           animate="visible"

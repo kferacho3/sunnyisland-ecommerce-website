@@ -3,6 +3,7 @@
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 
 import { JarModel } from "../product/JarModel";
+import { Eruption } from "./Eruption";
 import { Suspense, useMemo, useRef } from "react";
 import type { Group, Points as ThreePoints } from "three";
 import * as THREE from "three";
@@ -36,38 +37,119 @@ const C = {
   lava: "#f05400",
   frond: "#3f5c2a",
   frondLit: "#5d8438",
-  trunk: "#4a2f1a",
+  trunk: "#5a3a20",
+  trunkDark: "#38240f",
   ember: "#fcc000",
 } as const;
 
+/**
+ * A palm built the way a palm actually grows: a trunk that tapers and leans
+ * as it rises, a crown of fronds that arc outward and DROOP under their own
+ * weight, and a leaflet spine along each frond. Cones on a stick read as
+ * programmer-art; the arc and the droop are what sell it.
+ */
 function Palm({
   position,
   lean,
   scale = 1,
+  seed = 0,
 }: {
   position: [number, number, number];
   lean: number;
   scale?: number;
+  seed?: number;
 }) {
+  const rnd = useMemo(() => mulberry(1000 + seed), [seed]);
+
+  const trunk = useMemo(() => {
+    // Segment the trunk so it can curve; each ring is narrower than the last.
+    const segments = 7;
+    return Array.from({ length: segments }, (_, i) => {
+      const t = i / segments;
+      return {
+        y: 0.28 + t * 2.1,
+        r: 0.115 - t * 0.055,
+        // Lean accumulates with height, like a real palm carrying its crown.
+        x:
+          Math.sin(t * 1.5) *
+          0.38 *
+          Math.sign(lean || 1) *
+          Math.abs(lean || 0.4),
+        tilt: t * 0.22 * Math.sign(lean || 1),
+      };
+    });
+  }, [lean]);
+
+  const crown = useMemo(() => {
+    const t = 1;
+    return {
+      y: 0.28 + t * 2.1,
+      x:
+        Math.sin(t * 1.5) * 0.38 * Math.sign(lean || 1) * Math.abs(lean || 0.4),
+    };
+  }, [lean]);
+
+  const fronds = useMemo(
+    () =>
+      Array.from({ length: 9 }, (_, i) => ({
+        yaw: (i / 9) * Math.PI * 2 + rnd() * 0.25,
+        droop: 0.5 + rnd() * 0.45,
+        len: 0.85 + rnd() * 0.4,
+      })),
+    [rnd],
+  );
+
   return (
-    <group position={position} rotation={[0, 0, lean]} scale={scale}>
-      <mesh position={[0, 0.9, 0]}>
-        <cylinderGeometry args={[0.07, 0.13, 1.8, 5]} />
-        <meshStandardMaterial color={C.trunk} flatShading />
-      </mesh>
-      {[0, 1, 2, 3, 4].map((i) => (
-        <mesh
-          key={i}
-          position={[0, 1.82, 0]}
-          rotation={[0.6 + (i % 2) * 0.25, (i / 5) * Math.PI * 2, 0]}
-        >
-          <coneGeometry args={[0.24, 1.5, 4]} />
+    <group position={position} scale={scale}>
+      {trunk.map((seg, i) => (
+        <mesh key={i} position={[seg.x, seg.y, 0]} rotation={[0, 0, -seg.tilt]}>
+          <cylinderGeometry args={[seg.r * 0.88, seg.r, 0.34, 6]} />
           <meshStandardMaterial
-            color={i % 2 ? C.frond : C.frondLit}
+            color={i % 2 ? C.trunk : C.trunkDark}
             flatShading
           />
         </mesh>
       ))}
+
+      <group position={[crown.x, crown.y, 0]}>
+        {/* Coconut cluster at the crown base. */}
+        {[0, 1, 2].map((i) => (
+          <mesh
+            key={i}
+            position={[
+              Math.sin((i / 3) * Math.PI * 2) * 0.09,
+              -0.04,
+              Math.cos((i / 3) * Math.PI * 2) * 0.09,
+            ]}
+          >
+            <icosahedronGeometry args={[0.055, 0]} />
+            <meshStandardMaterial color={C.trunkDark} flatShading />
+          </mesh>
+        ))}
+
+        {fronds.map((f, i) => (
+          <group key={i} rotation={[0, f.yaw, 0]}>
+            {/* Three arcing segments per frond — rising, levelling, drooping. */}
+            {[0, 1, 2].map((seg) => {
+              const t = seg / 3;
+              const drop = f.droop * t * t;
+              return (
+                <mesh
+                  key={seg}
+                  position={[0.16 + t * f.len, 0.13 - drop * 0.62, 0]}
+                  rotation={[0, 0, -0.26 - drop * 1.25]}
+                >
+                  <coneGeometry args={[0.115 - t * 0.055, f.len * 0.62, 4]} />
+                  <meshStandardMaterial
+                    color={i % 2 ? C.frond : C.frondLit}
+                    flatShading
+                  />
+                </mesh>
+              );
+            })}
+          </group>
+        ))}
+      </group>
     </group>
   );
 }
@@ -80,10 +162,12 @@ function Jar({ progress }: { progress: { current: number } }) {
     if (!g) return;
     // The jar wakes as the camera arrives: rises from the sand and turns
     // its label to meet you.
-    const p = THREE.MathUtils.clamp((progress.current - 0.55) / 0.45, 0, 1);
+    const p = THREE.MathUtils.clamp((progress.current - 0.5) / 0.4, 0, 1);
     const e = 1 - Math.pow(1 - p, 3);
     g.position.y = 0.55 + 0.4 * e;
     g.rotation.y = -1.1 + 1.45 * e;
+    // The jar belongs to the landing beat — before that it is not on stage.
+    g.scale.setScalar(0.0034 * e);
   });
 
   // The raw GLB is ~300 units tall (see legacy PepperSauce.tsx scale=0.0075).
@@ -247,10 +331,18 @@ function IslandScene({
         <meshStandardMaterial
           color={C.lava}
           emissive={C.lava}
-          emissiveIntensity={1.6}
+          emissiveIntensity={2.4}
           flatShading
         />
       </mesh>
+      {/* The vent's own glow, so the eruption launches out of light. */}
+      <pointLight
+        position={[-0.7, 4.15, -1]}
+        color={C.lava}
+        intensity={9}
+        distance={7}
+        decay={2}
+      />
 
       {rocks.map((r, i) => (
         <mesh key={i} position={r.pos} scale={r.s}>
@@ -265,8 +357,10 @@ function IslandScene({
       <Palm position={[-4, 0.45, -0.6]} lean={-0.2} scale={0.9} />
 
       <Embers />
-      {/* useGLTF suspends — without a boundary the jar never mounts. */}
+      {/* useGLTF suspends — without a boundary neither the jar nor the
+          eruption ever mounts. */}
       <Suspense fallback={null}>
+        <Eruption progress={progress} />
         <Jar progress={progress} />
       </Suspense>
       <Rig progress={progress} drift={drift} />

@@ -62,7 +62,7 @@ export default function NutritionSection() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.2 }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl overflow-hidden h-full"
+              className="bg-white dark:bg-gray-800 shadow-2xl overflow-hidden h-full"
             >
               {/* Tab Navigation */}
               <div className="flex border-b border-gray-200 dark:border-gray-700">
@@ -203,7 +203,7 @@ export default function NutritionSection() {
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: index * 0.1 }}
                           whileHover={{ scale: 1.05 }}
-                          className="bg-gray-50 dark:bg-gray-700 rounded-xl p-4 text-center"
+                          className="bg-gray-50 dark:bg-gray-700 p-4 text-center"
                         >
                           <div className="text-3xl mb-2">{ingredient.icon}</div>
                           <p className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -218,7 +218,7 @@ export default function NutritionSection() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       transition={{ delay: 0.5 }}
-                      className="bg-orange-50 dark:bg-orange-900/20 rounded-xl p-6"
+                      className="bg-orange-50 dark:bg-orange-900/20 p-6"
                     >
                       <div className="flex items-start gap-3">
                         <FiInfo className="text-orange-600 dark:text-orange-400 text-xl flex-shrink-0 mt-1" />
@@ -276,7 +276,7 @@ export default function NutritionSection() {
                       repeat: Infinity,
                       ease: "easeInOut",
                     }}
-                    className="absolute top-4 right-4 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 px-3 py-1 rounded-full text-sm font-semibold"
+                    className="absolute top-4 right-4 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-400 px-3 py-1 text-sm font-semibold"
                   >
                     All Natural
                   </motion.div>
@@ -292,7 +292,7 @@ export default function NutritionSection() {
                       ease: "easeInOut",
                       delay: 2,
                     }}
-                    className="absolute bottom-4 left-4 bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 px-3 py-1 rounded-full text-sm font-semibold"
+                    className="absolute bottom-4 left-4 bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-400 px-3 py-1 text-sm font-semibold"
                   >
                     Zero Calories
                   </motion.div>
@@ -329,7 +329,7 @@ export default function NutritionSection() {
                       transition={{ delay: 1.2 + index * 0.1 }}
                       whileHover={{ y: -5 }}
                       className="
-        bg-gray-800/50 backdrop-blur-sm rounded-xl p-1
+        bg-gray-800/50 backdrop-blur-sm p-1
         border border-gray-700 hover:border-orange-500/50
         transition-all duration-300
 

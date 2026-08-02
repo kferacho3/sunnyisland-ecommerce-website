@@ -146,7 +146,7 @@ export default function SectionNewsletter() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, delay: 0.3 + index * 0.1 }}
               whileHover={{ y: -5, scale: 1.02 }}
-              className="text-center p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700"
+              className="text-center p-6 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border border-gray-200 dark:border-gray-700"
             >
               <div className="mb-3">{benefit.icon}</div>
               <h3 className="font-bold text-gray-900 dark:text-white mb-2">
@@ -202,7 +202,7 @@ export default function SectionNewsletter() {
                           onFocus={() => setFocusedField("firstName")}
                           onBlur={() => setFocusedField(null)}
                           required
-                          className="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:outline-none transition-all duration-300 text-gray-900 dark:text-white"
+                          className="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-orange-500 focus:outline-none transition-all duration-300 text-gray-900 dark:text-white"
                           placeholder="John"
                         />
                       </div>
@@ -232,7 +232,7 @@ export default function SectionNewsletter() {
                           onFocus={() => setFocusedField("lastName")}
                           onBlur={() => setFocusedField(null)}
                           required
-                          className="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:outline-none transition-all duration-300 text-gray-900 dark:text-white"
+                          className="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-orange-500 focus:outline-none transition-all duration-300 text-gray-900 dark:text-white"
                           placeholder="Doe"
                         />
                       </div>
@@ -260,7 +260,7 @@ export default function SectionNewsletter() {
                         onFocus={() => setFocusedField("email")}
                         onBlur={() => setFocusedField(null)}
                         required
-                        className="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 rounded-xl focus:border-orange-500 focus:outline-none transition-all duration-300 text-gray-900 dark:text-white"
+                        className="w-full pl-12 pr-4 py-4 bg-gray-50 dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-700 focus:border-orange-500 focus:outline-none transition-all duration-300 text-gray-900 dark:text-white"
                         placeholder="john@example.com"
                       />
                     </div>
@@ -288,7 +288,7 @@ export default function SectionNewsletter() {
                       relative w-full sm:w-auto px-12 py-4 
                       bg-gradient-to-r from-orange-500 to-red-500 
                       hover:from-orange-600 hover:to-red-600 
-                      text-white font-bold text-lg rounded-full 
+                      text-white font-bold text-lg 
                       shadow-xl hover:shadow-2xl 
                       transition-all duration-300 
                       disabled:opacity-50 disabled:cursor-not-allowed
@@ -337,7 +337,7 @@ export default function SectionNewsletter() {
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                    className="inline-flex items-center justify-center w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full mb-6"
+                    className="inline-flex items-center justify-center w-20 h-20 bg-green-100 dark:bg-green-900/30 mb-6"
                   >
                     <FiCheck className="text-4xl text-green-600 dark:text-green-400" />
                   </motion.div>
@@ -361,7 +361,7 @@ export default function SectionNewsletter() {
           transition={{ duration: 0.6, delay: 0.6 }}
           className="mt-12 text-center"
         >
-          <div className="inline-flex items-center gap-4 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm px-6 py-4 rounded-full shadow-lg">
+          <div className="inline-flex items-center gap-4 bg-white/60 dark:bg-gray-800/60 backdrop-blur-sm px-6 py-4 shadow-lg">
             <div className="flex -space-x-3">
               {[...Array(4)].map((_, i) => (
                 <motion.div
@@ -369,7 +369,7 @@ export default function SectionNewsletter() {
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.7 + i * 0.1 }}
-                  className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-red-400 border-2 border-white dark:border-gray-800 flex items-center justify-center text-white font-bold text-sm"
+                  className="w-10 h-10 bg-gradient-to-br from-orange-400 to-red-400 border-2 border-white dark:border-gray-800 flex items-center justify-center text-white font-bold text-sm"
                 >
                   {["JD", "AS", "MK", "RT"][i]}
                 </motion.div>
@@ -392,7 +392,7 @@ export default function SectionNewsletter() {
 
       {/* Animated glow effects */}
       <motion.div
-        className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-400/10 rounded-full blur-3xl"
+        className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-400/10 blur-3xl"
         animate={{
           scale: [1, 1.2, 1],
           opacity: [0.3, 0.5, 0.3],
@@ -404,7 +404,7 @@ export default function SectionNewsletter() {
         }}
       />
       <motion.div
-        className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-400/10 rounded-full blur-3xl"
+        className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-red-400/10 blur-3xl"
         animate={{
           scale: [1.2, 1, 1.2],
           opacity: [0.3, 0.5, 0.3],
