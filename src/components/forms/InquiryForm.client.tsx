@@ -127,6 +127,16 @@ export function InquiryForm() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (status === "sending") return;
+    // Belt and braces with the keyed nav buttons below: a submit can only
+    // ever come from the final step. Anything else is a stray default action
+    // (an Enter keypress in a text field, a future refactor reintroducing a
+    // morphing button) and must not reach the API.
+    if (step !== 2) {
+      // Treat it as the intent it usually is — Enter in a field means "next" —
+      // but advance one step rather than jumping to the end.
+      setStep((s) => Math.min(2, s + 1));
+      return;
+    }
 
     setStatus("sending");
     setFormError(null);
@@ -242,13 +252,17 @@ export function InquiryForm() {
   const busy = status === "sending";
 
   return (
+    // The min-height only stops the panel collapsing between steps of very
+    // different lengths — it is NOT a target height. Sized to roughly what
+    // the SHORTEST step needs, so no step gets padded out with dead space;
+    // the longer buyer paths simply grow past it.
     <form
       onSubmit={onSubmit}
       noValidate
-      className="relative flex min-h-[min(46rem,82svh)] flex-col"
+      className="relative flex min-h-[min(30rem,70svh)] flex-col"
     >
       {/* Progress rail — three named steps, each clickable once reached. */}
-      <ol className="mb-9 flex items-center gap-3" aria-label="Form progress">
+      <ol className="mb-7 flex items-center gap-3" aria-label="Form progress">
         {["What kind of inquiry?", "The details", "About you"].map(
           (label, i) => {
             const done = i < step;
@@ -301,9 +315,15 @@ export function InquiryForm() {
           <legend className="font-display text-heading tracking-display text-on-cream">
             What kind of inquiry is this?
           </legend>
-          <div className="mt-6 grid gap-3 sm:grid-cols-2">
-            {BUYER_TYPES.map((b) => {
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {BUYER_TYPES.map((b, i) => {
               const on = b === buyerType;
+              // An odd number of options leaves the last one alone on its
+              // row; let it run the full width instead of sitting next to a
+              // hole. Derived rather than hard-coded to `last:`, so adding a
+              // sixth option quietly does the right thing.
+              const fillsRow =
+                BUYER_TYPES.length % 2 === 1 && i === BUYER_TYPES.length - 1;
               return (
                 <button
                   key={b}
@@ -311,7 +331,8 @@ export function InquiryForm() {
                   aria-pressed={on}
                   onClick={() => pickBuyer(b)}
                   className={cn(
-                    "border p-5 text-left transition-all duration-medium ease-si",
+                    "border px-5 py-4 text-left transition-all duration-medium ease-si",
+                    fillsRow && "sm:col-span-2",
                     on
                       ? "border-gold bg-cream-raised shadow-gold"
                       : "border-cream-line bg-cream-raised hover:border-gold",
@@ -351,7 +372,7 @@ export function InquiryForm() {
 
       {/* ── STEP 2 ───────────────────────────────────────────── */}
       <div hidden={step !== 1} className="flex-1 overflow-y-auto">
-        <div className="mt-12 grid gap-6 sm:grid-cols-2">
+        <div className="mt-6 grid gap-6 sm:grid-cols-2">
           {buyerType === "consumer" ? (
             <>
               <ChipGroup
@@ -624,7 +645,7 @@ export function InquiryForm() {
       </div>
       {/* ── STEP 3 ───────────────────────────────────────────── */}
       <div hidden={step !== 2} className="flex-1 overflow-y-auto">
-        <div className="mt-12 grid gap-6 border-t border-cream-line pt-12 sm:grid-cols-2">
+        <div className="mt-6 grid gap-6 sm:grid-cols-2">
           <TextField
             name="name"
             label="Your name"
@@ -691,7 +712,7 @@ export function InquiryForm() {
         </div>
       </div>
       {/* Navigation. Submit only exists on the final step. */}
-      <div className="mt-10 flex flex-wrap items-center gap-4 border-t border-cream-line pt-8">
+      <div className="mt-8 flex flex-wrap items-center gap-4 border-t border-cream-line pt-6">
         {step > 0 ? (
           <ButtonEl
             type="button"
@@ -702,8 +723,17 @@ export function InquiryForm() {
           </ButtonEl>
         ) : null}
 
+        {/* The keys are load-bearing, not decoration. Without them React
+            reconciles these two branches onto the SAME <button> node and
+            merely swaps its `type`. Clicking Continue on step 2 then flips
+            the node to type="submit" synchronously — React flushes discrete
+            events before the browser runs the click's default action — and
+            the browser submits the form the click just advanced. Distinct
+            keys force an unmount/mount, so the node the browser is acting on
+            is never the one that changed identity. */}
         {step < 2 ? (
           <ButtonEl
+            key="advance"
             type="button"
             size="lg"
             onClick={() => setStep((s) => Math.min(2, s + 1))}
@@ -711,7 +741,7 @@ export function InquiryForm() {
             Continue
           </ButtonEl>
         ) : (
-          <ButtonEl type="submit" size="lg" disabled={busy}>
+          <ButtonEl key="submit" type="submit" size="lg" disabled={busy}>
             {busy ? "Sending…" : "Submit inquiry"}
           </ButtonEl>
         )}
