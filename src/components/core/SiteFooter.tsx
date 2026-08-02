@@ -45,11 +45,11 @@ export function SiteFooter() {
             <div>
               <Link href="/" className="inline-flex items-center gap-3">
                 <Image
-                  src="/brand/symbol-192.webp"
+                  src="/brand/logo-192.webp"
                   alt=""
-                  width={40}
+                  width={30}
                   height={40}
-                  className="h-10 w-10 object-contain"
+                  className="h-10 w-auto object-contain"
                 />
                 <span className="font-display text-heading tracking-display">
                   {site.shortName}

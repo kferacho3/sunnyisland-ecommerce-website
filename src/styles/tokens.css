@@ -16,17 +16,21 @@
   /* ---------------------------------------------------------------- ground */
   /* Two grounds only. Ink is where the product performs; cream is where
      facts are stated. Anything else dilutes the contrast between them. */
-  /* Retinted 2026-08-02: sampled from the brand artwork rather than neutral
-     paper. Ink carries the artwork's espresso cast; "cream" is now sun-warmed
-     sand. The neutral gallery palette read generic against art this warm. */
-  --si-ink: 18 12 7;
-  --si-ink-raised: 30 20 13;
-  --si-ink-line: 52 38 26;
+  /* THE FORGE (2026-08-02): the entire site lives in blacksmith dark — deep
+     charcoal grounds shaped by spotlight and floor-glow gradients, never by
+     pale panels. Owner direction: no tan, no cream fields, anywhere.
 
-  --si-cream: 247 233 208;
-  --si-cream-raised: 253 246 232;
-  --si-cream-sunk: 240 221 189;
-  --si-cream-line: 224 204 170;
+     NOTE: the --si-cream-* family now holds the LIFTED CHARCOAL register (the
+     second dark ground) and --si-text-on-cream* is light text. The names are
+     legacy from the two-world palette; a rename pass is scheduled. */
+  --si-ink: 8 5 3;
+  --si-ink-raised: 20 13 8;
+  --si-ink-line: 46 32 22;
+
+  --si-cream: 16 10 6;
+  --si-cream-raised: 27 18 11;
+  --si-cream-sunk: 11 7 4;
+  --si-cream-line: 52 37 25;
 
   /* ----------------------------------------------------------------- brand */
   --si-gold: 252 192 0;
@@ -36,9 +40,9 @@
 
   /* ------------------------------------------------------------------ text */
   --si-text-on-ink: 249 240 224;
-  --si-text-on-ink-muted: 181 160 134;
-  --si-text-on-cream: 33 22 12;
-  --si-text-on-cream-muted: 110 87 62;
+  --si-text-on-ink-muted: 186 164 137;
+  --si-text-on-cream: 246 235 216;
+  --si-text-on-cream-muted: 178 155 127;
 
   /* ----------------------------------------------------------------- state */
   --si-focus: var(--si-gold);
@@ -120,6 +124,28 @@
   --si-z-overlay: 70;
 }
 
+
+/* ------------------------------------------------ forge lighting (§dark) */
+/* Spotlight from above — the smithy's single lamp. */
+.si-forge {
+  background-image: radial-gradient(
+      52% 44% at 50% 0%,
+      rgb(255 214 170 / 0.09) 0%,
+      rgb(var(--si-ember) / 0.04) 45%,
+      transparent 72%
+    ),
+    radial-gradient(120% 90% at 50% 115%, rgb(0 0 0 / 0.55) 0%, transparent 55%);
+}
+/* Ember glow rising from the floor — the coals. */
+.si-anvil {
+  background-image: radial-gradient(
+    70% 42% at 50% 104%,
+    rgb(var(--si-ember) / 0.13) 0%,
+    rgb(var(--si-gold) / 0.045) 42%,
+    transparent 70%
+  );
+}
+
 /* ------------------------------------------------- Fraunces voices (§5) */
 :root {
   --si-voice-display: "opsz" 144, "SOFT" 40, "WONK" 1;
@@ -138,7 +164,9 @@
 .si-plate {
   background: rgb(var(--si-cream-raised));
   border: 1px solid rgb(var(--si-cream-line));
-  box-shadow: var(--si-shadow);
+  box-shadow:
+    0 1px 0 rgb(255 220 180 / 0.06) inset,
+    var(--si-shadow-lift);
   padding: 0.625rem 0.625rem 0;
   max-width: 420px;
 }

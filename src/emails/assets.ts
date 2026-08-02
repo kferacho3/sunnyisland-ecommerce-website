@@ -24,7 +24,7 @@ export const emailAsset = {
    */
   header: `${ORIGIN}/brand/email/header.jpg`,
   /** THE logo: the Sunny Island sun-and-palm symbol, transparent PNG. */
-  mark: `${ORIGIN}/brand/email/symbol.png`,
+  mark: `${ORIGIN}/brand/email/logo.png`,
   /** Wide flame/ember band, flattened onto ink. */
   band: `${ORIGIN}/brand/email/band.jpg`,
   /** Pepper-and-foliage wreath from the label, used as a closing ornament. */

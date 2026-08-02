@@ -46,11 +46,11 @@ export default async function ThankYouPage({
 
       <Container className="relative text-center">
         <Image
-          src="/brand/symbol-192.webp"
+          src="/brand/logo-192.webp"
           alt=""
-          width={72}
+          width={53}
           height={72}
-          className="mx-auto h-16 w-16 object-contain"
+          className="mx-auto h-16 w-auto object-contain"
         />
 
         <Eyebrow onInk className="mt-8">

@@ -24,7 +24,17 @@ const ProductViewer = dynamic(() => import("./ProductViewer.client"), {
 
 type NetworkInformation = { saveData?: boolean };
 
+/**
+ * Stage WebGL is temporarily disabled: this GLB carries a partial white
+ * backdrop shell from its authoring scene, and the head-on stage view keeps
+ * catching it (the island chapter's oblique view does not — that scene works
+ * and owns the site's 3D). Until the model is re-exported without the shell,
+ * the stage ships the still. Tracked as follow-up.
+ */
+const STAGE_3D_ENABLED = false;
+
 function capable(): boolean {
+  if (!STAGE_3D_ENABLED) return false;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
     return false;
 

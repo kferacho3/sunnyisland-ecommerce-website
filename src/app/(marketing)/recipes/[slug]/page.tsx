@@ -211,11 +211,11 @@ export default async function RecipePage({
         <div aria-hidden className="si-rake absolute inset-0" />
         <Container className="relative">
           <Image
-            src="/brand/symbol-192.webp"
+            src="/brand/logo-192.webp"
             alt=""
-            width={56}
+            width={41}
             height={56}
-            className="mx-auto h-12 w-12 object-contain"
+            className="mx-auto h-12 w-auto object-contain"
           />
           <h2 className="mx-auto mt-6 max-w-[18ch] font-display text-display tracking-display text-on-ink">
             This one needs the jar.

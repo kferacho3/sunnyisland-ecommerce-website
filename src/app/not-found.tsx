@@ -10,11 +10,11 @@ export default function NotFound() {
       <div aria-hidden className="si-rake absolute inset-0" />
       <Container className="relative text-center">
         <Image
-          src="/brand/symbol-192.webp"
+          src="/brand/logo-192.webp"
           alt=""
-          width={64}
+          width={47}
           height={64}
-          className="mx-auto h-14 w-14 object-contain"
+          className="mx-auto h-14 w-auto object-contain"
         />
         <Eyebrow onInk className="mt-8">
           404

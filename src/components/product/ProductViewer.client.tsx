@@ -1,12 +1,11 @@
 "use client";
 
-import { Environment, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useRef, useState } from "react";
-import type { Group, Mesh } from "three";
 
-const MODEL_URL =
-  "https://sunnyisland.s3.us-east-2.amazonaws.com/media/glb/SunnyIslandPepperSauceFINAL.glb";
+import { useEffect, useRef, useState } from "react";
+
+import { JarModel } from "./JarModel";
+import type { Group } from "three";
 
 /**
  * The bottle.
@@ -19,7 +18,19 @@ const MODEL_URL =
  * and it stops rendering entirely once it settles.
  */
 
-const SETTLE_Y = Math.PI * 0.16;
+const SETTLE_Y = 0.35;
+
+function StageCamera() {
+  const { camera, invalidate } = useThree();
+  useEffect(() => {
+    // The island scene's landing pose, translated to a jar at the origin —
+    // the one view of this model empirically proven to read clean.
+    camera.position.set(2.5, 0.5, 2.9);
+    camera.lookAt(0, 0.4, 0);
+    invalidate();
+  }, [camera, invalidate]);
+  return null;
+}
 
 function Bottle({
   onReady,
@@ -29,7 +40,6 @@ function Bottle({
   modelScale: number;
 }) {
   const group = useRef<Group>(null);
-  const { scene } = useGLTF(MODEL_URL);
   const { invalidate } = useThree();
 
   const start = useRef<number | null>(null);
@@ -44,22 +54,6 @@ function Bottle({
     onReady();
     invalidate();
   }, [onReady, invalidate]);
-
-  // Dispose everything the loader created for this scene on unmount.
-  useEffect(() => {
-    const captured = scene;
-    return () => {
-      captured.traverse((o) => {
-        const m = o as Mesh;
-        if (!m.isMesh) return;
-        m.geometry?.dispose();
-        const mat = m.material;
-        if (Array.isArray(mat)) mat.forEach((x) => x.dispose());
-        else mat?.dispose();
-      });
-      useGLTF.clear(MODEL_URL);
-    };
-  }, [scene]);
 
   useFrame((state, delta) => {
     const g = group.current;
@@ -76,8 +70,8 @@ function Bottle({
     start.current ??= state.clock.elapsedTime;
     const t = Math.min(1, (state.clock.elapsedTime - start.current) / 1.6);
     const eased = 1 - Math.pow(1 - t, 3);
-    g.rotation.y = -0.5 + (SETTLE_Y + 0.5) * eased;
-    g.position.y = -0.06 * (1 - eased);
+    g.rotation.y = SETTLE_Y - 0.9 + 0.9 * eased;
+    g.position.y = -0.55 - 0.06 * (1 - eased);
 
     if (t >= 1) {
       settled.current = true;
@@ -117,16 +111,16 @@ function Bottle({
   }, [invalidate]);
 
   return (
-    <group ref={group} position={[0, -0.35, 0]}>
-      <primitive object={scene} scale={modelScale} />
+    <group ref={group} position={[0, -0.55, 0]}>
+      <JarModel scale={modelScale} />
     </group>
   );
 }
 
 export default function ProductViewer({
   onReady,
-  cameraZ = 3.1,
-  scale = 2.1,
+  cameraZ = 0,
+  scale = 0.0034,
 }: {
   onReady: () => void;
   /** Hero relay pulls back slightly to match the film's final pose. */
@@ -146,26 +140,23 @@ export default function ProductViewer({
     <Canvas
       frameloop="demand"
       dpr={dpr}
-      camera={{ position: [0, 0.1, cameraZ], fov: 32 }}
+      camera={{ position: [2.5, 0.5, 2.9], fov: 38 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ touchAction: "pan-y" }}
     >
-      {/* One warm key raking the label, one cool fill for the glass edge. */}
-      <ambientLight intensity={0.45} />
+      {/* Deterministic light rig — no Environment preset: drei fetches those
+          HDRs from a CDN at runtime, and the fetch suspends the entire canvas
+          when it stalls. Plain lights render the same everywhere, always. */}
+      <StageCamera />
+      <ambientLight intensity={0.5} color="#ffd9b0" />
+      <hemisphereLight args={["#ff9a4d", "#20100a", 0.55]} />
       <directionalLight
-        position={[2.6, 3.2, 2.4]}
-        intensity={2.6}
-        color="#FCC000"
+        position={[-9, 2.6, 6]}
+        intensity={3.1}
+        color="#f05400"
       />
-      <directionalLight
-        position={[-2.8, 0.6, -1.6]}
-        intensity={0.7}
-        color="#8FB8D8"
-      />
-      <Environment preset="studio" environmentIntensity={0.35} />
+      <directionalLight position={[6, 4, -8]} intensity={1.2} color="#fcc000" />
       <Bottle onReady={onReady} modelScale={scale} />
     </Canvas>
   );
 }
-
-useGLTF.preload(MODEL_URL);

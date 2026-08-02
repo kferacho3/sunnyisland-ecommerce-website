@@ -21,7 +21,10 @@ export function Table() {
   const rest = recipes.filter((r) => !FEATURED.includes(r.slug));
 
   return (
-    <section id="table" className="bg-cream py-section text-on-cream">
+    <section
+      id="table"
+      className="si-forge relative bg-cream py-section text-on-cream"
+    >
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>

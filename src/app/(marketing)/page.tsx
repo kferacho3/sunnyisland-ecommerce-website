@@ -7,6 +7,7 @@ import { Eyebrow } from "@/components/core/Section";
 import { MotionRefresh } from "@/components/motion/Reveal.client";
 import { ProofRail } from "@/components/marketing/ProofRail";
 import { ArrivalRelay } from "@/components/spreads/ArrivalRelay.client";
+import { IslandChapter } from "@/components/spreads/IslandChapter.client";
 import { Craft } from "@/components/spreads/Craft";
 import { Origin } from "@/components/spreads/Origin";
 import { Table } from "@/components/spreads/Table";
@@ -74,6 +75,9 @@ export default function HomePage() {
       {/* ── II. ORIGIN ─────────────────────────────────────────────── */}
       <Origin />
 
+      {/* ── II·V. THE ISLAND — the one WebGL scene ─────────────────── */}
+      <IslandChapter />
+
       {/* ── III. CRAFT ─────────────────────────────────────────────── */}
       <Craft />
 
@@ -81,7 +85,7 @@ export default function HomePage() {
       <Table />
 
       {/* Interlude — the brand's sunset still, full bleed, film-graded. */}
-      <div className="relative h-[38svh] min-h-[16rem] overflow-hidden border-y border-ink-line bg-ink">
+      <div className="relative h-[52svh] min-h-[20rem] overflow-hidden bg-ink">
         <Image
           src="/brand/concept/sauce-product-hero.webp"
           alt="Jars of Sunny Island Pepper Sauce on dark stone before a sunset opening."
@@ -91,7 +95,7 @@ export default function HomePage() {
         />
         <div
           aria-hidden
-          className="absolute inset-0 bg-gradient-to-b from-ink/55 via-transparent to-ink/70"
+          className="absolute inset-0 bg-gradient-to-b from-ink via-ink/10 to-ink"
         />
       </div>
 
