@@ -1,9 +1,5 @@
 // EventsPage.tsx
-import {
-  EventItem,
-  floridaEvents,
-  georgiaEvents,
-} from "../../../data/eventsData";
+import { EventItem, floridaEvents, georgiaEvents } from "@/data/eventsData";
 import ClientEvents from "./ClientEvents";
 
 export default function EventsPage() {

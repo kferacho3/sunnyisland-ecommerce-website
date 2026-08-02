@@ -1,0 +1,133 @@
+/**
+ * Sunny Island design tokens.
+ *
+ * Single source of truth for colour, type, space, motion and elevation.
+ * Components reference these through Tailwind theme keys (see tailwind.config.ts)
+ * or directly as var(--si-*). Nothing hardcodes a colour literal.
+ *
+ * Palette sampled from the physical label artwork, not invented:
+ *   gold  #FCC000  badge / flame highlight
+ *   ember #F05400  flame mid-tone
+ *   ink   #0B0D0D  label ground (derived from #001818)
+ *   maroon #780024 deep flame shadow
+ */
+
+:root {
+  /* ---------------------------------------------------------------- ground */
+  /* Two grounds only. Ink is where the product performs; cream is where
+     facts are stated. Anything else dilutes the contrast between them. */
+  --si-ink: 11 13 13;
+  --si-ink-raised: 22 25 26;
+  --si-ink-line: 38 43 44;
+
+  --si-cream: 250 246 239;
+  --si-cream-raised: 255 253 250;
+  --si-cream-sunk: 244 238 228;
+  --si-cream-line: 232 225 213;
+
+  /* ----------------------------------------------------------------- brand */
+  --si-gold: 252 192 0;
+  --si-gold-deep: 138 106 0;
+  --si-ember: 240 84 0;
+  --si-maroon: 120 0 36;
+
+  /* ------------------------------------------------------------------ text */
+  --si-text-on-ink: 250 246 239;
+  --si-text-on-ink-muted: 154 158 159;
+  --si-text-on-cream: 17 20 20;
+  --si-text-on-cream-muted: 92 98 98;
+
+  /* ----------------------------------------------------------------- state */
+  --si-focus: var(--si-gold);
+  --si-danger: var(--si-maroon);
+
+  /* ------------------------------------------------------------ typography */
+  --si-font-display: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --si-font-body: var(--font-inter-tight), -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  --si-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  /* Fluid scale. Clamped so a 320px phone and a 4K display both read well. */
+  /* Capped at 3.5rem. Measured against the real layout, not guessed: the hero
+     text column is ~44% of a 78rem container (~550px), so each 1rem of type
+     costs roughly 2.6 characters per line. 8rem and 5.5rem both set the
+     headline one word per line; 3.5rem sets it on three. */
+  --si-text-hero: clamp(2.375rem, 1.7rem + 2.2vw, 3.5rem);
+  --si-text-display: clamp(2.25rem, 1.2rem + 4.6vw, 5rem);
+  --si-text-title: clamp(1.75rem, 1.2rem + 2.4vw, 3rem);
+  --si-text-heading: clamp(1.35rem, 1.1rem + 1.1vw, 1.875rem);
+  --si-text-lede: clamp(1.0625rem, 1rem + 0.5vw, 1.375rem);
+  --si-text-body: 1rem;
+  --si-text-small: 0.875rem;
+  --si-text-eyebrow: 0.6875rem;
+
+  --si-leading-hero: 0.92;
+  --si-leading-display: 1;
+  --si-leading-title: 1.1;
+  --si-leading-body: 1.65;
+
+  --si-tracking-hero: -0.035em;
+  --si-tracking-display: -0.025em;
+  --si-tracking-eyebrow: 0.18em;
+
+  /* ----------------------------------------------------------------- space */
+  --si-gutter: clamp(1.25rem, 0.6rem + 3.2vw, 3rem);
+  --si-section: clamp(4.5rem, 2.5rem + 9vw, 10rem);
+  --si-section-tight: clamp(3rem, 2rem + 5vw, 6rem);
+  --si-measure: 68ch;
+  --si-container: 78rem;
+  --si-container-narrow: 46rem;
+
+  /* ---------------------------------------------------------------- shapes */
+  --si-radius-sm: 0.375rem;
+  --si-radius: 0.75rem;
+  --si-radius-lg: 1.25rem;
+  --si-radius-pill: 999px;
+
+  --si-header-h: 4.5rem;
+
+  /* ------------------------------------------------------------- elevation */
+  --si-shadow-sm: 0 1px 2px rgb(var(--si-ink) / 0.06);
+  --si-shadow: 0 2px 8px rgb(var(--si-ink) / 0.08),
+    0 12px 32px -12px rgb(var(--si-ink) / 0.14);
+  --si-shadow-lift: 0 4px 14px rgb(var(--si-ink) / 0.1),
+    0 24px 56px -20px rgb(var(--si-ink) / 0.22);
+  /* Warm key light, the same one that rakes the bottle in the viewer. */
+  --si-glow-gold: 0 0 0 1px rgb(var(--si-gold) / 0.28),
+    0 8px 40px -12px rgb(var(--si-gold) / 0.45);
+
+  /* ---------------------------------------------------------------- motion */
+  --si-dur-instant: 120ms;
+  --si-dur-fast: 200ms;
+  --si-dur-medium: 320ms;
+  --si-dur-slow: 520ms;
+  --si-dur-page: 680ms;
+  /* The one deliberate curve already in this codebase (shop.tsx:108). */
+  --si-ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --si-ease-standard: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* ---------------------------------------------------------------- layers */
+  --si-z-header: 50;
+  --si-z-nav: 60;
+  --si-z-overlay: 70;
+}
+
+/* Motion is choreography, not decoration — so it is fully removable. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --si-dur-instant: 1ms;
+    --si-dur-fast: 1ms;
+    --si-dur-medium: 1ms;
+    --si-dur-slow: 1ms;
+    --si-dur-page: 1ms;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
