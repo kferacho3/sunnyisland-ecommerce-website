@@ -695,6 +695,13 @@ function IslandScene({
         />
       ))}
 
+      {/* The sky. Ordered back-to-front: stars sit furthest out and are put
+          out by the dawn, the sun climbs through them, the cloud bank catches
+          the light before the island does, and the embers wash out last. */}
+      <Stars day={day} />
+      <Sun day={day} />
+      <Clouds day={day} />
+
       <Embers day={day} />
       {/* useGLTF suspends — without a boundary neither the jar nor the
           eruption ever mounts. */}

@@ -1,19 +1,25 @@
 import type { MetadataRoute } from "next";
 
+import { recipes } from "@/content/recipes";
+
 const ORIGIN = (
   process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.sunnyislandpepper.com"
 ).replace(/\/$/, "");
 
 /**
- * Only the five real destinations plus supporting pages.
+ * Every page this site actually serves.
  *
- * The retired /shop, /explore/* and /contact/* routes are deliberately absent —
- * they still resolve while the rebuild finishes, but nothing should be
- * submitting them for indexing.
+ * The recipes are derived from the same content module the routes are
+ * generated from, so a new recipe cannot be published and then quietly go
+ * unindexed — the two can't drift.
+ *
+ * The retired /shop, /explore/* and /contact/* routes are gone from the
+ * codebase entirely and 308 to their replacements; they have no place here.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  return [
+
+  const core: MetadataRoute.Sitemap = [
     {
       url: `${ORIGIN}/`,
       lastModified: now,
@@ -31,6 +37,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly",
       priority: 0.9,
+    },
+    {
+      url: `${ORIGIN}/recipes`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.8,
     },
     {
       url: `${ORIGIN}/story`,
@@ -63,4 +75,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.2,
     },
   ];
+
+  const recipePages: MetadataRoute.Sitemap = recipes.map((r) => ({
+    url: `${ORIGIN}/recipes/${r.slug}`,
+    lastModified: now,
+    changeFrequency: "yearly",
+    priority: 0.6,
+  }));
+
+  return [...core, ...recipePages];
 }

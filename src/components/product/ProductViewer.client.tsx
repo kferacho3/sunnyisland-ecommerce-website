@@ -140,7 +140,9 @@ export default function ProductViewer({
     <Canvas
       frameloop="demand"
       dpr={dpr}
-      camera={{ position: [2.5, 0.5, 2.9], fov: 38 }}
+      // `cameraZ` was declared and documented but never applied, so the prop
+      // silently did nothing. Dolly the camera along Z as the name promises.
+      camera={{ position: [2.5, 0.5, 2.9 + cameraZ], fov: 38 }}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ touchAction: "pan-y" }}
     >
