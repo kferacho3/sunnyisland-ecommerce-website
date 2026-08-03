@@ -8,34 +8,82 @@ can be re-run.
 
 ## Blocking — owner action required
 
-### 1. Redeploy on Amplify, then confirm the runtime can read the keys
+### 1. ~~Amplify redeploy~~ — DONE, verified 2 Aug 2026
 
-The inquiry form returns **503** in production until this happens. The cause is
-not a missing variable: Amplify console variables reach the _build container_
-but not the _SSR compute_. `amplify.yml` writes them into `.env.production` at
-build time, which is what fixes it — but that file only takes effect on a
-deploy that runs it.
+Amplify auto-builds on push to `main`, so the `amplify.yml` fix shipped with
+the commits. Confirmed live:
 
-```bash
-# after the deploy finishes
-curl -s https://www.sunnyislandpepper.com/api/health | jq
+```
+GET /api/health  ->  {"ready": true, "inquiriesWillWork": true}
+                     RESEND_API_KEY present (36 chars)
+                     INQUIRY_FROM   present (26 chars)
 ```
 
-Expect `"ready": true`. The endpoint reports presence and length only, never
-values. If `ready` is false, the SSR runtime still cannot see
-`RESEND_API_KEY` / `INQUIRY_FROM`.
+End-to-end submission against production succeeded — reference
+`SI-2026-GHDVT7`, acknowledgement sent. Replaying the same idempotency key
+returned the same reference with `deduplicated: true` and sent no second
+email. Honeypot and the too-fast-submit guard both return the sentinel
+reference `SI-0000-000000`, which looks like success to a bot and sends
+nothing.
+
+Optional, not blocking: `INQUIRY_TO_CONSUMER` / `_WHOLESALE` / `_RETAIL` /
+`_OTHER` are unset, so all five buyer types land in the `info@` fallback
+inbox. Setting them in Amplify splits the routing — env change, no code
+change. `NEXT_PUBLIC_SITE_URL` is also unset; it falls back to the correct
+production origin, so canonical URLs and the sitemap are right either way.
 
 ### 2. Rotate credentials
 
-`env.local` is tracked in git history from commit `2ffac2d` on a GitHub remote.
-Everything in it should be treated as disclosed.
+**What is actually exposed.** Only one file: `env.local` — note the _missing
+leading dot_. It has been tracked since `2ffac2d` and is on a GitHub remote,
+so every value in it should be treated as public.
 
-- **Revoke** — Eventbrite, Ticketmaster, SerpAPI, Pexels, Pixabay, Pinterest,
-  reCAPTCHA. The features that used these are deleted; the keys have no
-  remaining purpose.
-- **Rotate** — `DATABASE_URL`, `NEXTAUTH_SECRET`, the Shopify Storefront token.
-- Remove `env.local` from the repo and add it to `.gitignore`. Deleting the
-  file does not remove it from history; the keys still need rotating.
+Two things make this less alarming than it looks, and one makes it worse:
+
+- The app never read it. Next.js only auto-loads `.env*`; a dotless
+  `env.local` is invisible to it. Nothing broke when it was untracked, and
+  nothing depends on it.
+- `.env.example` is tracked but genuinely contains placeholders
+  (`re_xxxxxxxx…`), not live values. It is safe.
+- `.env.local` — _with_ the dot — is the real local secrets file, and it is
+  correctly untracked and ignored.
+
+`git rm --cached env.local` has been done, so it stops being committed. **That
+does not remove it from history.** The 19 values below are still recoverable
+from any clone and must be dealt with individually.
+
+**Revoke — delete these outright.** The features that used them are gone from
+the codebase; the keys have no remaining purpose, so rotating them is wasted
+effort.
+
+| Key                                                                                                   | Where                             |
+| ----------------------------------------------------------------------------------------------------- | --------------------------------- |
+| `TICKETMASTER_API_KEY`                                                                                | Ticketmaster developer portal     |
+| `EVENTBRITE_API_KEY`, `EVENTBRITE_CLIENT_ID`, `EVENTBRITE_CLIENT_SECRET`                              | Eventbrite → account → API keys   |
+| `SERPAPI_API_KEY`                                                                                     | SerpApi dashboard                 |
+| `NEXT_PUBLIC_PEXELS_API_KEY`                                                                          | Pexels API dashboard              |
+| `NEXT_PUBLIC_PIXABAY_API_KEY`                                                                         | Pixabay account                   |
+| `PINTEREST_ACCESS_TOKEN`, `NEXT_PUBLIC_PINTEREST_ACCESS_TOKEN`                                        | Pinterest developer app           |
+| `RECAPTCHA_SECRET_KEY`, `RECAPTCHA_API_KEY`, `RECAPTCHA_PROJECT_ID`, `NEXT_PUBLIC_RECAPTCHA_SITE_KEY` | Google Cloud reCAPTCHA Enterprise |
+
+The two `NEXT_PUBLIC_*` image keys are the most urgent of these: that prefix
+means they were compiled into the browser bundle and served to every visitor,
+so they were public long before the git history mattered.
+
+**Rotate — these still guard something real.**
+
+| Key                                           | Action                                                                                                                                                            |
+| --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`                                | Change the database password and update it in Amplify. Currently set in production but unused — `persistLead()` is still a stub.                                  |
+| `NEXTAUTH_SECRET`                             | The auth stack is deleted, so nothing signs sessions any more. Delete rather than rotate.                                                                         |
+| `NEXT_PUBLIC_SHOPIFY_STOREFRONT_ACCESS_TOKEN` | Revoke in Shopify → Apps → Develop apps. Storefront tokens are public-by-design and read-only, but this one now grants access to a store the site no longer uses. |
+| `RESEND_API_KEY`                              | Not in `env.local` and not exposed — no action. Rotate only if it has been pasted into chat or a ticket.                                                          |
+
+**Then, optionally, scrub history.** `git filter-repo --path env.local
+--invert-paths` followed by a force-push rewrites every commit hash and
+requires every clone to be re-cloned. Given the keys above are being revoked
+anyway, this is belt-and-braces rather than necessary — revocation is what
+actually removes the risk.
 
 ### 3. Correct servings-per-container before any print run
 
