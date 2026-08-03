@@ -28,6 +28,11 @@ const greatVibes = Great_Vibes({
   weight: "400",
   display: "swap",
   variable: "--font-script",
+  // Do NOT set preload:false here. It looks like an easy win — this family
+  // renders one decorative element — but on short pages (/inquire, /partners)
+  // the footer quote IS the largest contentful paint, and un-preloading it
+  // measured +2.9s of LCP render delay and CLS 0.261 as it swapped in.
+  fallback: ["Snell Roundhand", "cursive"],
 });
 
 const interTight = Inter_Tight({

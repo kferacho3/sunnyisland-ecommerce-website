@@ -34,7 +34,13 @@
 
   /* ----------------------------------------------------------------- brand */
   --si-gold: 252 192 0;
-  --si-gold-deep: 138 106 0;
+  /* "Deep" means quieter than --si-gold, NOT darker. It was 138 106 0, which
+     was correct while the second register was a light cream — but that
+     register is now near-black charcoal, so a darker gold on a darker ground
+     inverted the relationship and dropped small uppercase eyebrow type to
+     3.64:1, under the 4.5 AA floor. This value is muted against --si-gold
+     while clearing 6.5:1 on every cream-register surface. */
+  --si-gold-deep: 190 148 24;
   --si-ember: 240 84 0;
   --si-maroon: 120 0 36;
 
@@ -53,7 +59,12 @@
   --si-font-body:
     var(--font-inter-tight), -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
-  --si-font-script: var(--font-script), "Snell Roundhand", cursive;
+  /* No manual fallbacks appended. next/font already generates a metric-adjusted
+     fallback inside var(--font-script); listing "Snell Roundhand" after it puts
+     an UNADJUSTED face ahead of that adjustment in the cascade, which is what
+     turns the swap into a layout shift. The fallback list now lives in the
+     Great_Vibes() call so next/font can size-adjust it. */
+  --si-font-script: var(--font-script);
   --si-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
   /* Fluid scale. Clamped so a 320px phone and a 4K display both read well. */

@@ -23,10 +23,12 @@ const DONE = [
   "The 3D product viewer is decorative — every product fact is in normal HTML, and rotation is never required.",
   "Form errors are tied to their fields and summarised at the top of the form.",
   "Text and interface colours are checked against WCAG 2.2 AA contrast.",
+  "Automated WCAG checks (axe, via Lighthouse) score 100 on every page, on both desktop and a throttled mobile device.",
+  "No page scrolls sideways at 390px, and every page has exactly one H1.",
 ];
 
 const NOT_YET = [
-  "A full screen-reader pass on every page by a professional tester.",
+  "A full screen-reader pass on every page by a professional tester. Automated checks catch perhaps a third of real barriers; they are not a substitute for this.",
   "Formal testing at 200% zoom on every breakpoint.",
   "Captioning — the background film has no speech or meaningful audio, so it carries no captions.",
 ];

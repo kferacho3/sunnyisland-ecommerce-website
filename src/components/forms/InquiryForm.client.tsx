@@ -275,7 +275,9 @@ export function InquiryForm() {
                   disabled={!done}
                   aria-current={here ? "step" : undefined}
                   className={cn(
-                    "flex flex-1 flex-col gap-2 text-left",
+                    // min-h keeps the reached steps at a 44px tap target;
+                    // they came in at 40 and these are real navigation.
+                    "flex min-h-[44px] flex-1 flex-col justify-center gap-2 text-left",
                     done ? "cursor-pointer" : "cursor-default",
                   )}
                 >

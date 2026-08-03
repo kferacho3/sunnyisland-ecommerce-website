@@ -43,7 +43,10 @@ export function SiteFooter() {
 
           <div className="mt-16 grid gap-12 border-t border-ink-line pt-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr]">
             <div>
-              <Link href="/" className="inline-flex items-center gap-3">
+              <Link
+                href="/"
+                className="inline-flex min-h-[44px] items-center gap-3"
+              >
                 <Image
                   src="/brand/logo-192.webp"
                   alt=""
@@ -65,12 +68,12 @@ export function SiteFooter() {
               <h2 className="font-body text-eyebrow font-semibold uppercase text-on-ink-muted">
                 Site
               </h2>
-              <ul className="mt-4 space-y-3">
+              <ul className="mt-2 space-y-0">
                 {[...nav, CTA].map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="text-[0.9375rem] text-on-ink transition-colors duration-fast ease-si hover:text-gold"
+                      className="inline-flex min-h-[44px] items-center text-[0.9375rem] text-on-ink transition-colors duration-fast ease-si hover:text-gold"
                     >
                       {item.label}
                     </Link>
@@ -83,13 +86,13 @@ export function SiteFooter() {
               <h2 className="font-body text-eyebrow font-semibold uppercase text-on-ink-muted">
                 Contact
               </h2>
-              <ul className="mt-4 space-y-3">
+              <ul className="mt-2 space-y-0">
                 <Fact claim={site.email}>
                   {(email) => (
                     <li>
                       <a
                         href={`mailto:${email}`}
-                        className="text-[0.9375rem] text-on-ink transition-colors duration-fast ease-si hover:text-gold"
+                        className="inline-flex min-h-[44px] items-center text-[0.9375rem] text-on-ink transition-colors duration-fast ease-si hover:text-gold"
                       >
                         {email}
                       </a>
@@ -101,7 +104,7 @@ export function SiteFooter() {
                     <li>
                       <a
                         href={ig.url}
-                        className="text-[0.9375rem] text-on-ink transition-colors duration-fast ease-si hover:text-gold"
+                        className="inline-flex min-h-[44px] items-center text-[0.9375rem] text-on-ink transition-colors duration-fast ease-si hover:text-gold"
                         rel="me noopener"
                       >
                         {ig.handle}
@@ -117,12 +120,12 @@ export function SiteFooter() {
             <p className="text-sm text-on-ink-muted">
               &copy; {new Date().getFullYear()} {site.name}
             </p>
-            <ul className="flex flex-wrap gap-x-6 gap-y-2">
+            <ul className="-mx-2 -my-2 flex flex-wrap gap-x-2">
               {LEGAL.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="text-sm text-on-ink-muted transition-colors duration-fast ease-si hover:text-on-ink"
+                    className="inline-flex min-h-[44px] min-w-[44px] items-center justify-center px-2 text-sm text-on-ink-muted transition-colors duration-fast ease-si hover:text-on-ink"
                   >
                     {item.label}
                   </Link>

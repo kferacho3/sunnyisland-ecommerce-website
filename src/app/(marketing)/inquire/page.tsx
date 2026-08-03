@@ -34,9 +34,21 @@ export default function InquirePage() {
       </section>
 
       <Section width="narrow" className="pt-section-tight">
-        {/* useSearchParams needs a Suspense boundary to keep this page static. */}
+        {/* useSearchParams needs a Suspense boundary to keep this page static.
+            The fallback must reserve the form's real height — it used to be a
+            single line of text, and swapping one line for a ~530px form was
+            the whole of this page's 0.255 CLS. The min-height here mirrors the
+            one on <form> in InquiryForm; keep them in step. */}
         <Suspense
-          fallback={<p className="text-on-cream-muted">Loading the form…</p>}
+          fallback={
+            <div
+              className="min-h-[min(30rem,70svh)]"
+              aria-busy="true"
+              aria-live="polite"
+            >
+              <p className="text-on-cream-muted">Loading the form…</p>
+            </div>
+          }
         >
           <InquiryForm />
         </Suspense>
