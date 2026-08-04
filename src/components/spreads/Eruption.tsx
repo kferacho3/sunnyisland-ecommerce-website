@@ -1,9 +1,8 @@
 "use client";
 
-import { useGLTF } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
-import type { InstancedMesh, Mesh } from "three";
+import type { BufferGeometry, InstancedMesh } from "three";
 import * as THREE from "three";
 
 import { groundHeight } from "./IslandScene.client";
@@ -24,15 +23,10 @@ import { groundHeight } from "./IslandScene.client";
  * Collision samples `groundHeight` from IslandScene — the same profile the
  * lathe renders — so a pepper cannot fall through the surface it hits.
  *
- * Scale note: these models are authored ~1 unit across (GLB accessor bounds
- * -0.53…0.54), NOT the ~300-unit convention the jar GLB uses.
+ * The visible peppers use one procedural, low-poly Scotch-bonnet geometry and
+ * two materials. Keeping the geometry local avoids a second GLB/Draco parse in
+ * the pinned scene while preserving the correct squat, four-lobed silhouette.
  */
-
-const RED_URL =
-  "https://sunnyisland.s3.us-east-2.amazonaws.com/media/glb/redPepper.glb";
-const YELLOW_URL =
-  "https://sunnyisland.s3.us-east-2.amazonaws.com/media/glb/yellowPepper.glb";
-
 /** The crater, which the lathed island centres on the origin. */
 const VENT = new THREE.Vector3(0, 3.9, 0);
 
@@ -159,28 +153,18 @@ function bake(seed: number, index: number): Track {
 }
 
 function Swarm({
-  url,
+  geometry,
   seed,
   progress,
   tint,
 }: {
-  url: string;
+  geometry: BufferGeometry;
   seed: number;
   progress: { current: number };
   /** Emissive tint — these came out of a volcano, so they carry its heat. */
   tint: string;
 }) {
   const ref = useRef<InstancedMesh>(null);
-  const { scene } = useGLTF(url);
-
-  const source = useMemo(() => {
-    let found: Mesh | null = null;
-    scene.traverse((o) => {
-      const m = o as Mesh;
-      if (!found && m.isMesh) found = m;
-    });
-    return found;
-  }, [scene]);
 
   const tracks = useMemo(
     () => Array.from({ length: COUNT }, (_, i) => bake(seed, i)),
@@ -191,7 +175,6 @@ function Swarm({
   const qa = useMemo(() => new THREE.Quaternion(), []);
   const qb = useMemo(() => new THREE.Quaternion(), []);
 
-  // The GLB's own material renders near-black under this scene's light budget.
   // A self-lit material keeps the peppers legible and reads as carried heat.
   const material = useMemo(
     () =>
@@ -255,26 +238,48 @@ function Swarm({
     mesh.instanceMatrix.needsUpdate = true;
   });
 
-  if (!source) return null;
-  const mesh = source as Mesh;
-
   return (
     <instancedMesh
       ref={ref}
-      args={[mesh.geometry, material, COUNT]}
+      args={[geometry, material, COUNT]}
       frustumCulled={false}
     />
   );
 }
 
 export function Eruption({ progress }: { progress: { current: number } }) {
+  const geometry = useMemo(() => {
+    const pepper = new THREE.SphereGeometry(0.5, 8, 6);
+    const positions = pepper.attributes.position;
+    for (let index = 0; index < positions.count; index += 1) {
+      const x = positions.getX(index);
+      const y = positions.getY(index);
+      const z = positions.getZ(index);
+      const angle = Math.atan2(z, x);
+      const lobe = 1 + Math.cos(angle * 4) * 0.12;
+      const taper = 0.82 + (1 - Math.abs(y) * 2) * 0.18;
+      positions.setXYZ(index, x * lobe * taper, y * 0.72, z * lobe * taper);
+    }
+    positions.needsUpdate = true;
+    pepper.computeVertexNormals();
+    return pepper;
+  }, []);
+  useEffect(() => () => geometry.dispose(), [geometry]);
+
   return (
     <group>
-      <Swarm url={RED_URL} seed={7301} progress={progress} tint="#e0331b" />
-      <Swarm url={YELLOW_URL} seed={9142} progress={progress} tint="#f8b400" />
+      <Swarm
+        geometry={geometry}
+        seed={7301}
+        progress={progress}
+        tint="#e0331b"
+      />
+      <Swarm
+        geometry={geometry}
+        seed={9142}
+        progress={progress}
+        tint="#f8b400"
+      />
     </group>
   );
 }
-
-useGLTF.preload(RED_URL);
-useGLTF.preload(YELLOW_URL);

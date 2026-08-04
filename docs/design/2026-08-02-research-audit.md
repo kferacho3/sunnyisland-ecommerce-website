@@ -1,4 +1,5 @@
 # SUNNY ISLAND PEPPER SAUCE — COMPLETE DESIGN AUDIT
+
 **Synthesis of 8 research tracks · 2026-08-02 · For the creative director**
 
 **The thesis, in one line:** the premium Caribbean pepper-sauce lane is empty — the closest heritage competitor (Mama Maisa's, https://mamamaisas.com, same-era St. Lucia story) executes at flea-market level, and the category's luxury leader TRUFF (https://truff.com) runs zero WebGL and zero video. Sunny Island's 7.4s CG film + real-time jar GLB is an ownable asset stack nobody in the category has. The register to borrow is Michelin, not Shopify: because there is no cart, the site can adopt fine-dining grammar (Eleven Madison Park's sequence storytelling, https://www.elevenmadisonpark.com; Atomix's experience-named nav, https://www.atomixnyc.com) that ecommerce competitors structurally cannot.
@@ -10,16 +11,19 @@
 ## 1. Hero ideas (3 buildable concepts)
 
 ### Concept A — "The Relay" (recommended)
+
 The film becomes touchable. Derived from the film-to-GLB handoff pattern (Ratafia Almond Spirit's persistent-protagonist bottle, https://almondspirit.com/en/, documented at https://www.awwwards.com/inspiration/3d-model-animation-ratafia-almond-spirit) plus the Graza one-video/one-sentence/one-button hero recipe (https://graza.co) and CIAO ENERGY's loader-to-hero dark-world continuity (https://www.awwwards.com/sites/ciao-energy-launch-website).
 
 **First 5 seconds:** 0.0s — server-rendered ink #0B0D0D field with gold Fraunces wordmark and H1 already painted (this is the LCP element). 0.3s — the preloaded 32 KB poster paints behind the type; the 7.4s film (muted, playsinline, autoplay) begins: jar rotating on black, embers drifting, glowing wordmark. 0.5–5s — one Fraunces statement holds bottom-left ("Five generations. One jar."), two actions: primary "Partner With Us," secondary "The Story." Meanwhile the 1.07 MB GLB downloads silently. At the film's final pose, crossfade video→R3F canvas with camera matched to the last frame; the jar settles, then responds to drag. The video "becomes" the product. Zero new asset bytes — both halves already exist.
 
 ### Concept B — "The Altar"
+
 Direct adaptation of Hungry Tiger's SOTD hero (observed live, https://www.eathungrytiger.com/, award record https://www.awwwards.com/sites/hungry-tiger): the proven pattern for a one-SKU jar brand with no food footage, upgraded because our jar is real-time 3D, not a static cutout.
 
 **First 5 seconds:** 0.0s — ink field with faded label-art botanicals baked into the background texture; Inter Tight small-caps kicker "CARIBBEAN SCOTCH BONNET PEPPER SAUCE." 0.4s — viewport-wide Fraunces headline (clamp(3.25rem, 1.5rem + 11vw, 12rem), gold) resolves via masked line reveal; behind it, tone-on-tone ghost type "SCOTCH BONNET" in warmer black (Agency Eats watermark device, https://www.awwwards.com/inspiration/food-for-thought-agency-eats). 1.5s — the GLB jar fades in dead-center below the headline, slow idle rotation, ember motes behind. 3s — slow CSS marquee of the true seven-ingredient litany crosses beneath in Fraunces italic gold.
 
 ### Concept C — "The Arrival Mark"
+
 The most restrained option, from SAKAZUKI's single-symbol first frame (https://www.awwwards.com/sites/sakazuki) and La Revoltosa's full-viewport color flood (https://www.awwwards.com/sites/la-revoltosa).
 
 **First 5 seconds:** 0.0s — the entire viewport is maroon #780024 with only the cream flame/palm badge centered: one color, one symbol, zero words. 0.9s — badge yields via the signature clip-path wipe (see §8) into the ink world where the film hero plays. 1.5–5s — first-person heritage line types on in Fraunces italic: "I was born in St. Vincent in the early 1900s." then the primary statement and CTAs. The sauce speaks — no invented people, content-truth safe.
@@ -41,6 +45,7 @@ All three: reduced-motion swaps film for poster still; headline is real HTML tex
 One vocabulary, applied everywhere. The award set proves consistency beats variety: every winner studied commits to one or two signature mechanics inside a two-color world (Bucks Sauce, https://www.awwwards.com/sites/bucks-sauce; SAKAZUKI; Imperiale Bolgheri, https://www.awwwards.com/sites/imperiale-bolgheri).
 
 **Durations:**
+
 - Micro-interactions (hover, focus, pill states): 150–250ms
 - Content reveals (clip-path, line-mask, fades): 600–900ms — the Aesop "calm pacing" band (https://work.co/clients/aesop/)
 - Route enter: 500–700ms
@@ -58,12 +63,13 @@ One vocabulary, applied everywhere. The award set proves consistency beats varie
 Fraunces is licensed OFL-1.1 (https://github.com/undercasetype/Fraunces) and descends from Windsor/Cooper — early-1900s storefront faces, literally the era of the recipe (https://www.beautifulwebtype.com/fraunces/). The official specimen (https://fraunces.undercase.xyz/) is accidental proof-of-concept: Fraunces Black on pure black with gold accents is the brand palette.
 
 **Four voices, tokens not one-offs:**
-| Token | Settings | Use |
-|---|---|---|
-| `si-display` | Fraunces, `'opsz' 144, 'SOFT' 40, 'WONK' 1`, wght 600, lh 0.92, ls −0.02em | Hero + section statements only |
-| `si-quote` | Fraunces, `'opsz' 72, 'SOFT' 60, 'WONK' 0`, wght 480 | Pull-quotes, label history panels |
-| `si-body-serif` | Fraunces, `'opsz' 9`, wght 400, ≥16px | Long-form story text only |
-| `si-ui` | Inter Tight; caption voice = uppercase, +0.08em tracking, 11–13px | All UI, nav, forms, kickers, captions |
+
+| Token           | Settings                                                                   | Use                                   |
+| --------------- | -------------------------------------------------------------------------- | ------------------------------------- |
+| `si-display`    | Fraunces, `'opsz' 144, 'SOFT' 40, 'WONK' 1`, wght 600, lh 0.92, ls −0.02em | Hero + section statements only        |
+| `si-quote`      | Fraunces, `'opsz' 72, 'SOFT' 60, 'WONK' 0`, wght 480                       | Pull-quotes, label history panels     |
+| `si-body-serif` | Fraunces, `'opsz' 9`, wght 400, ≥16px                                      | Long-form story text only             |
+| `si-ui`         | Inter Tight; caption voice = uppercase, +0.08em tracking, 11–13px          | All UI, nav, forms, kickers, captions |
 
 **Fluid scale (Utopia model, rem-mixed for WCAG 1.4.4 zoom, https://utopia.fyi/type/calculator/):** `display-xl: clamp(3.25rem, 1.5rem + 11vw, 12rem)` · `display-lg: clamp(2.5rem, 1.25rem + 6vw, 7rem)` · `display-md: clamp(2rem, 1.1rem + 3.5vw, 4.5rem)`. Wire as Tailwind fontSize tokens. `text-wrap: balance` on all display elements.
 
@@ -97,6 +103,7 @@ The library is mixed (CG film frames, 10 phone-quality kitchen photos, 2 AI spre
 - **Gold #FCC000, ember #F05400, maroon #780024** — accents, ingredient chapter fields, the loader mark, duotone endpoints. **Rule: no spread ever shows more than dark + cream + one accent.** Zero palette additions, ever (Aesop's ~5-color discipline).
 
 **Glass & depth policy:**
+
 - **Allowed:** the jar's glass rendered cheaply in R3F — custom `<Environment>` with 2–3 drei Lightformers (warm gold rect key high-right, cool narrow strip left, dim ring behind for halo separation; "like a real light without the expense," http://drei.docs.pmnd.rs/staging/lightformer) plus a ~15-line Fresnel rim tint in gold on the glass mesh. Static env → `frames={1}`, near-zero runtime cost. Also allowed: dimming gradient overlays on video for text contrast.
 - **Banned:** `MeshTransmissionMaterial` and any real refraction/transmission pass — it forces an extra scene render per transmissive object (https://drei.docs.pmnd.rs/shaders/mesh-transmission-material) to refract a pure-black background behind opaque sauce; Maxime Heckel's dispersion pipeline (https://blog.maximeheckel.com/posts/refraction-dispersion-and-other-shader-light-effects/) documents exactly why. Also banned: glassmorphism/backdrop-blur UI chrome — SaaS grammar, not this brand.
 - Re-capture all static jar fallback images from the upgraded lighting rig so 2D and 3D match.
@@ -116,7 +123,7 @@ The library is mixed (CG film frames, 10 phone-quality kitchen photos, 2 AI spre
 - **SKU/format grid:** hover/focus expands a tile toward the inquiry CTA with 100ms hover-intent debounce; clip coordinates computed from the grid gutter (https://tympanus.net/codrops/2025/05/27/animated-product-grid-preview-with-gsap-clip-path/). Touch: first tap expands, second activates.
 - **Gold highlight sweep** on one key phrase per section ("Scotch Bonnet," "five generations") via background-size animation.
 - **Magnetic pull** on the gold Inquire pill only (Larose Magnetic Button, https://blog.olivierlarose.com/), desktop `pointer: fine` only — one magnetic element per page.
-- **Photo lightbox and format selector:** Framer Motion `layoutId` shared-element FLIP (adjudicated over GSAP Flip — FM is installed and lifecycle-aware; two systems on one element's transform is the canonical flicker bug, https://motion.dev/docs/gsap-vs-motion).
+- **Photo lightbox and format selector:** GSAP Flip is the only installed shared-element option. Import and register it only inside a dynamically loaded owner component; never put Flip in the shared motion module or let it mutate React-rendered class lists.
 - **Voice-consistent microcopy** on every utility surface (labels, empty states, confirmations) in the Ghia model (https://drinkghia.com) — hospitality is copywriting, not chrome.
 
 ## 10. Scrolling behaviour
@@ -124,6 +131,7 @@ The library is mixed (CG film frames, 10 phone-quality kitchen photos, 2 AI spre
 **Smooth-scroll verdict: NATIVE SCROLL. No Lenis, no ScrollSmoother, no Locomotive.** This is the audit's biggest adjudication — the motion-architecture track built a strong Lenis single-clock case (https://github.com/darkroomengineering/lenis), but four of six tracks (Codrops, 3D, performance, IA) reject wrapper libraries, and the performance evidence is decisive for THIS site: a smooth-scroll wrapper is a permanent per-frame main-thread loop competing with the inquiry forms that are our entire conversion surface (INP is a field metric Lighthouse won't surface; 2025 Web Almanac mobile median TBT is already 1,916ms — https://www.corewebvitals.io/pagespeed/improve-inp-ditch-javascript-scrolling). Even Lenis's maintainers attribute mobile frame drops in Lenis+GSAP+R3F stacks to the 3D scene (https://github.com/darkroomengineering/lenis/discussions/431) — our GPU budget belongs to the jar. The "expensive" damped feel is recovered without hijack: ScrollTrigger `scrub: 0.5–1` smooths scroll-linked values over frames, and useFrame lerp damps the jar's rotation.
 
 **Pinning rules:**
+
 - Maximum ONE GSAP pinned+scrubbed scene per page; everything else uses plain `position: sticky`.
 - Pin distance ≤200vh on mobile; function-based start/end values; triggers created in scroll order; `ScrollTrigger.refresh()` after Fraunces and next/image load; no CSS `scroll-behavior: smooth` (all from https://gsap.com/resources/st-mistakes/).
 - Ambient scroll effects (ember drift, label-art parallax, kitchen-column lag using the distance-from-center formula from https://tympanus.net/codrops/2025/06/03/elastic-grid-scroll-creating-lag-based-layout-animations-with-gsap-scrollsmoother/ — the formula, never the plugin) go to CSS scroll-driven animations behind `@supports (animation-timeline: scroll())` (Chrome/Edge 115+, Safari 26+, Firefox 156+, 83.66% global — verified) with IntersectionObserver fallback; 0%-states must be presentable.
@@ -203,6 +211,7 @@ The Hungry Tiger model (Awwwards-credited recipe interactions): cards with struc
 **Build:** the Relay handoff; scroll label tour; ember Points buffer; Lightformer studio rig + Fresnel rim; drei `<View>` if the jar appears in multiple sections (one context, scissored); fake heat-haze via `onBeforeCompile` + scrolling noise texture if atmosphere is wanted (The Sleepers technique, https://tympanus.net/codrops/2026/07/10/the-sleepers-creating-an-atmospheric-webgl-experience-with-lightweight-techniques/) instead of postprocessing bloom.
 
 **Reject, by name:**
+
 - `MeshTransmissionMaterial` / real refraction (extra scene pass to refract a black void)
 - drei `ScrollControls` (second scroll owner)
 - A second WebGL context anywhere (hover-distortion planes, shader galleries — the jar drops frames and the brand's best asset suffers)
@@ -226,6 +235,7 @@ The Hungry Tiger model (Awwwards-credited recipe interactions): cards with struc
 ## 21. Performance budgets & techniques
 
 **Hard budgets (from the performance track, enforced in CI with @next/bundle-analyzer):**
+
 - Hero media: poster ≤40 KB (current 32 ✓), video ≤500 KB/variant (current 360–464 ✓), no other >50 KB image above the fold, zero third-party requests before LCP. Lab LCP ≤1.8s on Moto-G throttling → field p75 ≤2.5s.
 - JS first-load gz: marketing/inquiry routes ≤170 KB; home ≤200 KB before the 3D chunk; three/R3F/drei jar chunk ≤250 KB, `next/dynamic ssr:false`, mounted via IntersectionObserver post-LCP with a real jar `<img>` fallback (three alone is ~155 KB gz, https://github.com/pmndrs/react-three-fiber/discussions/812); GSAP ≤40 KB confined to routes using it; GSAP and Framer Motion never animate the same element and never both drive one route's scroll.
 - Fonts: ≤160 KB woff2/page, ≤2 preloaded files, latin subset; next/font metric overrides for zero CLS; kill the current ~488 KB/164 KB-preloaded footprint by instancing fixed axes; ban raw OTF @font-face.
@@ -284,4 +294,4 @@ The Hungry Tiger model (Awwwards-credited recipe interactions): cards with struc
 
 ---
 
-**Where the research disagreed, the rulings were:** native scroll over Lenis (four tracks vs two; INP + forms + one-GPU-owner logic wins); install GSAP scoped-per-route over the typography track's "skip it" (the pinned jar chapter and SplitText line reveals need it; the skip verdict was scoped to typography work only); no blocking loader over the Awwwards track's brand-field loader (the SSR ink-field first paint delivers the same arrival at zero visitor cost); enter-only template.tsx transitions over View Transitions now (Next version floor + AWS Amplify own production warning); GLB scroll-scrub over any film frame sequence (bandwidth math is not close); Framer Motion layoutId over GSAP Flip for shared elements (one system per element). Everything else across the eight tracks converged.
+**Where the research disagreed, the rulings were:** native scroll over Lenis (four tracks vs two; INP + forms + one-GPU-owner logic wins); install GSAP scoped-per-route over the typography track's "skip it" (the pinned jar chapter and SplitText line reveals need it; the skip verdict was scoped to typography work only); no blocking loader over the Awwwards track's brand-field loader (the SSR ink-field first paint delivers the same arrival at zero visitor cost); enter-only template.tsx transitions over View Transitions now (Next version floor + AWS Amplify own production warning); GLB scroll-scrub over any film frame sequence (bandwidth math is not close). The prior Framer Motion `layoutId` ruling is void because Framer Motion is not installed; GSAP Flip is the only shared-element option. Everything else across the eight tracks converged.

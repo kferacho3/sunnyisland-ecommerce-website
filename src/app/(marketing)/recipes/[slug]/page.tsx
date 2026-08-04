@@ -6,11 +6,7 @@ import { notFound } from "next/navigation";
 import { Button, TextLink } from "@/components/core/Button";
 import { Container } from "@/components/core/Container";
 import { Eyebrow } from "@/components/core/Section";
-import {
-  Lines,
-  MotionRefresh,
-  Settle,
-} from "@/components/motion/Reveal.client";
+import { MotionRefresh, Settle } from "@/components/motion/Reveal.client";
 import { cn } from "@/lib/cn";
 import { recipes } from "@/content/recipes";
 
@@ -68,12 +64,10 @@ export default async function RecipePage({
           <Eyebrow onInk>
             House recipe {String(index + 1).padStart(2, "0")} · {recipe.dish}
           </Eyebrow>
-          <Lines
-            as="h1"
-            className="mt-6 max-w-[12ch] font-display text-display-xl text-on-ink"
-          >
+          {/* Above-fold LCP text stays server-rendered and unsplit. */}
+          <h1 className="mt-6 max-w-[12ch] font-display text-display-xl text-on-ink">
             {recipe.title}
-          </Lines>
+          </h1>
           <Settle className="mt-8">
             <p className="max-w-[58ch] font-display text-lede italic leading-relaxed text-on-ink-muted [font-variation-settings:var(--si-voice-quote)]">
               {recipe.intro}

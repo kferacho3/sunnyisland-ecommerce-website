@@ -19,22 +19,27 @@ export function ProofRail({
   if (visible.length === 0) return null;
 
   return (
+    // Deliberately still. This is a claim ledger, not a marketing-logo strip;
+    // motion would make verified facts feel promotional.
     <ul
+      data-proof-rail
+      style={{ "--si-rail-cols": visible.length } as React.CSSProperties}
       className={cn(
-        "flex flex-wrap items-center justify-center gap-x-10 gap-y-4",
+        "grid gap-px border-x border-ink-line bg-ink-line sm:[grid-template-columns:repeat(var(--si-rail-cols),minmax(0,1fr))]",
         className,
       )}
     >
       {visible.map((point, i) => (
         <li
           key={point.value}
-          className={cn(
-            "font-body text-eyebrow font-semibold uppercase text-on-ink-muted",
-            i > 0 &&
-              "before:mr-10 before:hidden before:text-gold before:content-['·'] sm:before:inline",
-          )}
+          className="flex min-h-[5.5rem] items-center gap-4 bg-ink px-5 py-5"
         >
-          {point.value}
+          <span className="font-mono text-eyebrow font-semibold text-gold-deep">
+            {String(i + 1).padStart(2, "0")}
+          </span>
+          <span className="font-body text-eyebrow font-semibold uppercase text-on-ink-muted">
+            {point.value}
+          </span>
         </li>
       ))}
     </ul>

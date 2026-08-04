@@ -111,6 +111,12 @@ except the homepage (0.017, the hero film swapping in over its poster).
 LCP sits around 3.3s on the throttled mobile profile. That is network-bound —
 Total Blocking Time is 0ms on every page, so it is not JavaScript.
 
+Lighthouse does not scroll. A green report therefore does not exercise the
+below-fold `once` triggers, the IntersectionObserver-gated island/jar chunks,
+the island pin, or scroll-time frame cost. Run `scripts/qa-scroll-metrics.mjs`
+and `scripts/qa-landing-gates.mjs` against the production build before treating
+the landing page as verified.
+
 ```bash
 npx next build && npx next start -p 3100
 CHROME_PATH="$(node -e "console.log(require('playwright').chromium.executablePath())")" \

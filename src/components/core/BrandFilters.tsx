@@ -9,6 +9,37 @@ export function BrandFilters() {
   return (
     <svg aria-hidden width="0" height="0" style={{ position: "absolute" }}>
       <defs>
+        {/* One document-level clipPath. The text geometry lives only in defs,
+            so Chrome cannot attribute the below-fold stencil to a painted
+            top-level text LCP candidate. Hand-authored ids let the desktop
+            fitter update geometry without React useId/querySelector hazards. */}
+        <clipPath id="si-origin-window" clipPathUnits="userSpaceOnUse">
+          <text
+            id="si-origin-clip-line-one"
+            x="600"
+            y="352"
+            textAnchor="middle"
+            fontSize="330"
+            fontFamily="var(--si-font-display)"
+            fontWeight="700"
+            letterSpacing="-0.035em"
+          >
+            FIVE
+          </text>
+          <text
+            id="si-origin-clip-line-two"
+            x="600"
+            y="636"
+            textAnchor="middle"
+            fontSize="162.85"
+            fontFamily="var(--si-font-display)"
+            fontWeight="700"
+            letterSpacing="-0.035em"
+          >
+            GENERATIONS
+          </text>
+        </clipPath>
+
         <filter id="si-archive" colorInterpolationFilters="sRGB">
           <feColorMatrix
             type="matrix"

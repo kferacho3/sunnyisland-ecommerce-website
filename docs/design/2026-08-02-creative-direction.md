@@ -15,7 +15,7 @@ not a dashboard — a sequence of five magazine spreads that move from cinema (i
 (cream) and end at a table setting where the visitor is asked, warmly, what they need.
 
 One protagonist: **the jar** — as film, as real-time object, as label art. It is the same object in
-every medium, which is the site's structural trick: the CG film and the GLB *are the same jar*, so the
+every medium, which is the site's structural trick: the CG film and the GLB _are the same jar_, so the
 experience can pass it from cinema to interaction without a seam.
 
 The register is **product-object cinema** (Porsche/fragrance), not documentary food cinema — because
@@ -24,13 +24,13 @@ commissioned-film-sized hole it will gladly accept later.
 
 ## 2. Adjudicated decisions (where research disagreed)
 
-| Question | Decision | Why |
-|---|---|---|
-| Smooth scroll (Lenis/ScrollSmoother) | **Native scroll only** | Permanent rAF loop threatens INP on the form; wrappers break `position: sticky` pinning; award feel comes from choreography, not scroll takeover |
-| Preloader | **None** | Hero payload < 500 KB; first paint is server-rendered ink + wordmark. Loader = theater that costs visitors |
-| Scrubbing the film | **Never** | Unanimous: `currentTime` scrubbing is decode-bound jank. Film plays once; **scroll drives the GLB** |
-| View Transitions API | **Not yet** | Needs Next ≥ 15.2; we're on 15.1.6. Enter-only `template.tsx` transitions; VT later as progressive enhancement |
-| Motion stack | **gsap + @gsap/react only** | Verified 100 % free commercially (Webflow, Apr 2025). Framer Motion (installed) keeps component lifecycle; GSAP owns scroll choreography. No second WebGL context, ever |
+| Question                             | Decision                    | Why                                                                                                                                                |
+| ------------------------------------ | --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Smooth scroll (Lenis/ScrollSmoother) | **Native scroll only**      | Permanent rAF loop threatens INP on the form; wrappers break `position: sticky` pinning; award feel comes from choreography, not scroll takeover   |
+| Preloader                            | **None**                    | Hero payload < 500 KB; first paint is server-rendered ink + wordmark. Loader = theater that costs visitors                                         |
+| Scrubbing the film                   | **Never**                   | Unanimous: `currentTime` scrubbing is decode-bound jank. Film plays once; **scroll drives the GLB**                                                |
+| View Transitions API                 | **Not yet**                 | Needs Next ≥ 15.2; we're on 15.1.6. Enter-only `template.tsx` transitions; VT later as progressive enhancement                                     |
+| Motion stack                         | **gsap + @gsap/react only** | Verified 100 % free commercially (Webflow, Apr 2025). Framer Motion is not installed; GSAP owns scroll choreography. No second WebGL context, ever |
 
 ## 3. Sitemap ("The Island Pantry")
 
@@ -45,47 +45,52 @@ commissioned-film-sized hole it will gladly accept later.
 /inquire     The adaptive form (existing pipeline, restyled)
 ```
 
-Header: **Sauce · Recipes · Story · For Chefs & Retailers** + gold *Inquire* pill. The research's one
+Header: **Sauce · Recipes · Story · For Chefs & Retailers** + gold _Inquire_ pill. The research's one
 structural inversion: DTC brands bury wholesale in the footer; an inquiry-first brand puts trade in
 the header.
 
 ## 4. The homepage — five spreads
 
 ### I. ARRIVAL (ink)
+
 First 5 seconds: ink field + gold wordmark paint server-side at 0 ms → Fraunces headline sets by
 SplitText line-mask (after `document.fonts.ready`) → the film fades up behind at ~600 ms → hollow
 gold-stroke secondary line. Two actions only. The film is an in-page hero, never a gate.
 Type signature: solid cream primary line + one `-webkit-text-stroke` gold hollow line.
 
 ### II. ORIGIN (ink → cream via signature wipe)
-First-person heritage, La Revoltosa register: *"Five generations, one recipe."* A dated, place-named
+
+First-person heritage, La Revoltosa register: _"Five generations, one recipe."_ A dated, place-named
 timeline (early 1900s St. Vincent → Trinidad & Tobago → US debut) with the badge and wreath as chapter
 marks. The ink→cream handoff uses the **signature clip-path** — a circle-with-flame-notch derived from
 the badge — the ONE reveal shape used everywhere (images, section wipes, page transitions).
 
 ### III. CRAFT (cream)
+
 Seven ingredients, one honest room. Ingredient chapters in editorial type (no stock photography), then
 the **archive plates**: the 10 real kitchen photos as small (≤ 420 px), duotone-graded, captioned
 contact-sheet artifacts — documentary evidence, not heroes. Phone photos rendered large read as cheap;
 rendered small, graded, and captioned they read as provenance.
 
 ### IV. TABLE (cream)
+
 The recipes teaser: three of the six T&T dishes as typographic spread cards + the two AI food tiles at
-modest scale, always captioned *serving suggestion*. Leads to `/recipes`.
+modest scale, always captioned _serving suggestion_. Leads to `/recipes`.
 
 ### V. TRADE (ink)
+
 The tasting-room close. Three Fraunces-headed panels — Direct Order / Wholesale (16–64 oz) / Retail —
 each opening the inquiry with buyer preselected. Ends with the label's wellness message. No checkout
 theater, no invented proof.
 
 ## 5. Type system (Fraunces voices)
 
-| Voice | Axes | Use |
-|---|---|---|
-| display | opsz 144 · SOFT 40 · WONK 1 · wght 600 · lh 0.92 | Spread headlines |
-| quote | opsz 72 · SOFT 60 · WONK 0 · wght 480 | Pull quotes, heritage lines |
-| body-serif | opsz 14 | Recipe intros only |
-| ui | Inter Tight | Everything a buyer must read |
+| Voice      | Axes                                             | Use                          |
+| ---------- | ------------------------------------------------ | ---------------------------- |
+| display    | opsz 144 · SOFT 40 · WONK 1 · wght 600 · lh 0.92 | Spread headlines             |
+| quote      | opsz 72 · SOFT 60 · WONK 0 · wght 480            | Pull quotes, heritage lines  |
+| body-serif | opsz 14                                          | Recipe intros only           |
+| ui         | Inter Tight                                      | Everything a buyer must read |
 
 Fluid scale, rem-mixed clamps (never pure vw — breaks zoom, WCAG 1.4.4):
 `display-xl: clamp(3.25rem, 1.5rem + 11vw, 12rem)` · `display-lg: clamp(2.5rem, 1.25rem + 6vw, 7rem)`
@@ -104,7 +109,7 @@ Fluid scale, rem-mixed clamps (never pure vw — breaks zoom, WCAG 1.4.4):
 ## 7. Motion language
 
 - **One gate:** `gsap.matchMedia('(prefers-reduced-motion: reduce)')` — pins skipped, scrubs jump to
-  end state, film replaced by poster. Framer's `<MotionConfig reducedMotion="user">` at root.
+  end state, film replaced by poster. Every GSAP scene is created inside `withMotion()`.
 - **What moves:** headlines (line-mask up, 90 ms stagger), the signature clip-path, the jar (scroll-
   scrubbed rotation), archive plates (2–6 px settle). **What never moves:** body text, forms, nav.
 - Transforms/opacity only. Durations from existing tokens; ease `cubic-bezier(0.16,1,0.3,1)`.

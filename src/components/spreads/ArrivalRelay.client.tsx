@@ -26,7 +26,6 @@ const SRC = {
   poster: "/media/hero.v2.poster.webp",
   webm: "/media/hero.v2.1080.webm",
   mp4: "/media/hero.v2.1080.mp4",
-  mobile: "/media/hero.v2.mobile.mp4",
 };
 
 type NetworkInformation = { saveData?: boolean };
@@ -45,7 +44,6 @@ function heroCapability(): "static" | "film" {
 export function ArrivalRelay({ className }: { className?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [mode, setMode] = useState<"static" | "film">("static");
-  const [filmReady, setFilmReady] = useState(false);
   const [playing, setPlaying] = useState(true);
 
   useEffect(() => {
@@ -73,10 +71,8 @@ export function ArrivalRelay({ className }: { className?: string }) {
         src={SRC.poster}
         alt=""
         aria-hidden
-        className={cn(
-          "absolute inset-0 h-full w-full object-cover transition-opacity duration-slow ease-si",
-          filmReady && showFilm ? "opacity-0" : "opacity-100",
-        )}
+        fetchPriority="high"
+        className="absolute inset-0 h-full w-full object-cover opacity-100"
       />
 
       {showFilm ? (
@@ -88,17 +84,8 @@ export function ArrivalRelay({ className }: { className?: string }) {
           playsInline
           preload="metadata"
           poster={SRC.poster}
-          onCanPlay={() => setFilmReady(true)}
-          className={cn(
-            "absolute inset-0 h-full w-full object-cover transition-opacity duration-slow ease-si",
-            filmReady ? "opacity-100" : "opacity-0",
-          )}
+          className="absolute inset-0 h-full w-full object-cover opacity-100"
         >
-          <source
-            src={SRC.mobile}
-            type="video/mp4"
-            media="(max-width: 640px)"
-          />
           <source src={SRC.webm} type="video/webm" />
           <source src={SRC.mp4} type="video/mp4" />
         </video>

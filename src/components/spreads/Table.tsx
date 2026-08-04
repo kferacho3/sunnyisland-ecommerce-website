@@ -2,8 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { Container } from "@/components/core/Container";
-import { Eyebrow } from "@/components/core/Section";
-import { Lines, Settle } from "@/components/motion/Reveal.client";
+import { SpreadMark } from "@/components/marketing/SpreadMark";
+import { Formation } from "@/components/motion/Formation.client";
+import { Settle } from "@/components/motion/Reveal.client";
+import { SlicedHeading } from "@/components/motion/SlicedHeading.client";
 import { TextLink } from "@/components/core/Button";
 import { recipes } from "@/content/recipes";
 
@@ -28,17 +30,15 @@ export function Table() {
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-6">
           <div>
-            <Eyebrow>The table</Eyebrow>
-            <Lines
-              as="h2"
-              className="mt-6 max-w-[12ch] font-display text-display-xl text-on-cream"
-            >
-              Cook it the Trini way.
-            </Lines>
+            <SpreadMark numeral="IV" label="The table" />
           </div>
           <Settle>
             <TextLink href="/recipes">All six house recipes</TextLink>
           </Settle>
+        </div>
+
+        <div className="mt-12 border-y border-cream-line py-10 sm:py-14">
+          <SlicedHeading>Cook it the Trini way.</SlicedHeading>
         </div>
 
         <div className="mt-16 grid gap-14 lg:grid-cols-[1.25fr_0.75fr] lg:gap-20">
@@ -73,14 +73,16 @@ export function Table() {
           </ol>
 
           {/* Serving-suggestion tiles — modest, matted, captioned. */}
-          <div className="flex flex-col gap-8 lg:pt-4">
+          {/* Reduced motion: both serving plates render assembled, visible,
+              and still at their final small matted size. */}
+          <Formation className="flex flex-col gap-8 lg:pt-4">
             {(
               [
                 { src: "/brand/concept/ways-to-use-1.webp", rotate: "-1.1deg" },
                 { src: "/brand/concept/ways-to-use-2.webp", rotate: "0.9deg" },
               ] as const
-            ).map((t, i) => (
-              <Settle key={t.src} delay={i * 0.08}>
+            ).map((t) => (
+              <div key={t.src} data-formation-item>
                 <figure
                   className="si-plate mx-auto"
                   style={{ rotate: t.rotate }}
@@ -96,9 +98,9 @@ export function Table() {
                   </div>
                   <figcaption>Serving suggestion</figcaption>
                 </figure>
-              </Settle>
+              </div>
             ))}
-          </div>
+          </Formation>
         </div>
       </Container>
     </section>

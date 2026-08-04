@@ -9,7 +9,7 @@ import { cn } from "@/lib/cn";
 /**
  * The house entrances. Two and only two:
  *
- * <Lines>  — Fraunces display type entering by line-mask, the Ember Cadence
+ * <Lines>  — Archivo display type entering by line-mask, the Ember Cadence
  *            signature. Real text, never below opacity 0.01 (LCP exclusion).
  * <Settle> — quiet 12px rise for supporting content and plates.
  *
@@ -22,7 +22,7 @@ export function Lines({
   children,
   delay = 0,
 }: {
-  as?: "h1" | "h2" | "h3" | "p";
+  as?: "h2" | "h3" | "p";
   className?: string;
   children: React.ReactNode;
   delay?: number;
@@ -30,34 +30,46 @@ export function Lines({
   const ref = useRef<HTMLDivElement>(null);
 
   useGSAP(
-    () =>
+    (_context, contextSafe) =>
       withMotion(ref.current, ({ reduced, gsap }) => {
         const el = ref.current?.firstElementChild;
         if (!el || reduced) return;
 
+        let alive = true;
         let split: Awaited<ReturnType<typeof splitLines>> | null = null;
         void splitLines(el).then((s) => {
+          if (!alive) {
+            s.revert();
+            return;
+          }
           split = s;
-          gsap.from(s.lines, {
-            yPercent: 105,
-            duration: DUR.reveal,
-            ease: EASE,
-            stagger: 0.09,
-            delay,
-            scrollTrigger: {
-              trigger: el,
-              start: "top 78%",
-              once: true,
-            },
-          });
+          contextSafe?.(() => {
+            gsap.from(s.lines, {
+              yPercent: 105,
+              duration: DUR.reveal,
+              ease: EASE,
+              stagger: 0.09,
+              delay,
+              onStart: () => gsap.set(s.lines, { willChange: "transform" }),
+              onComplete: () => gsap.set(s.lines, { clearProps: "willChange" }),
+              scrollTrigger: {
+                trigger: el,
+                start: "top 78%",
+                once: true,
+              },
+            });
+          })?.();
         });
-        return () => split?.revert();
+        return () => {
+          alive = false;
+          split?.revert();
+        };
       }),
     { scope: ref },
   );
 
   return (
-    <div ref={ref}>
+    <div ref={ref} data-motion="lines">
       <As className={className}>{children}</As>
     </div>
   );
@@ -85,6 +97,8 @@ export function Settle({
           duration: DUR.reveal,
           ease: EASE,
           delay,
+          onStart: () => gsap.set(el, { willChange: "transform, opacity" }),
+          onComplete: () => gsap.set(el, { clearProps: "willChange" }),
           scrollTrigger: { trigger: el, start: "top 85%", once: true },
         });
       }),
@@ -92,7 +106,7 @@ export function Settle({
   );
 
   return (
-    <div ref={ref} className={cn(className)}>
+    <div ref={ref} data-motion="settle" className={cn(className)}>
       {children}
     </div>
   );
@@ -113,10 +127,10 @@ export function ClipHandoff({
 
   useGSAP(
     () =>
-      withMotion(ref.current, ({ reduced, gsap }) => {
+      withMotion(ref.current, ({ reduced, wide, gsap }) => {
         const el = ref.current;
         if (!el) return;
-        if (reduced) {
+        if (reduced || !wide) {
           el.style.clipPath = "none";
           return;
         }
@@ -130,7 +144,7 @@ export function ClipHandoff({
               trigger: el,
               start: "top 88%",
               end: "top 22%",
-              scrub: 0.6,
+              scrub: 0.5,
             },
           },
         );
@@ -139,7 +153,7 @@ export function ClipHandoff({
   );
 
   return (
-    <div ref={ref} className={className}>
+    <div ref={ref} data-motion="clip-handoff" className={className}>
       {children}
     </div>
   );

@@ -30,9 +30,25 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
+      <link
+        rel="preload"
+        as="image"
+        href="/media/hero.v2.poster.webp"
+        fetchPriority="high"
+      />
       <MotionRefresh />
 
       {/* ── I. ARRIVAL ─────────────────────────────────────────────── */}
+      {/* HERO INVARIANTS — measured failure modes, not styling notes:
+          1. Keep xl:grid-cols-2, film order-first/xl:order-last, the copy cap
+             at --si-container/2, --si-container <= 1280px, and no vw-based
+             alignment. These are what keep the h1 and <Container> aligned at
+             1280/1440/1920.
+          2. .si-hollow stays a block, Archivo wdth 100, and on exactly one
+             client rect at 390/1024/inside the xl column.
+          3. Hero height uses svh only; dvh/vh reintroduces mobile URL-bar CLS.
+          4. Above-fold media and h1 stay opaque, server/final-positioned, and
+             free of SplitText/Lines or any JS-dependent DOM rewrite. */}
       {/* A real split, not type over film. The jar and the wordmark sit dead
           centre in the footage, so every scrim-based attempt at this still
           put the headline across the product. Two columns make the overlap
@@ -56,8 +72,11 @@ export default function HomePage() {
             <div className="ml-auto w-full max-w-[calc(var(--si-container)/2)] px-gutter xl:pr-8">
               <Eyebrow onInk>Sunny Island · Classic Gold</Eyebrow>
 
-              {/* The LCP element: real text, painted server-side, never
-                  transparent. Solid line + one hollow-stroke line — the
+              {/* Measured 2026-08-03 with Lighthouse 12.8.2: mobile LCP is the
+                  hero <video>; desktop LCP is the poster <img>. Neither media
+                  node may be faded, clipped, translated, resized, or painted
+                  below opacity:1. The h1 is server-rendered and also receives
+                  zero JS motion. Solid line + one hollow-stroke line — the
                   film-overlay type signature.
 
                   Sized per band rather than straight off `text-hero`: the
@@ -87,7 +106,7 @@ export default function HomePage() {
       </section>
 
       {/* Proof rail — approved claims only. */}
-      <div className="si-grain relative border-y border-ink-line bg-ink py-6">
+      <div className="si-grain relative border-y border-ink-line bg-ink">
         <Container>
           <ProofRail points={proofPoints} />
         </Container>

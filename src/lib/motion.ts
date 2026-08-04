@@ -19,6 +19,20 @@ import { SplitText } from "gsap/SplitText";
  */
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
+ScrollTrigger.config({ ignoreMobileResize: true });
+
+declare global {
+  interface Window {
+    __ST?: typeof ScrollTrigger;
+  }
+}
+
+if (
+  process.env.NEXT_PUBLIC_MOTION_DEBUG === "1" &&
+  typeof window !== "undefined"
+) {
+  window.__ST = ScrollTrigger;
+}
 
 export { gsap, ScrollTrigger, SplitText };
 
@@ -26,6 +40,8 @@ export { gsap, ScrollTrigger, SplitText };
 export const EASE = "power2.out";
 /** Reserved for the hero relay settle only. */
 export const EASE_SETTLE = "expo.out";
+/** Native-scroll damping for every scrubbed scene. */
+export const SCRUB = 0.5;
 
 export const DUR = {
   micro: 0.2,
@@ -36,6 +52,8 @@ export const DUR = {
 export interface MotionCtx {
   /** True on the reduced-motion branch — put elements in final state, no tweens. */
   reduced: boolean;
+  /** Desktop composition tier. Scrubbed DOM scenes are gated to this tier. */
+  wide: boolean;
   gsap: typeof gsap;
 }
 
@@ -45,23 +63,44 @@ export interface MotionCtx {
  */
 export function withMotion(
   scope: Element | null,
-  build: (ctx: MotionCtx) => void,
+  build: (ctx: MotionCtx) => void | (() => void),
 ): () => void {
   const mm = gsap.matchMedia(scope ?? undefined);
 
-  mm.add("(prefers-reduced-motion: no-preference)", () => {
-    build({ reduced: false, gsap });
-  });
-  mm.add("(prefers-reduced-motion: reduce)", () => {
-    build({ reduced: true, gsap });
-  });
+  mm.add(
+    {
+      reduce: "(prefers-reduced-motion: reduce)",
+      wide: "(min-width: 1024px)",
+    },
+    (context) => {
+      const conditions = context.conditions as {
+        reduce: boolean;
+        wide: boolean;
+      };
+      return build({
+        reduced: conditions.reduce,
+        wide: conditions.wide,
+        gsap,
+      });
+    },
+  );
 
   return () => mm.revert();
 }
 
 /**
- * Line-masked headline reveal — the house entrance for Fraunces display type.
- * Waits for fonts so SplitText measures real glyphs, not fallback metrics.
+ * Invariants for every motion scene:
+ * - all GSAP work is created inside `withMotion`;
+ * - native-scroll scrubs use damping, never `scrub: true`;
+ * - function-valued layout reads pair with `invalidateOnRefresh: true`;
+ * - any async-created tween must be wrapped in `contextSafe`;
+ * - server HTML is the complete reduced-motion final state.
+ */
+
+/**
+ * Line-masked headline reveal. This is below-fold supporting motion only:
+ * `Lines` deliberately cannot render an h1, so the LCP surface cannot be
+ * rewritten by SplitText by accident.
  */
 export async function splitLines(el: Element): Promise<SplitText> {
   await document.fonts.ready;

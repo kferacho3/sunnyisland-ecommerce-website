@@ -4,11 +4,7 @@ import Link from "next/link";
 import { Container } from "@/components/core/Container";
 import { Eyebrow } from "@/components/core/Section";
 import { ART, FullBleedGround } from "@/components/media/FullBleed";
-import {
-  Lines,
-  MotionRefresh,
-  Settle,
-} from "@/components/motion/Reveal.client";
+import { MotionRefresh, Settle } from "@/components/motion/Reveal.client";
 import { recipes } from "@/content/recipes";
 
 export const metadata: Metadata = {
@@ -39,12 +35,11 @@ export default function RecipesPage() {
         <div aria-hidden className="si-rake absolute inset-0" />
         <Container className="relative">
           <Eyebrow onInk>House recipes</Eyebrow>
-          <Lines
-            as="h1"
-            className="mt-6 max-w-[10ch] font-display text-display-xl text-on-ink"
-          >
+          {/* Above-fold LCP text is server-rendered in its final state. Lines
+              cannot render h1 by design, so SplitText never rewrites it. */}
+          <h1 className="mt-6 max-w-[10ch] font-display text-display-xl text-on-ink">
             Six dishes. One jar.
-          </Lines>
+          </h1>
           <Settle className="mt-8">
             <p className="max-w-[52ch] text-lede text-on-ink-muted">
               Our takes on the Trinidad &amp; Tobago classics, written the way

@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { gsap, ScrollTrigger, withMotion } from "@/lib/motion";
 import { cn } from "@/lib/cn";
+import { allowsRichVisuals } from "@/lib/tier";
 
 /**
  * SPREAD II·V — THE ISLAND.
@@ -26,18 +27,11 @@ const IslandStage = dynamic(() => import("./IslandScene.client"), {
 
 /* ------------------------------------------------------------------ gates */
 
-type NetworkInformation = { saveData?: boolean };
-
 function capable(): boolean {
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
-    return false;
-  const nav = navigator as Navigator & {
-    connection?: NetworkInformation;
-    deviceMemory?: number;
-  };
-  if (nav.connection?.saveData) return false;
-  if (typeof nav.deviceMemory === "number" && nav.deviceMemory < 4)
-    return false;
+  // The island is the one WebGL context on the site. Its 768px gate matches
+  // the measured ProductStage precedent: no Draco decode or 260svh pin on the
+  // weakest mobile CPUs, and no second canvas is ever introduced for the hero.
+  if (!allowsRichVisuals(768)) return false;
   try {
     if (!document.createElement("canvas").getContext("webgl2")) return false;
   } catch {
@@ -61,7 +55,6 @@ const CAPTIONS = [
     until: 1,
     eyebrow: "The landing",
     line: "It all ends up in the jar.",
-    cta: true,
   },
 ] as const;
 
@@ -76,6 +69,7 @@ function useDpr() {
 
 export function IslandChapter() {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const spacerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const captionRefs = useRef<(HTMLDivElement | null)[]>([]);
   const progress = useRef(0);
@@ -132,39 +126,65 @@ export function IslandChapter() {
     () =>
       withMotion(wrapRef.current, ({ reduced }) => {
         const wrap = wrapRef.current;
-        if (!wrap) return;
+        const spacer = spacerRef.current;
+        const stage = stageRef.current;
+        if (!wrap || !spacer || !stage) return;
 
         if (reduced || mode !== "scene") {
           // Static world: no pin, captions all visible in flow (CSS handles it).
           return;
         }
 
-        const st = ScrollTrigger.create({
+        const captions = captionRefs.current.filter(
+          (caption): caption is HTMLDivElement => Boolean(caption),
+        );
+        gsap.set(captions, { opacity: 0, y: 14, pointerEvents: "none" });
+
+        const pin = ScrollTrigger.create({
           trigger: wrap,
           start: "top top",
-          end: "+=260%",
-          pin: stageRef.current,
+          end: () => `+=${window.innerHeight * 2.6}`,
+          pin: stage,
+          pinSpacer: spacer,
           scrub: 0.5,
+          refreshPriority: 1,
+          invalidateOnRefresh: true,
           onUpdate: (self) => {
             progress.current = self.progress;
             invalidateRef.current();
-            CAPTIONS.forEach((c, i) => {
-              const el = captionRefs.current[i];
-              if (!el) return;
-              const on = self.progress >= c.at && self.progress <= c.until;
-              gsap.to(el, {
-                autoAlpha: on ? 1 : 0,
-                y: on ? 0 : 14,
-                duration: 0.35,
-                ease: "power2.out",
-                overwrite: "auto",
-              });
-            });
           },
         });
-        return () => st.kill();
+
+        const captionTriggers = CAPTIONS.flatMap((caption, index) => {
+          const element = captions[index];
+          if (!element) return [];
+          return [
+            ScrollTrigger.create({
+              trigger: wrap,
+              start: () => `top+=${window.innerHeight * 2.6 * caption.at} top`,
+              end: () => `top+=${window.innerHeight * 2.6 * caption.until} top`,
+              invalidateOnRefresh: true,
+              onToggle: (self) => {
+                gsap.to(element, {
+                  opacity: self.isActive ? 1 : 0,
+                  y: self.isActive ? 0 : 14,
+                  pointerEvents: "none",
+                  duration: 0.35,
+                  ease: "power2.out",
+                  overwrite: "auto",
+                });
+              },
+            }),
+          ];
+        });
+
+        return () => {
+          pin.kill();
+          captionTriggers.forEach((trigger) => trigger.kill());
+          gsap.killTweensOf(captions);
+        };
       }),
-    { scope: wrapRef, dependencies: [mode] },
+    { scope: wrapRef, dependencies: [mode], revertOnUpdate: true },
   );
 
   if (mode === "static") {
@@ -172,11 +192,12 @@ export function IslandChapter() {
     return (
       <section
         id="island"
+        data-motion="island-static"
         className="si-anvil relative overflow-hidden bg-ink py-section text-center"
       >
         <div
           aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(70%_55%_at_50%_100%,rgb(240_84_0/0.18),rgb(252_192_0/0.05)_45%,transparent_72%)]"
+          className="absolute inset-0 bg-[radial-gradient(70%_55%_at_50%_100%,rgb(var(--si-ember)/0.18),rgb(var(--si-gold)/0.05)_45%,transparent_72%)]"
         />
         <div className="relative mx-auto max-w-narrow px-gutter">
           <p className="font-body text-eyebrow font-semibold uppercase text-gold">
@@ -197,70 +218,89 @@ export function IslandChapter() {
   }
 
   return (
-    <section id="island" ref={wrapRef} className="relative bg-ink">
-      <div ref={stageRef} className="relative h-svh overflow-hidden">
-        <p className="sr-only">
-          An illustrated low-poly Caribbean island at dusk. Scrolling crosses
-          the water and lands on the Sunny Island jar standing on the beach.
-        </p>
-        {/* Forge-dusk sky behind the transparent canvas. */}
+    <section
+      id="island"
+      ref={wrapRef}
+      data-motion="island"
+      className="relative bg-ink"
+    >
+      {/* Hand-rendered pin spacer: ScrollTrigger never injects a sibling into
+          React's managed tree. No ancestor of the pinned stage may gain
+          transform, filter, perspective, contain, backdrop-filter or
+          will-change, or position:fixed pinning silently stops being viewport
+          relative. */}
+      <div ref={spacerRef}>
         <div
-          aria-hidden
-          className="absolute inset-0 bg-[radial-gradient(85%_60%_at_28%_78%,rgb(240_84_0/0.32),rgb(120_0_36/0.16)_42%,transparent_70%),radial-gradient(60%_45%_at_70%_85%,rgb(252_192_0/0.14),transparent_60%)]"
-        />
-
-        {mount ? (
-          <IslandStage
-            progress={progress}
-            drift={drift}
-            dpr={dpr}
-            onReady={(inv) => {
-              invalidateRef.current = inv;
-            }}
-          />
-        ) : null}
-
-        {/* Grain + edge vignette over the scene, matching the forge. */}
-        <div
-          aria-hidden
-          className="si-grain pointer-events-none absolute inset-0"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink via-transparent to-ink"
-        />
-
-        {/* Captions — swapped by the scrub. */}
-        {CAPTIONS.map((c, i) => (
+          ref={stageRef}
+          data-scroll-pin-stage
+          className="relative h-svh overflow-hidden"
+        >
+          <p className="sr-only">
+            An illustrated low-poly Caribbean island at dusk. Scrolling crosses
+            the water and lands on the Sunny Island jar standing on the beach.
+          </p>
+          {/* Forge-dusk sky behind the transparent canvas. */}
           <div
-            key={c.line}
-            ref={(el) => {
-              captionRefs.current[i] = el;
-            }}
-            className={cn(
-              "absolute inset-x-0 bottom-[12svh] mx-auto max-w-container px-gutter opacity-0",
-            )}
-          >
-            <p className="font-body text-eyebrow font-semibold uppercase text-gold">
-              {c.eyebrow}
-            </p>
-            <p className="mt-4 max-w-[18ch] font-display text-title uppercase tracking-display text-on-ink">
-              {c.line}
-            </p>
-            {"cta" in c && c.cta ? (
-              <Link
-                href="/sauce"
-                className="pointer-events-auto mt-8 inline-flex min-h-[3rem] items-center bg-gold px-6 font-body font-semibold text-ink"
-              >
-                Meet the jar
-              </Link>
-            ) : null}
-          </div>
-        ))}
+            aria-hidden
+            className="absolute inset-0 bg-[radial-gradient(85%_60%_at_28%_78%,rgb(var(--si-ember)/0.32),rgb(var(--si-maroon)/0.16)_42%,transparent_70%),radial-gradient(60%_45%_at_70%_85%,rgb(var(--si-gold)/0.14),transparent_60%)]"
+          />
 
-        <p className="pointer-events-none absolute bottom-5 right-6 font-body text-eyebrow uppercase text-on-ink-muted">
-          Keep scrolling
-        </p>
+          {mount ? (
+            <IslandStage
+              progress={progress}
+              drift={drift}
+              dpr={dpr}
+              onReady={(inv) => {
+                invalidateRef.current = inv;
+              }}
+            />
+          ) : null}
+
+          {/* Grain + edge vignette over the scene, matching the forge. */}
+          <div
+            aria-hidden
+            className="si-grain pointer-events-none absolute inset-0"
+          />
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink via-transparent to-ink"
+          />
+
+          {/* Captions — swapped by the scrub. */}
+          {CAPTIONS.map((c, i) => (
+            <div
+              key={c.line}
+              ref={(el) => {
+                captionRefs.current[i] = el;
+              }}
+              className={cn(
+                "pointer-events-none absolute inset-x-0 bottom-[12svh] mx-auto max-w-container px-gutter",
+              )}
+            >
+              <p className="font-body text-eyebrow font-semibold uppercase text-gold">
+                {c.eyebrow}
+              </p>
+              <p className="mt-4 max-w-[18ch] font-display text-title uppercase tracking-display text-on-ink">
+                {c.line}
+              </p>
+            </div>
+          ))}
+
+          <p className="pointer-events-none absolute bottom-5 right-6 font-body text-eyebrow uppercase text-on-ink-muted">
+            Keep scrolling
+          </p>
+        </div>
+      </div>
+
+      {/* Conversion stays outside the pinned subtree, in normal document
+          flow. It is never focusable while visually hidden. */}
+      <div className="relative border-y border-ink-line bg-ink py-8 text-center">
+        <Link
+          href="/sauce"
+          className="inline-flex min-h-[3.25rem] items-center bg-gold px-7 font-body font-semibold text-ink transition-colors duration-fast ease-si hover:bg-ember hover:text-on-ink"
+        >
+          Meet the jar
+        </Link>
       </div>
     </section>
   );

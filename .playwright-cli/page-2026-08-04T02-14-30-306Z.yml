@@ -1,0 +1,316 @@
+- generic [active] [ref=e1]:
+  - link "Skip to content" [ref=e2] [cursor=pointer]:
+    - /url: "#main"
+  - banner [ref=e3]:
+    - generic [ref=e5]:
+      - link "Sunny Island Pepper Sauce — home" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: Sunny Island
+      - navigation "Primary" [ref=e8]:
+        - link "The Sauce" [ref=e9] [cursor=pointer]:
+          - /url: /sauce
+        - link "Recipes" [ref=e10] [cursor=pointer]:
+          - /url: /recipes
+        - link "The Story" [ref=e11] [cursor=pointer]:
+          - /url: /story
+        - link "For Chefs & Retailers" [ref=e12] [cursor=pointer]:
+          - /url: /partners
+      - link "Inquire for Sauce" [ref=e14] [cursor=pointer]:
+        - /url: /inquire
+  - main [ref=e15]:
+    - generic [ref=e17]:
+      - button "Pause background film" [ref=e22] [cursor=pointer]:
+        - generic [ref=e24]: ❙❙
+      - generic [ref=e26]:
+        - paragraph [ref=e27]: Sunny Island · Classic Gold
+        - heading "Caribbean heat, made for tables and shelves." [level=1] [ref=e28]:
+          - text: Caribbean heat,
+          - generic [ref=e29]: made for tables
+          - text: and shelves.
+        - paragraph [ref=e30]: Scotch bonnet, green papaya, and a family recipe carried five generations from St. Vincent to Trinidad & Tobago.
+        - generic [ref=e31]:
+          - text: Company website
+          - textbox [ref=e32]
+          - generic [ref=e33]:
+            - generic [ref=e34]: Your name
+            - textbox "Your name" [ref=e35]
+            - generic [ref=e36]: Email
+            - textbox "Email" [ref=e37]
+            - button "Inquire" [ref=e38] [cursor=pointer]
+          - generic [ref=e39]: What do you need?
+          - textbox "What do you need?" [ref=e40]:
+            - /placeholder: What do you need? (a few bottles, a case, a shelf…)
+          - paragraph [ref=e41]:
+            - text: Submitting means we may contact you about this inquiry. No account, no newsletter.
+            - link "Buying wholesale or for retail?" [ref=e42] [cursor=pointer]:
+              - /url: /inquire
+    - list [ref=e45]:
+      - listitem [ref=e46]:
+        - generic [ref=e47]: "01"
+        - generic [ref=e48]: Five generations
+      - listitem [ref=e49]:
+        - generic [ref=e50]: "02"
+        - generic [ref=e51]: St. Vincent & Trinidad
+      - listitem [ref=e52]:
+        - generic [ref=e53]: "03"
+        - generic [ref=e54]: Scotch bonnet–led
+      - listitem [ref=e55]:
+        - generic [ref=e56]: "04"
+        - generic [ref=e57]: Small-batch
+    - generic [ref=e60]:
+      - generic [ref=e61]:
+        - generic [ref=e62]: II
+        - generic [ref=e64]: Origin
+      - heading "Five generations. One recipe." [level=2] [ref=e67]
+      - generic [ref=e71]:
+        - paragraph [ref=e73]: “Originating in the early 1900s on St. Vincent Island and refined in Trinidad & Tobago, the five-generation-old Sunny Island Pepper Sauce now debuts in the United States, bringing a taste of Caribbean heritage.”
+        - figure "From the printed 16 oz label." [ref=e74]:
+          - img "History panel from the printed Sunny Island Pepper Sauce label." [ref=e76]
+      - list [ref=e79]:
+        - listitem [ref=e80]:
+          - text: "01"
+          - heading "Early 1900s" [level=3] [ref=e82]
+          - paragraph [ref=e83]: St. Vincent
+          - paragraph [ref=e84]: The recipe is born in a family kitchen.
+        - listitem [ref=e85]:
+          - text: "02"
+          - heading "Mid-century" [level=3] [ref=e87]
+          - paragraph [ref=e88]: Trinidad & Tobago
+          - paragraph [ref=e89]: Refined over decades of island tables.
+        - listitem [ref=e90]:
+          - text: "03"
+          - heading "Five generations" [level=3] [ref=e92]
+          - paragraph [ref=e93]: One family
+          - paragraph [ref=e94]: Handed down, never written down — until now.
+        - listitem [ref=e95]:
+          - text: "04"
+          - heading "Today" [level=3] [ref=e97]
+          - paragraph [ref=e98]: United States
+          - paragraph [ref=e99]: The family recipe makes its American debut.
+    - generic [ref=e100]:
+      - generic [ref=e102]:
+        - paragraph [ref=e103]: An illustrated low-poly Caribbean island at dusk. Scrolling crosses the water and lands on the Sunny Island jar standing on the beach.
+        - generic:
+          - paragraph: The island
+          - paragraph: Born on an island.
+        - generic:
+          - paragraph: The crossing
+          - paragraph: Carried five generations across the water.
+        - generic:
+          - paragraph: The landing
+          - paragraph: It all ends up in the jar.
+        - paragraph: Keep scrolling
+      - link "Meet the jar" [ref=e106] [cursor=pointer]:
+        - /url: /sauce
+    - generic [ref=e107]:
+      - generic [ref=e108]:
+        - generic [ref=e109]:
+          - generic [ref=e110]: III
+          - generic [ref=e112]: Craft
+        - heading "Short list. Long answer." [level=2] [ref=e114]:
+          - generic [ref=e115]: Short list.
+          - generic [ref=e117]: Long answer.
+      - generic [ref=e238]:
+        - generic [ref=e239]:
+          - paragraph [ref=e240]: Where it’s made
+          - paragraph [ref=e242]: Made by hand in a licensed shared commercial kitchen, in batches small enough to taste every one — with the equipment to scale from a test batch to a full production run.
+          - link "How a batch happens" [ref=e244] [cursor=pointer]:
+            - /url: /story#production
+        - generic [ref=e246]:
+          - figure "The licensed kitchen — prep bench" [ref=e248]:
+            - img "The licensed kitchen — prep bench" [ref=e250]
+          - figure "Batch day — peppers in" [ref=e253]:
+            - img "Batch day — peppers in" [ref=e255]
+          - figure "The pot, mid-run" [ref=e258]:
+            - img "The pot, mid-run" [ref=e260]
+          - figure "Filling, by hand" [ref=e263]:
+            - img "Filling, by hand" [ref=e265]
+          - figure "Walk-in, stocked" [ref=e268]:
+            - img "Walk-in, stocked" [ref=e270]
+          - figure "End of a run" [ref=e273]:
+            - img "End of a run" [ref=e275]
+    - generic [ref=e278]:
+      - generic [ref=e279]:
+        - generic [ref=e281]:
+          - generic [ref=e282]: IV
+          - generic [ref=e283]: The table
+        - link "All six house recipes" [ref=e285] [cursor=pointer]:
+          - /url: /recipes
+      - generic [ref=e288]:
+        - heading "Cook it the Trini way." [level=2] [ref=e289]
+        - generic [ref=e290]:
+          - generic [ref=e291]: Cook it the Trini way.
+          - generic [ref=e293]: Cook it the Trini way.
+          - generic [ref=e295]: Cook it the Trini way.
+          - generic [ref=e297]: Cook it the Trini way.
+          - generic [ref=e299]: Cook it the Trini way.
+      - generic [ref=e301]:
+        - list [ref=e302]:
+          - listitem [ref=e303]:
+            - link "01 Doubles, Slight Pepper Doubles · About 3 hours, plus an overnight soak for the channa" [ref=e304] [cursor=pointer]:
+              - /url: /recipes/doubles-slight-pepper
+              - generic [ref=e305]: "01"
+              - generic [ref=e306]:
+                - generic [ref=e307]: Doubles, Slight Pepper
+                - generic [ref=e308]: Doubles · About 3 hours, plus an overnight soak for the channa
+              - generic [ref=e309]: →
+          - listitem [ref=e310]:
+            - link "02 Burnt-Sugar Chicken Pelau Chicken Pelau · 1 hour 30 minutes, plus marinating" [ref=e311] [cursor=pointer]:
+              - /url: /recipes/chicken-pelau
+              - generic [ref=e312]: "02"
+              - generic [ref=e313]:
+                - generic [ref=e314]: Burnt-Sugar Chicken Pelau
+                - generic [ref=e315]: Chicken Pelau · 1 hour 30 minutes, plus marinating
+              - generic [ref=e316]: →
+          - listitem [ref=e317]:
+            - link "03 Ten-Minute Pepper Shrimp Pepper Shrimp · 35 minutes" [ref=e318] [cursor=pointer]:
+              - /url: /recipes/pepper-shrimp
+              - generic [ref=e319]: "03"
+              - generic [ref=e320]:
+                - generic [ref=e321]: Ten-Minute Pepper Shrimp
+                - generic [ref=e322]: Pepper Shrimp · 35 minutes
+              - generic [ref=e323]: →
+          - listitem [ref=e324]:
+            - link "04 Curry Chicken, Buss-Up-Shut Curry Chicken with Buss-Up-Shut (Paratha Roti) · About 4 hours, including marinating and dough rests" [ref=e325] [cursor=pointer]:
+              - /url: /recipes/curry-chicken-buss-up-shut
+              - generic [ref=e326]: "04"
+              - generic [ref=e327]:
+                - generic [ref=e328]: Curry Chicken, Buss-Up-Shut
+                - generic [ref=e329]: Curry Chicken with Buss-Up-Shut (Paratha Roti) · About 4 hours, including marinating and dough rests
+              - generic [ref=e330]: →
+          - listitem [ref=e331]:
+            - link "05 Callaloo, Swizzled to Silk Callaloo · 1 hour" [ref=e332] [cursor=pointer]:
+              - /url: /recipes/callaloo
+              - generic [ref=e333]: "05"
+              - generic [ref=e334]:
+                - generic [ref=e335]: Callaloo, Swizzled to Silk
+                - generic [ref=e336]: Callaloo · 1 hour
+              - generic [ref=e337]: →
+          - listitem [ref=e338]:
+            - link "06 Late-Night Trini Corn Soup Trini Corn Soup · About 1 hour 45 minutes" [ref=e339] [cursor=pointer]:
+              - /url: /recipes/trini-corn-soup
+              - generic [ref=e340]: "06"
+              - generic [ref=e341]:
+                - generic [ref=e342]: Late-Night Trini Corn Soup
+                - generic [ref=e343]: Trini Corn Soup · About 1 hour 45 minutes
+              - generic [ref=e344]: →
+        - generic [ref=e345]:
+          - figure "Serving suggestion" [ref=e347]:
+            - img "A spread of Caribbean dishes arranged around a jar of Sunny Island Pepper Sauce." [ref=e349]
+          - figure "Serving suggestion" [ref=e352]:
+            - img "A spread of Caribbean dishes arranged around a jar of Sunny Island Pepper Sauce." [ref=e354]
+    - generic [ref=e356]:
+      - generic [ref=e357]:
+        - img "Jars of Sunny Island Pepper Sauce on dark stone before a sunset opening." [ref=e359]
+        - generic [ref=e362]:
+          - generic [ref=e363]:
+            - generic [ref=e364]: V
+            - generic [ref=e366]: Trade
+          - heading "Pull up a chair." [level=2] [ref=e368]:
+            - generic [ref=e369]: Pull up
+            - generic [ref=e371]: a chair.
+          - paragraph [ref=e374]: Tell us what you need and a person answers — no account, no cart, no autoresponder. Chefs and retailers welcome.
+      - generic [ref=e376]:
+        - link [ref=e377] [cursor=pointer]:
+          - /url: /inquire?buyer=consumer&source=home-trade
+          - text: "01"
+          - heading "Direct Order" [level=3] [ref=e378]
+          - paragraph [ref=e379]: Bottles for your table, your stall, or a room full of people.
+        - link [ref=e380] [cursor=pointer]:
+          - /url: /inquire?buyer=wholesale&source=home-trade
+          - text: "02"
+          - heading "Wholesale" [level=3] [ref=e381]
+          - paragraph [ref=e382]: Case volumes for distribution and food-service programs.
+        - link [ref=e383] [cursor=pointer]:
+          - /url: /inquire?buyer=retail&source=home-trade
+          - text: "03"
+          - heading "Retail Partnership" [level=3] [ref=e384]
+          - paragraph [ref=e385]: The 8 FL OZ (250 g) jar, on your shelf, with real provenance.
+      - generic [ref=e386]:
+        - generic [ref=e387]:
+          - paragraph [ref=e388]: Start here
+          - heading "Tell us what you need." [level=3] [ref=e390]
+        - generic [ref=e394]:
+          - list "Form progress" [ref=e395]:
+            - listitem [ref=e396]:
+              - button "01 · What kind of inquiry?" [disabled] [ref=e397]
+            - listitem [ref=e400]:
+              - button "02 · The details" [disabled] [ref=e401]
+            - listitem [ref=e404]:
+              - button "03 · About you" [disabled] [ref=e405]
+          - text: Company website
+          - textbox [ref=e408]
+          - group "What kind of inquiry is this?" [ref=e410]:
+            - generic [ref=e412]:
+              - button "Direct Order Bottles for you, your stall, your truck, or an event." [pressed] [ref=e413] [cursor=pointer]:
+                - generic [ref=e414]: Direct Order
+                - generic [ref=e415]: Bottles for you, your stall, your truck, or an event.
+              - button "Wholesale Distribution Case volume for distribution or food service." [ref=e416] [cursor=pointer]:
+                - generic [ref=e417]: Wholesale Distribution
+                - generic [ref=e418]: Case volume for distribution or food service.
+              - button "Retail Partnership Shelf placement in a store or a group of stores." [ref=e419] [cursor=pointer]:
+                - generic [ref=e420]: Retail Partnership
+                - generic [ref=e421]: Shelf placement in a store or a group of stores.
+              - button "Other Partnership Collaborations, sponsorships, anything else." [ref=e422] [cursor=pointer]:
+                - generic [ref=e423]: Other Partnership
+                - generic [ref=e424]: Collaborations, sponsorships, anything else.
+              - button "Feedback Tell us what you thought. No sales pitch." [ref=e425] [cursor=pointer]:
+                - generic [ref=e426]: Feedback
+                - generic [ref=e427]: Tell us what you thought. No sales pitch.
+          - generic [ref=e428]:
+            - button "Continue" [ref=e429] [cursor=pointer]
+            - paragraph [ref=e430]:
+              - text: Or email
+              - link "info@sunnyislandpepper.com" [ref=e431] [cursor=pointer]:
+                - /url: mailto:info@sunnyislandpepper.com
+          - paragraph [ref=e432]
+  - contentinfo [ref=e433]:
+    - generic [ref=e436]:
+      - blockquote [ref=e437]:
+        - paragraph [ref=e438]: Your Well-being is your greatest treasure; Health, Happiness and self-care are your compass to a fulfilled life. Prioritize them fearlessly.
+        - contentinfo [ref=e439]: A message from the Feracho Brand
+      - generic [ref=e440]:
+        - generic [ref=e441]:
+          - link "Sunny Island" [ref=e442] [cursor=pointer]:
+            - /url: /
+          - paragraph [ref=e444]: A five-generation Scotch bonnet pepper sauce from St. Vincent and Trinidad & Tobago, now in the United States.
+        - navigation "Footer" [ref=e445]:
+          - heading "Site" [level=2] [ref=e446]
+          - list [ref=e447]:
+            - listitem [ref=e448]:
+              - link "The Sauce" [ref=e449] [cursor=pointer]:
+                - /url: /sauce
+            - listitem [ref=e450]:
+              - link "Recipes" [ref=e451] [cursor=pointer]:
+                - /url: /recipes
+            - listitem [ref=e452]:
+              - link "The Story" [ref=e453] [cursor=pointer]:
+                - /url: /story
+            - listitem [ref=e454]:
+              - link "For Chefs & Retailers" [ref=e455] [cursor=pointer]:
+                - /url: /partners
+            - listitem [ref=e456]:
+              - link "Inquire for Sauce" [ref=e457] [cursor=pointer]:
+                - /url: /inquire
+        - generic [ref=e458]:
+          - heading "Contact" [level=2] [ref=e459]
+          - list [ref=e460]:
+            - listitem [ref=e461]:
+              - link "info@sunnyislandpepper.com" [ref=e462] [cursor=pointer]:
+                - /url: mailto:info@sunnyislandpepper.com
+            - listitem [ref=e463]:
+              - link "@sunnyislandpepper" [ref=e464] [cursor=pointer]:
+                - /url: https://www.instagram.com/sunnyislandpepper
+      - generic [ref=e465]:
+        - paragraph [ref=e466]: © 2026 Sunny Island Pepper Sauce
+        - list [ref=e467]:
+          - listitem [ref=e468]:
+            - link "Privacy" [ref=e469] [cursor=pointer]:
+              - /url: /legal/privacy
+          - listitem [ref=e470]:
+            - link "Terms" [ref=e471] [cursor=pointer]:
+              - /url: /legal/terms
+          - listitem [ref=e472]:
+            - link "Accessibility" [ref=e473] [cursor=pointer]:
+              - /url: /accessibility
+  - alert [ref=e474]

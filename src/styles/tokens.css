@@ -70,7 +70,7 @@
   /* Fluid scale. Clamped so a 320px phone and a 4K display both read well. */
   /* Ember Cadence scale (creative direction §5). rem-mixed clamps only —
      pure-vw type breaks user zoom (WCAG 1.4.4). display-xl is the spread
-     voice: viewport-wide Fraunces on its own line, never in a text column.
+     voice: viewport-wide Archivo on its own line, never in a text column.
      hero stays measured for the split-hero column (~550px). */
   --si-text-display-xl: clamp(3.25rem, 1.5rem + 11vw, 12rem);
   --si-text-hero: clamp(2.375rem, 1.7rem + 2.2vw, 3.5rem);
@@ -137,6 +137,7 @@
   --si-z-header: 50;
   --si-z-nav: 60;
   --si-z-overlay: 70;
+  --si-clip-ox: 8%;
 }
 
 /* ------------------------------------------------ forge lighting (§dark) */
@@ -159,6 +160,22 @@
     rgb(var(--si-gold) / 0.045) 42%,
     transparent 70%
   );
+}
+
+/* A low-opacity printed ground for the quiet Craft spread. The raster texture
+   is non-representational and never becomes a semantic image. */
+.si-wallpaper::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("/brand/concept/texture-tile.webp");
+  background-size: min(34rem, 72vw);
+  opacity: 0.025;
+}
+
+.si-key {
+  letter-spacing: var(--si-tracking-eyebrow);
 }
 
 /* ------------------------------------------------ Archivo voices (§5) */
@@ -245,6 +262,15 @@ h3 {
   clip-path: circle(140% at 50% 62%);
 }
 
+@supports not (clip-path: url("#si-origin-window")) {
+  .si-clip-headline > svg {
+    display: none;
+  }
+  .si-clip-headline__fallback {
+    display: block;
+  }
+}
+
 /* Ingredient marquee — 60s+; fast marquees read carnival, slow reads
    editorial. Paused entirely under reduced motion via the global gate. */
 @keyframes si-marquee {
@@ -273,8 +299,14 @@ h3 {
   *::before,
   *::after {
     animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 1ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .si-marquee {
+    animation: none !important;
+    transform: translateX(0) !important;
   }
 }

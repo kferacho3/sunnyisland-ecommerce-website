@@ -4,6 +4,8 @@ import { Fact } from "@/components/content/Fact";
 import { Container } from "@/components/core/Container";
 import { Eyebrow } from "@/components/core/Section";
 import { IngredientBanner } from "@/components/marketing/IngredientBanner";
+import { SpreadMark } from "@/components/marketing/SpreadMark";
+import { Formation } from "@/components/motion/Formation.client";
 import { Lines, Settle } from "@/components/motion/Reveal.client";
 import { TextLink } from "@/components/core/Button";
 import { story } from "@/content/story";
@@ -32,22 +34,22 @@ export function Craft() {
   return (
     <section
       id="craft"
-      className="si-anvil relative overflow-hidden bg-cream-sunk py-section text-on-cream"
+      className="si-anvil si-wallpaper relative overflow-hidden bg-cream-sunk py-section text-on-cream"
     >
-      <Container>
-        <Eyebrow>What&rsquo;s in the jar</Eyebrow>
+      <Container className="relative">
+        <SpreadMark numeral="III" label="Craft" />
         <Lines
           as="h2"
-          className="mt-6 max-w-[16ch] font-display text-display tracking-display text-on-cream"
+          className="mt-9 max-w-[16ch] font-display text-display tracking-display text-on-cream"
         >
           Short list. Long answer.
         </Lines>
       </Container>
 
-      <IngredientBanner className="mt-14" />
+      <IngredientBanner className="relative mt-20" />
 
-      <Container>
-        <div className="mt-20 grid gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+      <Container className="relative">
+        <div className="mt-24 grid gap-16 lg:grid-cols-[0.82fr_1.18fr] lg:gap-24">
           <div>
             <Eyebrow>Where it&rsquo;s made</Eyebrow>
             <Fact claim={story.facility}>
@@ -65,9 +67,11 @@ export function Craft() {
           </div>
 
           {/* Archive plates — the honest contact sheet. */}
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3">
+          {/* Reduced motion: the archive contact sheet is fully visible and
+              still, with its hand-set plate rotations intact. */}
+          <Formation className="grid grid-cols-2 gap-6 sm:grid-cols-3">
             {PLATES.map((p, i) => (
-              <Settle key={p.n} delay={i * 0.05}>
+              <div key={p.n} data-formation-item>
                 <figure
                   className="si-plate"
                   style={{
@@ -85,9 +89,9 @@ export function Craft() {
                   </div>
                   <figcaption>{p.caption}</figcaption>
                 </figure>
-              </Settle>
+              </div>
             ))}
-          </div>
+          </Formation>
         </div>
       </Container>
     </section>
