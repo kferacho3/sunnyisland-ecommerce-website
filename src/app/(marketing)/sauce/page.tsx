@@ -26,7 +26,7 @@ export default function SaucePage() {
         <div aria-hidden className="si-rake absolute inset-x-0 top-0 h-96" />
 
         <Container className="relative">
-          <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+          <div className="grid items-center gap-14 lg:grid-cols-[0.92fr_1.08fr] lg:gap-16">
             <div>
               <Eyebrow onInk>Sunny Island · Classic Gold</Eyebrow>
               <h1 className="mt-5 max-w-[16ch] text-display tracking-display text-on-ink">
@@ -59,7 +59,7 @@ export default function SaucePage() {
               </div>
             </div>
 
-            <ProductStage className="mx-auto w-full max-w-md lg:mx-0" />
+            <ProductStage className="mx-auto w-full max-w-[34rem] lg:mx-0 lg:max-w-none" />
           </div>
         </Container>
       </section>
