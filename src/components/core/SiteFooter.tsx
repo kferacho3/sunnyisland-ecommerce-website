@@ -22,7 +22,7 @@ const LEGAL = [
  */
 export function SiteFooter() {
   return (
-    <footer className="si-grain relative bg-ink text-on-ink">
+    <footer className="si-grain relative bg-ink text-on-ink [contain-intrinsic-size:auto_42rem] [content-visibility:auto]">
       <div aria-hidden className="si-rake absolute inset-x-0 top-0 h-48" />
 
       <Container className="relative">

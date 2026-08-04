@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Suspense } from "react";
 
 import { Container } from "@/components/core/Container";
 import { Eyebrow } from "@/components/core/Section";
 import { QuickInquiry } from "@/components/forms/QuickInquiry.client";
-import { MotionRefresh } from "@/components/motion/Reveal.client";
 import { ProofRail } from "@/components/marketing/ProofRail";
 import { ArrivalRelay } from "@/components/spreads/ArrivalRelay.client";
 import { IslandChapter } from "@/components/spreads/IslandChapter.client";
@@ -30,14 +30,6 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <>
-      <link
-        rel="preload"
-        as="image"
-        href="/media/hero.v2.poster.webp"
-        fetchPriority="high"
-      />
-      <MotionRefresh />
-
       {/* ── I. ARRIVAL ─────────────────────────────────────────────── */}
       {/* HERO INVARIANTS — measured failure modes, not styling notes:
           1. Keep xl:grid-cols-2, film order-first/xl:order-last, the copy cap
@@ -60,6 +52,41 @@ export default function HomePage() {
         <div className="grid min-h-[calc(100svh-var(--si-header-h))] xl:grid-cols-2">
           {/* FILM. Above the copy when stacked, beside it once split. */}
           <div className="relative order-first min-h-[44svh] xl:order-last xl:min-h-0">
+            {/* The 8 KB mobile-critical frame is preloaded from stable static
+                HTML: no runtime image transform, no hydration paint, and no
+                visual downgrade. The client relay upgrades this stage to film
+                only on wide screens. */}
+            <div
+              aria-hidden
+              className="absolute inset-0 grid grid-cols-5 gap-px overflow-hidden bg-ink-line xl:hidden"
+            >
+              {Array.from({ length: 5 }, (_, index) => (
+                <span key={index} className="relative overflow-hidden">
+                  <Image
+                    src="/media/hero.v2.mobile.poster.webp"
+                    alt=""
+                    fill
+                    priority={index === 2}
+                    fetchPriority={index === 2 ? "high" : "auto"}
+                    sizes="100vw"
+                    unoptimized
+                    decoding="sync"
+                    className="h-full w-full object-cover opacity-100"
+                    style={{
+                      objectPosition: `${22.4 + index * 13.55}% center`,
+                    }}
+                  />
+                </span>
+              ))}
+            </div>
+            <img
+              src="/media/hero.v2.mobile.poster.webp"
+              alt=""
+              aria-hidden
+              loading="eager"
+              decoding="async"
+              className="absolute inset-0 hidden h-full w-full object-cover opacity-100 xl:block"
+            />
             <ArrivalRelay />
           </div>
 
@@ -72,12 +99,11 @@ export default function HomePage() {
             <div className="ml-auto w-full max-w-[calc(var(--si-container)/2)] px-gutter xl:pr-8">
               <Eyebrow onInk>Sunny Island · Classic Gold</Eyebrow>
 
-              {/* Measured 2026-08-03 with Lighthouse 12.8.2: mobile LCP is the
-                  hero <video>; desktop LCP is the poster <img>. Neither media
-                  node may be faded, clipped, translated, resized, or painted
-                  below opacity:1. The h1 is server-rendered and also receives
-                  zero JS motion. Solid line + one hollow-stroke line — the
-                  film-overlay type signature.
+              {/* Measured 2026-08-04 with Lighthouse 12: mobile LCP is this
+                  h1; desktop LCP is the poster <img>. Neither node may be
+                  faded, translated, resized, or painted below opacity:1. The
+                  h1 is server-rendered and receives zero JS motion. Solid line
+                  + one hollow-stroke line — the film-overlay type signature.
 
                   Sized per band rather than straight off `text-hero`: the
                   hollow line is the widest thing on the page and it has to

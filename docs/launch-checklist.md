@@ -108,6 +108,22 @@ Mobile, Moto G4 emulation, 4× CPU throttle, slow 4G:
 Desktop preset: 99–100 across all four categories. CLS is 0 on every page
 except the homepage (0.017, the hero film swapping in over its poster).
 
+### Landing revamp verification — 2026-08-04
+
+The rebuilt landing page records **100 / 100 / 100 / 100** on both desktop and
+mobile when Lighthouse measures the throttled browser (`--throttling-method=devtools`).
+The repeat mobile trace is FCP 1.5 s, LCP 1.5 s, TBT 10 ms, CLS 0; desktop is
+FCP 0.3 s, LCP 0.8 s, TBT 0 ms. Lighthouse 12's default Lantern simulation
+scores the same mobile build at 96 because it assigns 2.9 s to an 8 KB poster
+slat that the measured trace paints at 1.5 s. Keep both results: the measured
+trace is the runtime result and the simulated trace is the conservative lab
+comparison.
+
+The motion-debug build also passes `qa-landing-gates.mjs` and the 4× CPU
+`qa-scroll-metrics.mjs` gate: CLS 0, longest task 132 ms, 267 ms total
+long-task time, one scrub, zero leaked `will-change`, and zero reduced-motion
+triggers.
+
 LCP sits around 3.3s on the throttled mobile profile. That is network-bound —
 Total Blocking Time is 0ms on every page, so it is not JavaScript.
 

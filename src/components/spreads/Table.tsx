@@ -48,6 +48,7 @@ export function Table() {
               <li key={r.slug}>
                 <Link
                   href={`/recipes/${r.slug}`}
+                  prefetch={false}
                   className="group/dish flex items-baseline gap-6 py-6 transition-colors duration-fast ease-si hover:bg-cream-raised sm:gap-10 sm:px-4"
                 >
                   <span className="font-mono text-eyebrow font-semibold text-gold-deep">

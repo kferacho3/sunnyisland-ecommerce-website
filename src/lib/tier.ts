@@ -5,7 +5,7 @@ let cachedCpuProbe: boolean | null = null;
 /**
  * A small, bounded capability calibration for costs the platform APIs do not
  * expose (most importantly CPU throttling and old desktop cores). On an M4 it
- * takes ~7ms; the 4× QA profile takes ~28ms. Failing the probe selects the
+ * takes ~7ms; the 4× QA profile takes ~27ms. Failing the probe selects the
  * complete static island before Three, Draco, a canvas, or a pin is mounted.
  */
 function cpuCanDecodeRichScene(): boolean {
@@ -16,7 +16,7 @@ function cpuCanDecodeRichScene(): boolean {
     checksum = (checksum + index) % 1_000_003;
   }
   // Keep the loop observable without leaking a debug global.
-  cachedCpuProbe = checksum === 21 && performance.now() - start <= 18;
+  cachedCpuProbe = checksum === 21 && performance.now() - start <= 10;
   return cachedCpuProbe;
 }
 

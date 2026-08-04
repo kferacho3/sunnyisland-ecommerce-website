@@ -4,18 +4,19 @@ import { Archivo, Great_Vibes, Inter_Tight } from "next/font/google";
 import "./globals.css";
 
 /**
- * Two families, two roles. Archivo — a variable grotesque — carries every
- * display line in uppercase at light-to-regular weight, which is the register
- * TRUFF and its tier use: authority from scale and spacing, not from a serif.
+ * Two families, two roles. Archivo 400 carries every display line in uppercase,
+ * which is the register TRUFF and its tier use: authority from scale and
+ * spacing, not from a serif or a stack of unused font axes.
  * Inter Tight handles anything a buyer has to actually read.
  *
- * Both self-hosted by next/font: no render-blocking request, no layout shift.
+ * Both are self-hosted by next/font. Only the display face is preloaded;
+ * metric-compatible optional fallbacks prevent late layout shifts.
  */
 const archivo = Archivo({
   subsets: ["latin"],
-  display: "swap",
+  weight: "400",
+  display: "optional",
   variable: "--font-archivo",
-  axes: ["wdth"],
 });
 
 /**
@@ -26,19 +27,22 @@ const archivo = Archivo({
 const greatVibes = Great_Vibes({
   subsets: ["latin"],
   weight: "400",
-  display: "swap",
+  display: "optional",
   variable: "--font-script",
-  // Do NOT set preload:false here. It looks like an easy win — this family
-  // renders one decorative element — but on short pages (/inquire, /partners)
-  // the footer quote IS the largest contentful paint, and un-preloading it
-  // measured +2.9s of LCP render delay and CLS 0.261 as it swapped in.
+  // This face appears only in the footer, which is content-visibility gated
+  // on long pages. Optional display prevents a late shift on short pages.
+  preload: false,
   fallback: ["Snell Roundhand", "cursive"],
 });
 
 const interTight = Inter_Tight({
   subsets: ["latin"],
-  display: "swap",
+  weight: "400",
+  display: "optional",
   variable: "--font-inter-tight",
+  // Body copy can use Next's metric-compatible fallback immediately; the
+  // display face remains the single critical font preload.
+  preload: false,
 });
 
 const SITE_URL =

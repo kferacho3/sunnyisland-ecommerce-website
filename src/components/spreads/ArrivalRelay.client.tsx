@@ -33,6 +33,10 @@ type NetworkInformation = { saveData?: boolean };
 function heroCapability(): "static" | "film" {
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches)
     return "static";
+  // The film belongs to the wide split-screen composition. On mobile and
+  // tablet the poster is the complete art direction, avoids autoplay data,
+  // and prevents a post-hydration <video> paint from replacing the fast LCP.
+  if (!window.matchMedia("(min-width: 1280px)").matches) return "static";
   const nav = navigator as Navigator & {
     connection?: NetworkInformation;
     deviceMemory?: number;
@@ -65,16 +69,7 @@ export function ArrivalRelay({ className }: { className?: string }) {
   const showFilm = mode !== "static";
 
   return (
-    <div className={cn("absolute inset-0 overflow-hidden bg-ink", className)}>
-      {/* Poster: first paint and the permanent reduced-motion state. */}
-      <img
-        src={SRC.poster}
-        alt=""
-        aria-hidden
-        fetchPriority="high"
-        className="absolute inset-0 h-full w-full object-cover opacity-100"
-      />
-
+    <div className={cn("absolute inset-0 overflow-hidden", className)}>
       {showFilm ? (
         <video
           ref={videoRef}
