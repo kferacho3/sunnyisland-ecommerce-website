@@ -1,9 +1,8 @@
 "use client";
 
-import { useGSAP } from "@gsap/react";
 import { useEffect, useRef } from "react";
 
-import { DUR, EASE, withMotion } from "@/lib/motion";
+import { useLazyMotion } from "@/lib/motion-lazy";
 
 const SLICE_COUNT = 5;
 
@@ -42,41 +41,36 @@ export function SlicedHeading({ children }: { children: string }) {
     };
   }, []);
 
-  useGSAP(
-    () =>
-      withMotion(rootRef.current, ({ reduced, gsap }) => {
-        const root = rootRef.current;
-        if (!root || reduced) return;
-        const inners = innerRefs.current.filter(
-          (inner): inner is HTMLSpanElement => Boolean(inner),
-        );
-        if (!inners.length) return;
+  useLazyMotion(rootRef, ({ reduced, gsap }) => {
+    if (reduced) return;
+    const inners = innerRefs.current.filter((inner): inner is HTMLSpanElement =>
+      Boolean(inner),
+    );
+    if (!inners.length) return;
 
-        gsap.fromTo(
-          inners,
-          {
-            xPercent: (index) =>
-              index < inners.length / 2
-                ? -13 * (index + 1)
-                : 13 * (inners.length - index),
-          },
-          {
-            xPercent: 0,
-            duration: DUR.reveal,
-            ease: EASE,
-            stagger: { amount: 0.14, from: "center" },
-            onStart: () => gsap.set(inners, { willChange: "transform" }),
-            onComplete: () => gsap.set(inners, { clearProps: "willChange" }),
-            scrollTrigger: {
-              trigger: root,
-              start: "top 82%",
-              once: true,
-            },
-          },
-        );
-      }),
-    { scope: rootRef },
-  );
+    gsap.fromTo(
+      inners,
+      {
+        xPercent: (index: number) =>
+          index < inners.length / 2
+            ? -13 * (index + 1)
+            : 13 * (inners.length - index),
+      },
+      {
+        xPercent: 0,
+        duration: 0.8,
+        ease: "power2.out",
+        stagger: { amount: 0.14, from: "center" },
+        onStart: () => gsap.set(inners, { willChange: "transform" }),
+        onComplete: () => gsap.set(inners, { clearProps: "willChange" }),
+        scrollTrigger: {
+          trigger: rootRef.current,
+          start: "top 82%",
+          once: true,
+        },
+      },
+    );
+  });
 
   return (
     <div ref={rootRef} data-motion="sliced-heading" className="w-full">
@@ -91,7 +85,13 @@ export function SlicedHeading({ children }: { children: string }) {
               ref={(element) => {
                 innerRefs.current[index] = element;
               }}
-              className="relative block whitespace-nowrap text-center font-display text-[clamp(1.65rem,6.8vw,6rem)] uppercase leading-[0.9] tracking-[-0.045em] text-on-cream"
+              /* tracking was -0.045em, twice as tight as anything else on the
+                 page. At the 96px clamp that crushed word spaces to 15-21px
+                 against 5-12px letter gaps — only ~1.6x — so the line read
+                 "COOKIT THE TRINI WAY." The slices themselves are in perfect
+                 register (every inner span resolves to the identical page x);
+                 the spacing was never a slicing bug. */
+              className="relative block whitespace-nowrap text-center font-display text-[clamp(1.65rem,6.4vw,5.5rem)] uppercase leading-[0.9] tracking-[-0.02em] [word-spacing:0.14em] text-on-cream"
             >
               {children}
             </span>

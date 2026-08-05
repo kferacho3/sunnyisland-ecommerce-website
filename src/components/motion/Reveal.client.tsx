@@ -1,10 +1,9 @@
 "use client";
 
-import { useGSAP } from "@gsap/react";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 
-import { DUR, EASE, ScrollTrigger, splitLines, withMotion } from "@/lib/motion";
 import { cn } from "@/lib/cn";
+import { loadedMotion, useLazyMotion } from "@/lib/motion-lazy";
 
 /**
  * The house entrances. Two and only two:
@@ -13,7 +12,9 @@ import { cn } from "@/lib/cn";
  *            signature. Real text, never below opacity 0.01 (LCP exclusion).
  * <Settle> — quiet 12px rise for supporting content and plates.
  *
- * Both put their content in final state immediately under reduced motion.
+ * Both put their content in final state immediately under reduced motion —
+ * which is also, by construction, the server HTML. Neither imports GSAP at
+ * module scope; see lib/motion-lazy.ts for why that matters.
  */
 
 export function Lines({
@@ -29,44 +30,43 @@ export function Lines({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  useGSAP(
-    (_context, contextSafe) =>
-      withMotion(ref.current, ({ reduced, gsap }) => {
-        const el = ref.current?.firstElementChild;
-        if (!el || reduced) return;
+  useLazyMotion(ref, ({ reduced, gsap }, root, { splitLines }) => {
+    const el = root.firstElementChild;
+    if (!el || reduced) return;
 
-        let alive = true;
-        let split: Awaited<ReturnType<typeof splitLines>> | null = null;
-        void splitLines(el).then((s) => {
-          if (!alive) {
-            s.revert();
-            return;
-          }
-          split = s;
-          contextSafe?.(() => {
-            gsap.from(s.lines, {
-              yPercent: 105,
-              duration: DUR.reveal,
-              ease: EASE,
-              stagger: 0.09,
-              delay,
-              onStart: () => gsap.set(s.lines, { willChange: "transform" }),
-              onComplete: () => gsap.set(s.lines, { clearProps: "willChange" }),
-              scrollTrigger: {
-                trigger: el,
-                start: "top 78%",
-                once: true,
-              },
-            });
-          })?.();
-        });
-        return () => {
-          alive = false;
-          split?.revert();
-        };
-      }),
-    { scope: ref },
-  );
+    // SplitText resolves after document.fonts.ready, so the ScrollTrigger is
+    // created asynchronously and gsap.context cannot collect it. Both the
+    // tween and the split are tracked by hand and torn down here instead —
+    // otherwise ScrollTrigger.getAll() grows on every client navigation.
+    let alive = true;
+    let split: Awaited<ReturnType<typeof splitLines>> | null = null;
+    let tween: ReturnType<typeof gsap.from> | null = null;
+
+    void splitLines(el).then((created) => {
+      if (!alive) {
+        created.revert();
+        return;
+      }
+      split = created;
+      tween = gsap.from(created.lines, {
+        yPercent: 105,
+        duration: 0.8,
+        ease: "power2.out",
+        stagger: 0.09,
+        delay,
+        onStart: () => gsap.set(created.lines, { willChange: "transform" }),
+        onComplete: () => gsap.set(created.lines, { clearProps: "willChange" }),
+        scrollTrigger: { trigger: el, start: "top 78%", once: true },
+      });
+    });
+
+    return () => {
+      alive = false;
+      tween?.scrollTrigger?.kill();
+      tween?.kill();
+      split?.revert();
+    };
+  });
 
   return (
     <div ref={ref} data-motion="lines">
@@ -86,24 +86,19 @@ export function Settle({
 }) {
   const ref = useRef<HTMLDivElement>(null);
 
-  useGSAP(
-    () =>
-      withMotion(ref.current, ({ reduced, gsap }) => {
-        const el = ref.current;
-        if (!el || reduced) return;
-        gsap.from(el, {
-          y: 12,
-          autoAlpha: 0.01,
-          duration: DUR.reveal,
-          ease: EASE,
-          delay,
-          onStart: () => gsap.set(el, { willChange: "transform, opacity" }),
-          onComplete: () => gsap.set(el, { clearProps: "willChange" }),
-          scrollTrigger: { trigger: el, start: "top 85%", once: true },
-        });
-      }),
-    { scope: ref },
-  );
+  useLazyMotion(ref, ({ reduced, gsap }, el) => {
+    if (reduced) return;
+    gsap.from(el, {
+      y: 12,
+      autoAlpha: 0.01,
+      duration: 0.8,
+      ease: "power2.out",
+      delay,
+      onStart: () => gsap.set(el, { willChange: "transform, opacity" }),
+      onComplete: () => gsap.set(el, { clearProps: "willChange" }),
+      scrollTrigger: { trigger: el, start: "top 85%", once: true },
+    });
+  });
 
   return (
     <div ref={ref} data-motion="settle" className={cn(className)}>
@@ -112,57 +107,25 @@ export function Settle({
   );
 }
 
+/* ClipHandoff lived here: a scrubbed clip-path circle that opened "the next
+   world" during the ink->cream handoff. That handoff no longer exists — the
+   site is all-dark — and grep found no importer, so it was dead code holding
+   one of the page's three scrubbed-ScrollTrigger slots in reserve. Deleted
+   rather than kept "just in case": an unused scrub is still a budget line. */
+
 /**
- * The signature ink→cream handoff: the next world opens through the badge
- * circle as you scroll. Scrubbed clip-path — transform-free, native scroll.
+ * Refresh triggers after fonts settle — mounted once per page.
+ *
+ * Deliberately does NOT pull GSAP in: if nothing has loaded the motion module
+ * yet then no trigger exists to re-measure, and forcing the import here would
+ * undo the whole point of deferring it. ScrollTrigger.refresh() is a forced
+ * synchronous reflow over every trigger, so it must not fire speculatively.
  */
-export function ClipHandoff({
-  className,
-  children,
-}: {
-  className?: string;
-  children: React.ReactNode;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useGSAP(
-    () =>
-      withMotion(ref.current, ({ reduced, wide, gsap }) => {
-        const el = ref.current;
-        if (!el) return;
-        if (reduced || !wide) {
-          el.style.clipPath = "none";
-          return;
-        }
-        gsap.fromTo(
-          el,
-          { clipPath: "circle(12% at 50% 46%)" },
-          {
-            clipPath: "circle(142% at 50% 46%)",
-            ease: "none",
-            scrollTrigger: {
-              trigger: el,
-              start: "top 88%",
-              end: "top 22%",
-              scrub: 0.5,
-            },
-          },
-        );
-      }),
-    { scope: ref },
-  );
-
-  return (
-    <div ref={ref} data-motion="clip-handoff" className={className}>
-      {children}
-    </div>
-  );
-}
-
-/** Refresh triggers after fonts/images settle — mounted once per page. */
 export function MotionRefresh() {
-  useGSAP(() => {
-    void document.fonts.ready.then(() => ScrollTrigger.refresh());
-  });
+  useEffect(() => {
+    void document.fonts.ready.then(() => {
+      loadedMotion()?.ScrollTrigger.refresh();
+    });
+  }, []);
   return null;
 }

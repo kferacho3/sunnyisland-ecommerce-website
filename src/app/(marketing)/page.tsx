@@ -79,14 +79,30 @@ export default function HomePage() {
                 </span>
               ))}
             </div>
-            <img
-              src="/media/hero.v2.mobile.poster.webp"
-              alt=""
-              aria-hidden
-              loading="eager"
-              decoding="async"
-              className="absolute inset-0 hidden h-full w-full object-cover opacity-100 xl:block"
-            />
+            {/* The DESKTOP base layer. It was pointed at the 750x422 mobile
+                file, which object-cover then upscaled 2.3x into a ~720x978
+                column — a visibly soft jar on every desktop that lands in
+                static mode (reduced motion, Save-Data, or pre-hydration).
+                <picture> rather than a class swap, because `hidden xl:block`
+                only stops an <img> from PAINTING — the browser still fetches
+                it, so a plain src swap would have billed every phone 32 KB for
+                a layer it never shows. A non-matching <source> is never
+                fetched, and below xl this resolves to the same mobile poster
+                the strip above already has in cache: zero extra bytes. */}
+            <picture>
+              <source
+                media="(min-width: 1280px)"
+                srcSet="/media/hero.v2.poster.webp"
+              />
+              <img
+                src="/media/hero.v2.mobile.poster.webp"
+                alt=""
+                aria-hidden
+                loading="eager"
+                decoding="async"
+                className="absolute inset-0 hidden h-full w-full object-cover opacity-100 xl:block"
+              />
+            </picture>
             <ArrivalRelay />
           </div>
 
@@ -115,10 +131,14 @@ export default function HomePage() {
                 and shelves.
               </h1>
 
+              {/* Leads with the two things that actually differentiate the
+                  product. "Five generations" is the page's most-repeated
+                  phrase — it belongs to the Origin headline and the proof
+                  rail, and saying it here as well made the hero the third
+                  place a visitor read it before scrolling once. */}
               <p className="mt-6 max-w-[40ch] text-lede text-on-ink-muted">
-                Scotch bonnet, green papaya, and a family recipe carried five
-                generations from St.&nbsp;Vincent to
-                Trinidad&nbsp;&amp;&nbsp;Tobago.
+                Scotch bonnet and green papaya — a family recipe from
+                St.&nbsp;Vincent, refined in Trinidad&nbsp;&amp;&nbsp;Tobago.
               </p>
 
               {/* The fast lane. Anyone with a real brief still gets the

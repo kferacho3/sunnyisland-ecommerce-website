@@ -16,6 +16,11 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    /* The header is 4.5rem, sticky and translucent, so without this every
+       in-page anchor (#origin, #craft, #table, #trade) and the skip link
+       parked its target's first 72px underneath the blur — chapter folios and
+       headline tops arrived half-legible. */
+    scroll-padding-top: var(--si-header-h);
   }
 
   body {

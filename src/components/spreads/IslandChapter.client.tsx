@@ -1,12 +1,11 @@
 "use client";
 
-import { useGSAP } from "@gsap/react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import { gsap, ScrollTrigger, withMotion } from "@/lib/motion";
 import { cn } from "@/lib/cn";
+import { useLazyMotion } from "@/lib/motion-lazy";
 import { allowsRichVisuals } from "@/lib/tier";
 
 /**
@@ -122,69 +121,73 @@ export function IslandChapter() {
     return () => window.removeEventListener("pointermove", onMove);
   }, [mode]);
 
-  useGSAP(
-    () =>
-      withMotion(wrapRef.current, ({ reduced }) => {
-        const wrap = wrapRef.current;
-        const spacer = spacerRef.current;
-        const stage = stageRef.current;
-        if (!wrap || !spacer || !stage) return;
+  // skipIfVisible is FALSE here, unlike the one-shot entrances. This is a
+  // persistent pinned scene, not an entrance: arriving while it is on screen
+  // is normal, ScrollTrigger resolves its own progress from the scroll
+  // position, and skipping would leave all three captions stacked at full
+  // opacity because the gsap.set below would never run.
+  useLazyMotion(
+    wrapRef,
+    ({ reduced, gsap }, wrap, { ScrollTrigger }) => {
+      const spacer = spacerRef.current;
+      const stage = stageRef.current;
+      if (!spacer || !stage) return;
 
-        if (reduced || mode !== "scene") {
-          // Static world: no pin, captions all visible in flow (CSS handles it).
-          return;
-        }
+      if (reduced || mode !== "scene") {
+        // Static world: no pin, captions all visible in flow (CSS handles it).
+        return;
+      }
 
-        const captions = captionRefs.current.filter(
-          (caption): caption is HTMLDivElement => Boolean(caption),
-        );
-        gsap.set(captions, { opacity: 0, y: 14, pointerEvents: "none" });
+      const captions = captionRefs.current.filter(
+        (caption): caption is HTMLDivElement => Boolean(caption),
+      );
+      gsap.set(captions, { opacity: 0, y: 14, pointerEvents: "none" });
 
-        const pin = ScrollTrigger.create({
-          trigger: wrap,
-          start: "top top",
-          end: () => `+=${window.innerHeight * 2.6}`,
-          pin: stage,
-          pinSpacer: spacer,
-          scrub: 0.5,
-          refreshPriority: 1,
-          invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            progress.current = self.progress;
-            invalidateRef.current();
-          },
-        });
+      const pin = ScrollTrigger.create({
+        trigger: wrap,
+        start: "top top",
+        end: () => `+=${window.innerHeight * 2.6}`,
+        pin: stage,
+        pinSpacer: spacer,
+        scrub: 0.5,
+        refreshPriority: 1,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          progress.current = self.progress;
+          invalidateRef.current();
+        },
+      });
 
-        const captionTriggers = CAPTIONS.flatMap((caption, index) => {
-          const element = captions[index];
-          if (!element) return [];
-          return [
-            ScrollTrigger.create({
-              trigger: wrap,
-              start: () => `top+=${window.innerHeight * 2.6 * caption.at} top`,
-              end: () => `top+=${window.innerHeight * 2.6 * caption.until} top`,
-              invalidateOnRefresh: true,
-              onToggle: (self) => {
-                gsap.to(element, {
-                  opacity: self.isActive ? 1 : 0,
-                  y: self.isActive ? 0 : 14,
-                  pointerEvents: "none",
-                  duration: 0.35,
-                  ease: "power2.out",
-                  overwrite: "auto",
-                });
-              },
-            }),
-          ];
-        });
+      const captionTriggers = CAPTIONS.flatMap((caption, index) => {
+        const element = captions[index];
+        if (!element) return [];
+        return [
+          ScrollTrigger.create({
+            trigger: wrap,
+            start: () => `top+=${window.innerHeight * 2.6 * caption.at} top`,
+            end: () => `top+=${window.innerHeight * 2.6 * caption.until} top`,
+            invalidateOnRefresh: true,
+            onToggle: (self) => {
+              gsap.to(element, {
+                opacity: self.isActive ? 1 : 0,
+                y: self.isActive ? 0 : 14,
+                pointerEvents: "none",
+                duration: 0.35,
+                ease: "power2.out",
+                overwrite: "auto",
+              });
+            },
+          }),
+        ];
+      });
 
-        return () => {
-          pin.kill();
-          captionTriggers.forEach((trigger) => trigger.kill());
-          gsap.killTweensOf(captions);
-        };
-      }),
-    { scope: wrapRef, dependencies: [mode], revertOnUpdate: true },
+      return () => {
+        pin.kill();
+        captionTriggers.forEach((trigger) => trigger.kill());
+        gsap.killTweensOf(captions);
+      };
+    },
+    { skipIfVisible: false, deps: [mode] },
   );
 
   if (mode === "static") {

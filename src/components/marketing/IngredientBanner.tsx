@@ -160,58 +160,95 @@ function Papaya({ className }: { className?: string }) {
   );
 }
 
+/**
+ * Every glyph is now NAMED. Unlabelled, the frieze answered "SHORT LIST. LONG
+ * ANSWER." with eight cartoon vegetables a viewer cannot identify — the green
+ * papaya, the differentiator the brand's own copy says "people cannot place",
+ * read as a kiwi. Naming them turns decoration into the short list the
+ * headline promises, and the names come straight off product.ingredients,
+ * which is already approved(), so it costs nothing in content honesty.
+ *
+ * Garlic was `text-cream-line` — roughly 1.4:1 on this ground, i.e. an
+ * ingredient rendered invisible. Every tone here now clears 4.5:1.
+ */
 const ROW = [
-  { C: ScotchBonnet, tone: "text-ember", size: "h-24 sm:h-32" },
-  { C: Onion, tone: "text-gold-deep", size: "h-20 sm:h-28" },
-  { C: ScotchBonnet, tone: "text-gold", size: "h-[4.5rem] sm:h-24" },
-  { C: Garlic, tone: "text-cream-line", size: "h-20 sm:h-28" },
-  { C: ScotchBonnet, tone: "text-ember", size: "h-24 sm:h-32" },
-  { C: Papaya, tone: "text-[#7d9a3a]", size: "h-20 sm:h-28" },
-  { C: Onion, tone: "text-gold", size: "h-[4.5rem] sm:h-24" },
-  { C: ScotchBonnet, tone: "text-maroon", size: "h-20 sm:h-28" },
+  {
+    C: ScotchBonnet,
+    tone: "text-ember",
+    size: "h-20 sm:h-28",
+    label: "Scotch Bonnet",
+  },
+  { C: Onion, tone: "text-gold-deep", size: "h-16 sm:h-24", label: "Onion" },
+  {
+    C: Garlic,
+    tone: "text-on-cream-muted",
+    size: "h-16 sm:h-24",
+    label: "Garlic",
+  },
+  {
+    C: Papaya,
+    tone: "text-[#9dbc4e]",
+    size: "h-16 sm:h-24",
+    label: "Green Papaya",
+  },
+  {
+    C: ScotchBonnet,
+    tone: "text-gold",
+    size: "h-20 sm:h-28",
+    label: "Scotch Bonnet",
+  },
+  { C: Onion, tone: "text-gold-deep", size: "h-16 sm:h-24", label: "Onion" },
 ] as const;
 
 export function IngredientBanner({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "relative flex overflow-hidden border-y border-cream-line py-12 sm:py-16",
+        "relative flex overflow-hidden border-y border-cream-line py-8 sm:py-10",
         className,
       )}
     >
       {/* Two copies so the loop is seamless; the whole strip is decorative,
           so it is hidden from assistive tech rather than narrated. */}
-      <div aria-hidden className="si-marquee flex w-max flex-none items-center">
+      <div aria-hidden className="si-marquee flex w-max flex-none items-end">
         {[0, 1].map((copy) => (
-          <div key={copy} className="flex items-center">
-            {ROW.map(({ C, tone, size }, i) => (
+          <div key={copy} className="flex items-end">
+            {ROW.map(({ C, tone, size, label }, i) => (
               <span
                 key={`${copy}-${i}`}
-                className={cn(
-                  "mx-7 flex-none sm:mx-11",
-                  tone,
-                  i % 3 === 0
-                    ? "rotate-[-6deg]"
-                    : i % 3 === 1
-                      ? "rotate-[4deg]"
-                      : "",
-                )}
+                className="mx-8 flex flex-none flex-col items-center gap-3 sm:mx-12"
               >
-                <C className={cn(size, "w-auto")} />
+                <span
+                  className={cn(
+                    tone,
+                    i % 3 === 0
+                      ? "rotate-[-6deg]"
+                      : i % 3 === 1
+                        ? "rotate-[4deg]"
+                        : "",
+                  )}
+                >
+                  <C className={cn(size, "w-auto")} />
+                </span>
+                <span className="whitespace-nowrap font-mono text-[0.625rem] font-semibold uppercase tracking-[0.16em] text-on-cream-muted">
+                  {label}
+                </span>
               </span>
             ))}
           </div>
         ))}
       </div>
 
-      {/* Fade the strip into the ground at both edges. */}
+      {/* Fade the strip into the ground at both edges. Widened from w-24: at
+          96px the fade was shorter than the 128px glyphs, so both edge shapes
+          were cut mid-body rather than dissolved. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-cream-sunk to-transparent"
+        className="pointer-events-none absolute inset-y-0 left-0 w-40 bg-gradient-to-r from-cream-sunk via-cream-sunk/70 to-transparent"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-cream-sunk to-transparent"
+        className="pointer-events-none absolute inset-y-0 right-0 w-40 bg-gradient-to-l from-cream-sunk via-cream-sunk/70 to-transparent"
       />
     </div>
   );

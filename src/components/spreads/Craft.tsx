@@ -8,7 +8,11 @@ import { SpreadMark } from "@/components/marketing/SpreadMark";
 import { Formation } from "@/components/motion/Formation.client";
 import { Lines, Settle } from "@/components/motion/Reveal.client";
 import { TextLink } from "@/components/core/Button";
+import { product } from "@/content/product";
 import { story } from "@/content/story";
+
+/** Ingredients the frieze has no drawn glyph for; named in type instead. */
+const NO_GLYPH = ["Vinegar", "Yellow Mustard", "Salt"];
 
 /**
  * SPREAD III — CRAFT. A drawn frieze of what goes in the jar — scotch
@@ -34,7 +38,7 @@ export function Craft() {
   return (
     <section
       id="craft"
-      className="si-anvil si-wallpaper relative overflow-hidden bg-cream-sunk py-section text-on-cream"
+      className="si-anvil si-wallpaper si-grain relative overflow-hidden border-t border-cream-line bg-cream-sunk py-section text-on-cream"
     >
       <Container className="relative">
         <SpreadMark numeral="III" label="Craft" />
@@ -46,10 +50,23 @@ export function Craft() {
         </Lines>
       </Container>
 
-      <IngredientBanner className="relative mt-20" />
+      {/* Spacing was mt-20 / mt-24 around this band on top of py-section, which
+          put roughly 500px of undifferentiated black between a headline saying
+          "short list" and the first sentence of the spread. */}
+      <IngredientBanner className="relative mt-12" />
 
+      {/* The three ingredients with no drawn glyph, so the list the headline
+          promises is actually complete. Claim-backed like the frieze. */}
       <Container className="relative">
-        <div className="mt-24 grid gap-16 lg:grid-cols-[0.82fr_1.18fr] lg:gap-24">
+        <Fact claim={product.ingredients}>
+          {(all) => (
+            <p className="mt-6 font-mono text-[0.6875rem] font-semibold uppercase tracking-[0.16em] text-on-cream-muted">
+              Also: {all.filter((i) => NO_GLYPH.includes(i)).join(" · ")}
+            </p>
+          )}
+        </Fact>
+
+        <div className="mt-14 grid gap-16 lg:grid-cols-[0.82fr_1.18fr] lg:gap-24">
           <div>
             <Eyebrow>Where it&rsquo;s made</Eyebrow>
             <Fact claim={story.facility}>

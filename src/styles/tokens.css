@@ -23,14 +23,23 @@
      NOTE: the --si-cream-* family now holds the LIFTED CHARCOAL register (the
      second dark ground) and --si-text-on-cream* is light text. The names are
      legacy from the two-world palette; a rename pass is scheduled. */
-  --si-ink: 8 5 3;
-  --si-ink-raised: 20 13 8;
-  --si-ink-line: 46 32 22;
+  /* THE GROUND LADDER. These three were 8/5/3, 11/7/4 and 16/10/6 — an
+     8-level spread out of 255, about 1.05:1, which is to say invisible. Five
+     magazine spreads that all render the same black read as one continuous
+     void with objects floating in it, and no amount of section styling fixes
+     that. The ladder below is three genuinely distinguishable near-blacks and
+     still nowhere near tan (the lightest is #1A120C). Verified after widening:
+     text-on-cream 15.8:1, text-on-cream-muted 6.95:1, gold-deep 6.60:1 and
+     ember 5.29:1 on the lightest ground; every value clears the 4.5 AA floor.
+     Spreads alternate sunk -> ink -> cream so the page has a pulse. */
+  --si-ink: 12 8 5;
+  --si-ink-raised: 24 16 10;
+  --si-ink-line: 48 34 23;
 
-  --si-cream: 16 10 6;
-  --si-cream-raised: 27 18 11;
-  --si-cream-sunk: 11 7 4;
-  --si-cream-line: 52 37 25;
+  --si-cream: 26 18 12;
+  --si-cream-raised: 38 26 17;
+  --si-cream-sunk: 6 4 3;
+  --si-cream-line: 58 42 28;
 
   /* ----------------------------------------------------------------- brand */
   --si-gold: 252 192 0;
@@ -142,12 +151,15 @@
 
 /* ------------------------------------------------ forge lighting (§dark) */
 /* Spotlight from above — the smithy's single lamp. */
+/* Alphas raised from 0.09/0.04 and 0.13/0.045: at the old values neither the
+   spotlight nor the floor glow was visible in any screenshot, so the "forge
+   lighting" existed only in the stylesheet. */
 .si-forge {
   background-image:
     radial-gradient(
       52% 44% at 50% 0%,
-      rgb(255 214 170 / 0.09) 0%,
-      rgb(var(--si-ember) / 0.04) 45%,
+      rgb(255 214 170 / 0.16) 0%,
+      rgb(var(--si-ember) / 0.07) 45%,
       transparent 72%
     ),
     radial-gradient(120% 90% at 50% 115%, rgb(0 0 0 / 0.55) 0%, transparent 55%);
@@ -156,22 +168,34 @@
 .si-anvil {
   background-image: radial-gradient(
     70% 42% at 50% 104%,
-    rgb(var(--si-ember) / 0.13) 0%,
-    rgb(var(--si-gold) / 0.045) 42%,
+    rgb(var(--si-ember) / 0.2) 0%,
+    rgb(var(--si-gold) / 0.07) 42%,
     transparent 70%
   );
 }
 
-/* A low-opacity printed ground for the quiet Craft spread. The raster texture
-   is non-representational and never becomes a semantic image. */
+/* A printed ground for the quiet Craft spread — non-representational BY
+   CONSTRUCTION, not by assertion.
+   This was url(/brand/concept/texture-tile.webp), described in this comment as
+   "non-representational". It is not: it is the brand's own label artwork, and
+   at 0.025 opacity on a 544px tile you can plainly read the SUNNY ISLAND
+   wordmark and the badge seal repeating across the whole spread — a stock
+   watermark look. It also draws long cayennes directly beneath an ingredient
+   frieze whose entire point is that scotch bonnets are not that shape. It was
+   additionally the single largest asset on the landing page (189 KB) and, being
+   referenced from an inline SVG <image>, it could not lazy-load.
+   A hairline weave costs zero bytes and cannot depict anything. */
 .si-wallpaper::before {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background-image: url("/brand/concept/texture-tile.webp");
-  background-size: min(34rem, 72vw);
-  opacity: 0.025;
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgb(var(--si-cream-line) / 0.5) 0 1px,
+    transparent 1px 9px
+  );
+  opacity: 0.32;
 }
 
 .si-key {
@@ -262,12 +286,29 @@ h3 {
   clip-path: circle(140% at 50% 62%);
 }
 
-@supports not (clip-path: url("#si-origin-window")) {
-  .si-clip-headline > svg {
-    display: none;
-  }
-  .si-clip-headline__fallback {
-    display: block;
+/* Origin's one signature: the flame gradient painted through live text.
+   Replaces an SVG clipPath stencil that filled letterforms with tiled label
+   artwork at roughly 1.2:1 contrast. This keeps real, selectable, translatable
+   text — and both stops clear AA on every ground we paint it on:
+   --si-gold on --si-cream is ~11.9:1, --si-ember is ~5.2:1. */
+.si-flame {
+  background-image: linear-gradient(
+    96deg,
+    rgb(var(--si-gold)) 0%,
+    rgb(var(--si-gold)) 30%,
+    rgb(var(--si-ember)) 100%
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+/* Without background-clip the text would paint transparent — i.e. invisible.
+   Fall back to flat gold rather than to nothing. */
+@supports not ((-webkit-background-clip: text) or (background-clip: text)) {
+  .si-flame {
+    color: rgb(var(--si-gold));
+    -webkit-text-fill-color: rgb(var(--si-gold));
   }
 }
 

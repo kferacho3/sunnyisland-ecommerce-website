@@ -5,7 +5,6 @@ import { Suspense } from "react";
 import { Container } from "@/components/core/Container";
 import { Eyebrow } from "@/components/core/Section";
 import { InquiryForm } from "@/components/forms/InquiryForm.client";
-import { ART } from "@/components/media/FullBleed";
 import { SpreadMark } from "@/components/marketing/SpreadMark";
 import { Formation } from "@/components/motion/Formation.client";
 import { Lines, Settle } from "@/components/motion/Reveal.client";
@@ -41,27 +40,21 @@ const DOORS = [
 
 export function Trade() {
   return (
-    <section id="trade" className="relative isolate bg-ink text-on-ink">
-      {/* Mobile keeps the full artwork with no text over it. At lg the artwork
-          owns the right 68% of the stage, leaving genuinely empty ground for
-          copy instead of dimming the product with a scrim. */}
-      <div className="relative aspect-[16/9] w-full overflow-hidden lg:aspect-[11/4]">
-        <div className="absolute inset-0 lg:left-auto lg:w-[68%]">
-          <Image
-            src={ART.sunsetJars.src}
-            alt={ART.sunsetJars.alt}
-            fill
-            sizes="(min-width: 1024px) 68vw, 100vw"
-            className="si-media object-contain object-center lg:object-cover"
-          />
-        </div>
-        <div
-          aria-hidden
-          className="absolute inset-y-0 left-[28%] hidden w-[14%] bg-[linear-gradient(90deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink)/0.72)_42%,transparent_100%)] lg:block"
-        />
-
-        <Container className="absolute inset-0 hidden flex-col justify-center lg:flex">
-          <div className="max-w-[34rem]">
+    <section
+      id="trade"
+      className="si-grain relative isolate border-t border-ink-line bg-ink text-on-ink"
+    >
+      {/* A REAL SPLIT, not copy scrimmed over product — the same structural
+          rule the hero exists to prove. The previous version absolutely
+          positioned a 34rem copy block over an artwork band that began at 32%
+          of the viewport, so at 1440 the headline ran 178px onto the
+          photograph and the lede sat on a pepper. A gradient cannot fix that;
+          only geometry can. Two cells means the overlap is impossible rather
+          than merely dimmed, and one markup path now serves every width
+          instead of a desktop overlay plus a duplicated mobile block. */}
+      <div className="grid items-center lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="order-last px-gutter py-14 lg:order-first lg:py-20">
+          <div className="ml-auto w-full max-w-[calc(var(--si-container)/2)] lg:pr-10 xl:pr-16">
             <SpreadMark numeral="V" label="Trade" onInk />
             <Lines
               as="h2"
@@ -76,19 +69,33 @@ export function Trade() {
               </p>
             </Settle>
           </div>
-        </Container>
-      </div>
+        </div>
 
-      <Container className="py-12 lg:hidden">
-        <SpreadMark numeral="V" label="Trade" onInk />
-        <h2 className="mt-6 font-display text-display tracking-display text-on-ink">
-          Pull up a chair.
-        </h2>
-        <p className="mt-6 max-w-[44ch] text-lede text-on-ink-muted">
-          Tell us what you need and a person answers — no account, no cart, no
-          autoresponder. Chefs and retailers welcome.
-        </p>
-      </Container>
+        <div className="relative order-first aspect-[3/4] w-full overflow-hidden lg:order-last lg:aspect-[4/5]">
+          {/* A right-side crop of sauce-product-hero.webp, cut at x=990 so the
+              64 oz jar is out of frame entirely.
+              product.formats is a PENDING claim — only 1 of 8 formats is
+              approved — and the site gates the *text* "16 to 64 oz" behind the
+              ledger. An image is a claim too, and the full three-jar shot
+              published "64 FL OZ (1893ml)" at a size a buyer could read and
+              quote back. What is left is the approved heroSize, legibly
+              labelled 8 FL OZ (250g). Also 52 KB instead of 120 KB. */}
+          <Image
+            src="/brand/concept/sauce-product-hero-8oz.webp"
+            alt="A jar of Sunny Island Pepper Sauce at sunset, with a splash of sauce and a halved pepper."
+            fill
+            loading="lazy"
+            sizes="(min-width: 1024px) 45vw, 100vw"
+            className="si-media object-cover object-center"
+          />
+          {/* Dissolves the panel's inner edge into the copy ground so the
+              artwork reads as a stage, not a pasted-in rectangle. */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink)/0.5)_46%,transparent_100%)] lg:inset-y-0 lg:left-0 lg:h-auto lg:w-32 lg:bg-[linear-gradient(90deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink)/0.55)_44%,transparent_100%)]"
+          />
+        </div>
+      </div>
 
       {/* Three doors, for anyone who wants to skip to their path. */}
       <Container className="relative">
