@@ -135,3 +135,139 @@ full-bleed phone photography · pure-vw type · fabricated people.
 2. Real family/founder photography → drops into Origin's reserved plate slots
 3. Studio bottle photography → replaces label-art stills in Table/Trade
 4. Per-dish recipe photography → recipe spreads currently type-led by design
+
+---
+
+# Revision — 2026-08-09 · The island becomes the world
+
+Owner-directed. Brief: "immersion but not gimmicky — extremely professional and
+next level," with Truff's premium commerce polish as the reference, and an
+explicit instruction to **re-baseline performance honestly** rather than defend
+the old numbers.
+
+## R1. This document had already drifted
+
+Recorded so the next reader does not treat the sections above as current:
+
+| §  | Says                            | Actually shipped                                            |
+| -- | ------------------------------- | ----------------------------------------------------------- |
+| §5 | Fraunces display voice          | **Archivo** (`--si-font-display`), per a later owner call    |
+| §1 | ink → cream two-world palette   | **All-dark "forge"**; tokens.css: "no tan, no cream, anywhere" |
+| §2 | "we're on Next 15.1.6"          | Next **15.5.22** — View Transitions are now available        |
+
+## R2. Decisions overturned
+
+§2 and §9 are amended. The research behind them stands; the conclusions were
+drawn for a page whose 3D was one small pinned chapter.
+
+| Rejected in §9                   | Now                                                                                                                                                                             |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| "cursor-following image trails"  | **Adopted, narrowed.** `pointer-trail-emitter`, Canvas 2D, no WebGL. Scoped to the island stage only — never over the inquiry form, so the emitter's rAF is nowhere near form INP. |
+| "second WebGL context, ever"     | **Upheld.** Still exactly one canvas. The world grew inside it.                                                                                                                 |
+| "scroll hijack" · native scroll  | **Upheld.** No Lenis, no ScrollSmoother, no wheel capture.                                                                                                                      |
+
+Added: `falling-leaves`, as instanced tumbling ash inside the existing context.
+Driven by **scroll progress, not wall clock**, so §7's "0 RAF at idle" holds and
+the field scrubs backwards exactly like everything else in the scene.
+
+Skills installed from `github.com/MengTo/skills` (verified, MIT):
+`build-threejs-scroll-worlds`, `falling-leaves`, `pointer-trail-emitter`.
+
+## R3. Nine defects found and fixed
+
+The island was not underperforming its design — large parts of it had never run.
+
+1. **The dawn-lighting arc was dead code.** `keyRef`/`fillRef`/`hemiRef`/
+   `ambientRef` were driven every frame while the JSX attached bare, unref'd
+   lights, and no `hemisphereLight` existed at all. The key sat frozen at
+   `#f05400` int 2.2 from `[-9,2.2,6]` — light from the camera's shoulder, not
+   from the sun at `[-17,·,-24]`. This is why the island read as a flat muddy
+   cone. **Single highest-impact fix on the site.**
+2. **The starfield was mathematically invisible.** Stars on a shell of `r=62`
+   against night fog of `near 17 / far 40` → fog factor saturated at 1.0, every
+   star painting solid `#05070d` on a `#05070d` background. Never seen by anyone.
+3. **Sun and clouds**, same defect — the sun ~56% crushed to fog at midday.
+4. **`<Eruption>` shared a Suspense boundary with the jar GLB**, gating the
+   chapter's earliest beat (p=0.03) behind its largest asset (1.07 MB, third
+   origin, plus a Draco decoder from a fourth).
+5. **Jar transmission ran a full extra scene pass every frame** from mount —
+   `frustumCulled` passes on a zero-scale jar, so it never idled.
+6. **`webglcontextlost` was bound to `window` in the bubble phase** for an event
+   that does not bubble. The entire downgrade-to-static path was dead.
+7. **222 of 246 draw calls were six palm trees** — 90% of draws for 7% of tris.
+8. **The CPU capability gate was too tight.** 2M iterations in ≤10 ms, against a
+   clean-machine time of 7–9 ms. It failed twice during this session's own
+   measurements on a capable M4 and silently served the static island. Raised to
+   18 ms, still well clear of the 27 ms throttled profile it exists to exclude.
+9. **DPR 2 with MSAA** over a full-viewport canvas of flat-shaded geometry.
+
+## R4. Re-baselined budgets (measured, 1440×900, SwiftShader, `next build && start`)
+
+§8 is superseded for the home route by the table below. These are measurements,
+not targets.
+
+| Budget                      | Old §8 gate | Before | After |
+| --------------------------- | ----------- | -----: | ----: |
+| Route JS, `/`               | ≤ 200 KB    | 142 KB | **142 KB** |
+| Draw calls / frame, no jar  | (unstated)  |    246 | **27** |
+| Draw calls / frame, jar live| (unstated)  |   ~490 | **28** |
+| Palms                       | —           |      6 | **14** |
+| Ash flakes                  | —           |      0 | **90 (1 draw)** |
+| Console errors              | 0           |      0 | **0** |
+
+Honest caveats, stated rather than buried:
+
+- **The "desktop Lighthouse ≥99" claim is an artifact** and must not be quoted.
+  It only holds when headless Chrome has no WebGL at all; with a real rasteriser
+  the island costs ~580 ms TBT. Any future Lighthouse gate must be run with
+  WebGL genuinely enabled or it is measuring a page that does not exist.
+- The deferred 3D chunk is **~210 KB gz** of three + R3F + loaders before any of
+  our own code. That is the real ceiling against §8's ≤250 KB, so future world
+  growth must be bought with geometry and authored data, never new libraries.
+- Mobile still has **no world** (768 px gate). Unchanged this pass, and the
+  largest remaining gap.
+
+## R5. The chapter ledger
+
+`src/components/spreads/island-ledger.ts` — five authored chapters replacing the
+two-beat orbit, each with its own camera endpoint, FOV, mobile override and
+daylight value. The pinned stage grew 2.6 → 4.2 viewport heights.
+
+| # | id | beat | camera change |
+| - | -- | ---- | ------------- |
+| 1 | `open-water` | Born on an island | Establishing wide, low over water. The only frame where the island is small. |
+| 2 | `the-crossing` | Carried five generations | Approach — the sun's path on the sea becomes the leading line. |
+| 3 | `the-vent` | Scotch bonnet, straight from the fire | Reveal, the only shot looking UP: crater rim on the skyline. |
+| 4 | `the-grove` | Green papaya, sun, and time | Passage — descends INTO the palms; first frame with foreground occlusion. |
+| 5 | `the-landing` | It all ends up in the jar | Inspection, the only static hold. Pose preserved verbatim from the original. |
+
+The ledger imports nothing from `three` on purpose: `IslandChapter` reads it in
+the main bundle for captions and pin length, so a THREE type here would drag the
+3D chunk out from behind its dynamic import. Captions are generated FROM the
+ledger, so copy and composition cannot drift apart the way they did when the
+`at`/`until` pairs lived in a second hardcoded array.
+
+Three composition bugs found by looking at rendered keyframes, not by reasoning:
+
+- **Stops discarded the last weight.** N chapters make N−1 spans; accumulating
+  N−1 weights and overwriting the final entry with 1 stretched the closing span
+  to 42% of the scroll. Spans are now weighted by the mean of the two chapters
+  they join.
+- **`day: 0` rendered a black rectangle.** The forge palette bottoms out at
+  rgb(12,8,5), so a literal zero gave the establishing shot nothing to
+  establish. Now 0.12 — still unambiguously night, but with a readable horizon.
+- **Furled palm crowns read as floating debris.** Frond unfurl is keyed to
+  daylight; from 25 units out the trunks are sub-pixel, so fourteen closed
+  crowns hovered beside the volcano like dark blobs. The unfurl now floors at
+  0.42 — dawn still visibly opens the canopy, but it starts from a palm.
+
+## R6. Still open
+
+- **Mobile world composition.** Phones scroll ~11 viewports with no 3D at all.
+  The ledger already carries mobile camera overrides for all five chapters, so
+  the compositions exist — what is missing is a decision about lowering the
+  768 px gate and a quality tier to go under it. **This is the largest remaining
+  gap and it needs an owner call, not just implementation.**
+- The jar GLB is 94% texture (571 KB + 483 KB WebP) from S3 with no preconnect,
+  and the Draco decoder is fetched from `gstatic.com` at runtime.
+- The DOM spreads (Origin, Craft, Table) were not touched in this pass.
