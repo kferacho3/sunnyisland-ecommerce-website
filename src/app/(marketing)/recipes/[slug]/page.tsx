@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 
 import { Button, TextLink } from "@/components/core/Button";
 import { Container } from "@/components/core/Container";
+import { DishMark } from "@/components/marketing/DishMark";
 import { Eyebrow } from "@/components/core/Section";
 import { MotionRefresh, Settle } from "@/components/motion/Reveal.client";
 import { cn } from "@/lib/cn";
@@ -61,6 +62,13 @@ export default async function RecipePage({
       <section className="si-grain relative isolate overflow-hidden bg-ink py-section-tight">
         <div aria-hidden className="si-rake absolute inset-0" />
         <Container className="relative">
+          {/* The dish's own drawn plate. The title spread was a headline on an
+              empty ink field — for a recipe page, the one place a reader
+              expects to see the food. */}
+          <DishMark
+            slug={recipe.slug}
+            className="mb-8 h-24 w-24 sm:h-28 sm:w-28"
+          />
           <Eyebrow onInk>
             House recipe {String(index + 1).padStart(2, "0")} · {recipe.dish}
           </Eyebrow>
@@ -119,7 +127,7 @@ export default async function RecipePage({
                         <li
                           key={ing.item}
                           className={cn(
-                            "flex gap-3 text-[0.9375rem]",
+                            "flex gap-3 text-[1rem] leading-[1.55]",
                             ing.isSauce
                               ? "font-semibold text-ember"
                               : "text-on-cream-muted",
@@ -140,7 +148,7 @@ export default async function RecipePage({
                 ))}
               </div>
 
-              <p className="mt-8 border-t border-cream-line pt-6 text-sm text-on-cream-muted">
+              <p className="mt-8 border-t border-cream-line pt-6 text-[0.9375rem] leading-[1.6] text-on-cream-muted">
                 <span className="font-semibold text-on-cream">Heat: </span>
                 {recipe.heat}
               </p>
@@ -174,7 +182,7 @@ export default async function RecipePage({
                           {step.title}
                         </h3>
                       ) : null}
-                      <p className="mt-1.5 max-w-measure text-[0.9375rem] leading-relaxed text-on-cream-muted">
+                      <p className="mt-2 max-w-measure text-[1.0625rem] leading-[1.65] text-on-cream">
                         {step.text}
                       </p>
                       {step.sauceStep ? (
@@ -191,7 +199,7 @@ export default async function RecipePage({
                 <h3 className="font-body text-eyebrow font-semibold uppercase text-gold-deep">
                   From the family
                 </h3>
-                <p className="mt-2 max-w-measure text-[0.9375rem] text-on-cream-muted">
+                <p className="mt-2 max-w-measure text-[1rem] leading-[1.6] text-on-cream-muted">
                   {recipe.tip}
                 </p>
               </div>

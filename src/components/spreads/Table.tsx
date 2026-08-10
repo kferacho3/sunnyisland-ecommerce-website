@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { Container } from "@/components/core/Container";
+import { DishMark } from "@/components/marketing/DishMark";
 import { SpreadMark } from "@/components/marketing/SpreadMark";
 import { Formation } from "@/components/motion/Formation.client";
 import { Settle } from "@/components/motion/Reveal.client";
@@ -56,44 +57,83 @@ export function Table() {
           </Settle>
         </div>
 
-        {/* Reduced motion: all six index rows render assembled and legible in
+        {/* THREE FEATURED, then the rest as an index.
+            All six used to render as identical full-width rows, which gave the
+            spread no focal point and — on a page arguing "cook it the Trini
+            way" — showed no food whatsoever. Each dish now carries its own
+            drawn plate (see DishMark), so the spread reads as a menu rather
+            than a table of contents.
+            Reduced motion: every card and row renders assembled and legible in
             document order. */}
         <Formation
           as="ol"
-          className="mt-10 divide-y divide-cream-line border-y border-cream-line"
+          className="mt-10 grid gap-px border border-cream-line bg-cream-line md:grid-cols-3"
         >
-          {[...featured, ...rest].map((r, i) => (
-            <li key={r.slug} data-formation-item>
+          {featured.map((r, i) => (
+            <li key={r.slug} data-formation-item className="bg-cream">
               <Link
                 href={`/recipes/${r.slug}`}
                 prefetch={false}
-                className="group/dish flex items-center gap-5 py-7 transition-colors duration-fast ease-si hover:bg-cream-raised sm:gap-10 sm:px-4"
+                className="group/dish flex h-full flex-col gap-5 p-7 transition-colors duration-fast ease-si hover:bg-cream-raised"
               >
-                <span className="font-mono text-eyebrow font-semibold text-gold-deep transition-colors duration-fast ease-si group-hover/dish:text-ember">
-                  {String(i + 1).padStart(2, "0")}
+                <div className="flex items-start justify-between gap-4">
+                  <DishMark
+                    slug={r.slug}
+                    className="h-[4.5rem] w-[4.5rem] shrink-0 transition-transform duration-medium ease-si group-hover/dish:scale-[1.04] sm:h-20 sm:w-20"
+                  />
+                  <span className="font-mono text-eyebrow font-semibold text-gold-deep">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                </div>
+                <h3 className="text-balance font-display text-[clamp(1.25rem,1rem+0.9vw,1.625rem)] leading-title tracking-display text-on-cream transition-colors duration-fast ease-si group-hover/dish:text-ember">
+                  {r.title}
+                </h3>
+                <p className="flex-1 text-[0.9375rem] leading-[1.6] text-on-cream-muted">
+                  {r.intro.split(". ")[0]}.
+                </p>
+                <span className="mt-1 font-mono text-[0.6875rem] uppercase tracking-[0.12em] text-on-cream-muted">
+                  {r.totalTime}
                 </span>
-                <h3 className="flex-1 text-balance font-display text-[clamp(1.5rem,1.1rem+1.6vw,2.25rem)] leading-title tracking-display text-on-cream transition-colors duration-fast ease-si group-hover/dish:text-ember">
+              </Link>
+            </li>
+          ))}
+        </Formation>
+
+        <ol className="divide-y divide-cream-line border-x border-b border-cream-line">
+          {rest.map((r, i) => (
+            <li key={r.slug}>
+              <Link
+                href={`/recipes/${r.slug}`}
+                prefetch={false}
+                className="group/dish flex items-center gap-5 px-5 py-5 transition-colors duration-fast ease-si hover:bg-cream-raised sm:gap-7 sm:px-7"
+              >
+                <DishMark
+                  slug={r.slug}
+                  plate={false}
+                  className="h-9 w-9 shrink-0 opacity-80 transition-opacity duration-fast ease-si group-hover/dish:opacity-100"
+                />
+                <span className="font-mono text-eyebrow font-semibold text-gold-deep">
+                  {String(featured.length + i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="flex-1 text-balance font-display text-[clamp(1.0625rem,0.95rem+0.5vw,1.25rem)] leading-title tracking-display text-on-cream transition-colors duration-fast ease-si group-hover/dish:text-ember">
                   {r.title}
                 </h3>
                 {/* Capped: totalTime runs to "About 3 hours, plus an overnight
                     soak for the channa", which unconstrained stretches back
                     across the row and crowds the dish name. */}
-                <span className="hidden max-w-[13rem] text-right text-sm text-on-cream-muted sm:block">
-                  {r.dish}
-                  <span className="mt-0.5 block font-mono text-[0.6875rem] uppercase leading-relaxed tracking-[0.12em]">
-                    {r.totalTime}
-                  </span>
+                <span className="hidden max-w-[13rem] text-right font-mono text-[0.6875rem] uppercase leading-relaxed tracking-[0.12em] text-on-cream-muted sm:block">
+                  {r.totalTime}
                 </span>
                 <span
                   aria-hidden
-                  className="text-[1.25rem] leading-none text-on-cream-muted transition-transform duration-medium ease-si group-hover/dish:translate-x-1 group-hover/dish:text-ember"
+                  className="text-[1.125rem] leading-none text-on-cream-muted transition-transform duration-medium ease-si group-hover/dish:translate-x-1 group-hover/dish:text-ember"
                 >
                   &rarr;
                 </span>
               </Link>
             </li>
           ))}
-        </Formation>
+        </ol>
       </Container>
     </section>
   );
