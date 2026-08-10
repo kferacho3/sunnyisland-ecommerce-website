@@ -285,17 +285,11 @@ export function IslandChapter() {
       data-motion="island"
       className="relative bg-ink"
     >
-      {/* The jar GLB is 1.07 MB from S3, and drei's default Draco decoder comes
-          from gstatic — two cross-origins with no prior connection, on the one
-          asset the whole journey is built to arrive at. React 19 hoists these
-          into <head>, and they are rendered only in scene mode, so a visitor
-          served the static fallback never opens sockets it will not use.
-          Latency only: it does not shrink the payload, which is 94% texture and
-          would need a re-export to fix. */}
-      <link
-        rel="preconnect"
-        href="https://sunnyisland.s3.us-east-2.amazonaws.com"
-      />
+      {/* The jar GLB is same-origin now (see JarModel), so drei's default Draco
+          decoder is the only cross-origin left on the journey's critical asset.
+          React 19 hoists this into <head>, and it renders only in scene mode,
+          so a visitor served the static fallback never opens a socket it will
+          not use. */}
       <link rel="preconnect" href="https://www.gstatic.com" crossOrigin="" />
 
       {/* Hand-rendered pin spacer: ScrollTrigger never injects a sibling into

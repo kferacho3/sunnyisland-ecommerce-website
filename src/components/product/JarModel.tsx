@@ -17,8 +17,26 @@ import * as THREE from "three";
  * Raw units: the jar is ~300 units tall. Callers scale to their world.
  */
 
-export const JAR_MODEL_URL =
-  "https://sunnyisland.s3.us-east-2.amazonaws.com/media/glb/SunnyIslandPepperSauceFINAL.glb";
+/**
+ * Self-hosted and retextured, 2026-08-09. The S3 original
+ * (SunnyIslandPepperSauceFINAL.glb) was 1.07 MB from a cross-origin with no
+ * preconnect — but the download was never the real cost. Its two textures were
+ * 2048x2048 and, remarkably, 6969x1800: a non-power-of-two label wrap. Decoded,
+ * that is 22.4 MB + 66.9 MB = ~89 MB of VRAM for a single jar, which is more
+ * texture memory than many phones will surrender to a browser tab at all.
+ *
+ * Resized to 1024x1024 and 2048x528, re-encoded WebP q82, Draco re-applied
+ * (the resize pass decodes it, so skipping that step ships uncompressed
+ * geometry and undoes most of the saving):
+ *
+ *   transfer  1099.8 KB -> 358.1 KB   (-67%)
+ *   VRAM         89.3 MB -> 11.4 MB   (-87%)
+ *
+ * Same-origin now, so it also loses a DNS + TLS handshake and can be served
+ * with the app's own cache headers. 2048px across the label's circumference
+ * still resolves the printed type on /sauce, where the jar fills the frame.
+ */
+export const JAR_MODEL_URL = "/models/sunny-island-jar.glb";
 
 /**
  * The glass material (`Mat.1`) ships `KHR_materials_transmission` with

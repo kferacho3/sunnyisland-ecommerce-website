@@ -307,12 +307,42 @@ since the motion system was written. The island pin simply made it visible,
 because a missing pin is obvious in a way a missing fade is not. Fixed by adding
 an exhaustive `narrow: (max-width: 1023.98px)` condition.
 
-## R7. Still open
+## R7. The jar asset — 89 MB of VRAM for one product
 
-- The jar GLB is 94% texture (571 KB + 483 KB WebP) and needs a re-export to
-  shrink; preconnect only removes the handshake latency, not the bytes. This is
-  now the single largest mobile cost.
+The GLB's transfer size was never the real problem. Its two textures were
+2048×2048 and **6969×1800** — a non-power-of-two label wrap. Decoded, that is
+22.4 MB + 66.9 MB ≈ **89 MB of texture memory for a single jar**, which is more
+than many phones will surrender to a browser tab at all. Any phone that survived
+the old 768 px gate was being asked to hold it.
+
+Resized to 1024×1024 and 2048×528, re-encoded WebP q82, Draco re-applied — the
+resize pass decodes Draco, so skipping that step ships uncompressed geometry and
+gives most of the saving straight back.
+
+| | before | after |
+| --- | ---: | ---: |
+| transfer | 1099.8 KB | **358.1 KB** (−67%) |
+| VRAM | 89.3 MB | **11.4 MB** (−87%) |
+| origin | S3, cross-origin | **same-origin** `/models/` |
+
+Self-hosting also drops a DNS + TLS handshake and lets the app's own cache
+headers apply. Verified: `/sauce` is unchanged at full frame — label type, flame
+badge, "8 FL OZ (250 g)" and the side message panel all still resolve, with the
+transmission glass intact (the flat-glass path is island-only).
+
+Regenerate with:
+```
+npx @gltf-transform/cli resize in.glb a.glb --width 2048 --height 1024
+npx @gltf-transform/cli webp a.glb b.glb --quality 82
+npx @gltf-transform/cli draco b.glb public/models/sunny-island-jar.glb
+```
+
+## R8. Still open
+
 - The DOM spreads (Origin, Craft, Table) were not touched in this pass.
+- drei's Draco decoder is still fetched from `gstatic.com` at runtime
+  (preconnected, but a fourth-party dependency on the critical path). Self-host
+  it under `public/draco/` and call `useGLTF.setDecoderPath` to remove it.
 - No real-device testing. Everything above is Chromium + SwiftShader at emulated
   viewports, which models composition and correctness but not thermal throttling
   or true mobile GPU fill rate.
