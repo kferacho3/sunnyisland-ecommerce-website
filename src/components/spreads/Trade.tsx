@@ -42,7 +42,7 @@ export function Trade() {
   return (
     <section
       id="trade"
-      className="si-grain relative isolate border-t border-ink-line bg-ink text-on-ink"
+      className="si-grain relative isolate scroll-mt-header border-t border-ink-line bg-ink text-on-ink"
     >
       {/* A REAL SPLIT, not copy scrimmed over product — the same structural
           rule the hero exists to prove. The previous version absolutely
@@ -52,18 +52,18 @@ export function Trade() {
           only geometry can. Two cells means the overlap is impossible rather
           than merely dimmed, and one markup path now serves every width
           instead of a desktop overlay plus a duplicated mobile block. */}
-      <div className="grid items-center lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="order-last px-gutter py-14 lg:order-first lg:py-20">
+      <div className="grid items-center pb-12 lg:grid-cols-[1.1fr_0.9fr] lg:pb-0">
+        <div className="relative z-10 order-last mx-gutter -mt-9 border border-ink-line border-t-gold/60 bg-ink-raised px-5 py-8 shadow-[0_-1.25rem_3rem_rgb(var(--si-ink)/0.72)] lg:order-first lg:m-0 lg:border-0 lg:bg-transparent lg:px-gutter lg:py-20 lg:shadow-none">
           <div className="ml-auto w-full max-w-[calc(var(--si-container)/2)] lg:pr-10 xl:pr-16">
             <SpreadMark numeral="V" label="Trade" onInk />
             <Lines
               as="h2"
-              className="mt-5 font-display text-display tracking-display text-on-ink"
+              className="mt-6 font-display text-[clamp(2.75rem,13vw,3.75rem)] leading-[0.9] tracking-[-0.025em] text-on-ink lg:mt-5 lg:text-display lg:leading-[var(--si-leading-display)] lg:tracking-display"
             >
               Pull up a chair.
             </Lines>
-            <Settle className="mt-6">
-              <p className="max-w-[44ch] text-lede text-on-ink-muted">
+            <Settle className="mt-5 lg:mt-6">
+              <p className="max-w-[44ch] text-[1rem] leading-[1.7] text-on-ink-muted sm:text-lede sm:leading-[var(--si-leading-body)]">
                 Tell us what you need and a person answers — no account, no
                 cart, no autoresponder. Chefs and retailers welcome.
               </p>
@@ -71,7 +71,7 @@ export function Trade() {
           </div>
         </div>
 
-        <div className="relative order-first aspect-[3/4] w-full overflow-hidden lg:order-last lg:aspect-[4/5]">
+        <div className="relative order-first mx-gutter mt-4 aspect-[6/5] overflow-hidden border border-ink-line lg:order-last lg:m-0 lg:aspect-[4/5] lg:border-0">
           {/* A right-side crop of sauce-product-hero.webp, cut at x=990 so the
               64 oz jar is out of frame entirely.
               product.formats is a PENDING claim — only 1 of 8 formats is
@@ -85,14 +85,22 @@ export function Trade() {
             alt="A jar of Sunny Island Pepper Sauce at sunset, with a splash of sauce and a halved pepper."
             fill
             loading="lazy"
-            sizes="(min-width: 1024px) 45vw, 100vw"
-            className="si-media object-cover object-center"
+            sizes="(min-width: 1024px) 45vw, calc(100vw - 2.5rem)"
+            className="si-media object-cover object-[50%_68%] lg:object-center"
           />
           {/* Dissolves the panel's inner edge into the copy ground so the
               artwork reads as a stage, not a pasted-in rectangle. */}
           <div
             aria-hidden
-            className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink)/0.5)_46%,transparent_100%)] lg:inset-y-0 lg:left-0 lg:h-auto lg:w-32 lg:bg-[linear-gradient(90deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink)/0.55)_44%,transparent_100%)]"
+            className="pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-[linear-gradient(0deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink)/0.45)_42%,transparent_100%)] lg:inset-y-0 lg:left-0 lg:h-auto lg:w-32 lg:bg-[linear-gradient(90deg,rgb(var(--si-ink))_0%,rgb(var(--si-ink)/0.55)_44%,transparent_100%)]"
+          />
+          <div className="absolute inset-x-4 top-4 z-10 flex items-center justify-between font-mono text-[0.625rem] font-semibold uppercase tracking-[0.17em] text-on-ink lg:hidden">
+            <span>For table &amp; trade</span>
+            <span>8 fl oz</span>
+          </div>
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-2 border border-on-ink/10 lg:hidden"
           />
         </div>
       </div>

@@ -51,33 +51,39 @@ export default function HomePage() {
             out of the hollow line is worse than stacking. */}
         <div className="grid min-h-[calc(100svh-var(--si-header-h))] xl:grid-cols-2">
           {/* FILM. Above the copy when stacked, beside it once split. */}
-          <div className="relative order-first min-h-[44svh] xl:order-last xl:min-h-0">
-            {/* The 8 KB mobile-critical frame is preloaded from stable static
-                HTML: no runtime image transform, no hydration paint, and no
-                visual downgrade. The client relay upgrades this stage to film
-                only on wide screens. */}
+          <div className="relative order-first mx-gutter mt-4 h-[clamp(18rem,40svh,22rem)] overflow-hidden border border-ink-line bg-ink-raised xl:order-last xl:m-0 xl:h-auto xl:min-h-0 xl:border-0">
+            {/* MOBILE CAMPAIGN PLATE. The previous five-slice treatment read
+                as broken image seams on a phone and multiplied the softness
+                of the 750px poster. This is one high-resolution, 31 KB frame:
+                still cheap enough to be the mobile LCP, but materially
+                sharper and composed as a physical campaign plate. */}
+            <Image
+              src="/media/hero.v2.poster.webp"
+              alt="A jar of Sunny Island Pepper Sauce beneath the Sunny Island wordmark."
+              fill
+              priority
+              fetchPriority="high"
+              sizes="(min-width: 1280px) 0px, 100vw"
+              unoptimized
+              decoding="sync"
+              className="object-cover object-center xl:hidden"
+            />
             <div
               aria-hidden
-              className="absolute inset-0 grid grid-cols-5 gap-px overflow-hidden bg-ink-line xl:hidden"
-            >
-              {Array.from({ length: 5 }, (_, index) => (
-                <span key={index} className="relative overflow-hidden">
-                  <Image
-                    src="/media/hero.v2.mobile.poster.webp"
-                    alt=""
-                    fill
-                    priority={index === 2}
-                    fetchPriority={index === 2 ? "high" : "auto"}
-                    sizes="100vw"
-                    unoptimized
-                    decoding="sync"
-                    className="h-full w-full object-cover opacity-100"
-                    style={{
-                      objectPosition: `${22.4 + index * 13.55}% center`,
-                    }}
-                  />
-                </span>
-              ))}
+              className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgb(var(--si-ink)/0.28)_0%,transparent_28%,transparent_66%,rgb(var(--si-ink)/0.72)_100%)] xl:hidden"
+            />
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-2 border border-on-ink/10 xl:hidden"
+            />
+            <div className="absolute inset-x-4 top-4 z-10 flex items-center justify-between font-mono text-[0.625rem] font-semibold uppercase tracking-[0.18em] text-on-ink xl:hidden">
+              <span>01 / Arrival</span>
+              <span>Classic Gold</span>
+            </div>
+            <div className="absolute inset-x-4 bottom-4 z-10 flex items-center gap-3 font-mono text-[0.5625rem] font-semibold uppercase tracking-[0.14em] text-on-ink-muted xl:hidden">
+              <span>St. Vincent</span>
+              <span aria-hidden className="h-px flex-1 bg-on-ink/20" />
+              <span>Trinidad &amp; Tobago</span>
             </div>
             {/* The DESKTOP base layer. It was pointed at the 750x422 mobile
                 file, which object-cover then upscaled 2.3x into a ~720x978
@@ -103,7 +109,7 @@ export default function HomePage() {
                 className="absolute inset-0 hidden h-full w-full object-cover opacity-100 xl:block"
               />
             </picture>
-            <ArrivalRelay />
+            <ArrivalRelay className="hidden xl:block" />
           </div>
 
           {/* COPY. `ml-auto` + a half-container cap lands this column's text
@@ -111,7 +117,7 @@ export default function HomePage() {
               the page — and it does so without touching `vw`, which would
               drift by the scrollbar width. The trick depends on the split
               being exactly 50/50, so do not make these columns uneven. */}
-          <div className="relative z-10 order-last flex flex-col justify-center bg-ink py-14 xl:order-first xl:py-20">
+          <div className="relative z-10 order-last flex flex-col justify-center bg-ink pb-12 pt-10 xl:order-first xl:py-20">
             <div className="ml-auto w-full max-w-[calc(var(--si-container)/2)] px-gutter xl:pr-8">
               <Eyebrow onInk>Sunny Island · Classic Gold</Eyebrow>
 
@@ -136,7 +142,7 @@ export default function HomePage() {
                   phrase — it belongs to the Origin headline and the proof
                   rail, and saying it here as well made the hero the third
                   place a visitor read it before scrolling once. */}
-              <p className="mt-6 max-w-[40ch] text-lede text-on-ink-muted">
+              <p className="mt-5 max-w-[40ch] text-[1rem] leading-[1.7] text-on-ink-muted sm:mt-6 sm:text-lede sm:leading-[var(--si-leading-body)]">
                 Scotch bonnet and green papaya — a family recipe from
                 St.&nbsp;Vincent, refined in Trinidad&nbsp;&amp;&nbsp;Tobago.
               </p>
@@ -144,7 +150,7 @@ export default function HomePage() {
               {/* The fast lane. Anyone with a real brief still gets the
                   adaptive form at the foot of the page. */}
               <Suspense fallback={null}>
-                <QuickInquiry className="mt-9" />
+                <QuickInquiry className="mt-7 sm:mt-9" />
               </Suspense>
             </div>
           </div>
