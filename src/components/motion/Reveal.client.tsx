@@ -54,6 +54,10 @@ export function Lines({
         ease: "power2.out",
         stagger: 0.09,
         delay,
+        // See Formation: without this, immediateRender parks every below-fold
+        // headline outside its own line-mask for as long as the page is never
+        // scrolled that far.
+        immediateRender: false,
         onStart: () => gsap.set(created.lines, { willChange: "transform" }),
         onComplete: () => gsap.set(created.lines, { clearProps: "willChange" }),
         scrollTrigger: { trigger: el, start: "top 78%", once: true },
@@ -94,6 +98,8 @@ export function Settle({
       duration: 0.8,
       ease: "power2.out",
       delay,
+      // See Formation: no hidden start state until the entrance actually runs.
+      immediateRender: false,
       onStart: () => gsap.set(el, { willChange: "transform, opacity" }),
       onComplete: () => gsap.set(el, { clearProps: "willChange" }),
       scrollTrigger: { trigger: el, start: "top 85%", once: true },
