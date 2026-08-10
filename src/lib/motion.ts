@@ -71,11 +71,22 @@ export function withMotion(
     {
       reduce: "(prefers-reduced-motion: reduce)",
       wide: "(min-width: 1024px)",
+      // `narrow` exists ONLY to make the condition set exhaustive, and it is
+      // load-bearing. gsap.matchMedia activates a context when at least one of
+      // its named queries matches; with just { reduce, wide }, a phone with no
+      // reduced-motion preference matched NEITHER, so the context never
+      // activated and `build` was never called. Every scroll entrance on the
+      // site — Lines, Settle, Formation, SlicedHeading — was silently dead
+      // below 1024px, and the island's pin could not be created there at all.
+      // Verified 2026-08-09: ScrollTrigger.getAll() returned 6 at 1440px and 0
+      // at 390px, with prefers-reduced-motion false in both.
+      narrow: "(max-width: 1023.98px)",
     },
     (context) => {
       const conditions = context.conditions as {
         reduce: boolean;
         wide: boolean;
+        narrow: boolean;
       };
       return build({
         reduced: conditions.reduce,

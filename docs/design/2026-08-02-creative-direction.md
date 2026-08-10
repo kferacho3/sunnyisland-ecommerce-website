@@ -261,13 +261,58 @@ Three composition bugs found by looking at rendered keyframes, not by reasoning:
   crowns hovered beside the volcano like dark blobs. The unfurl now floors at
   0.42 — dawn still visibly opens the canopy, but it starts from a palm.
 
-## R6. Still open
+## R6. Mobile gets the world — the compact tier
 
-- **Mobile world composition.** Phones scroll ~11 viewports with no 3D at all.
-  The ledger already carries mobile camera overrides for all five chapters, so
-  the compositions exist — what is missing is a decision about lowering the
-  768 px gate and a quality tier to go under it. **This is the largest remaining
-  gap and it needs an owner call, not just implementation.**
-- The jar GLB is 94% texture (571 KB + 483 KB WebP) from S3 with no preconnect,
-  and the Draco decoder is fetched from `gstatic.com` at runtime.
+Owner direction, 2026-08-09: performant, mobile-first, accommodate every case.
+The width gate moves 768 → 380 and phones now travel the same five chapters.
+
+That gate was set when the scene cost 246 draw calls and ran a full extra
+transmission pass per frame. At 27 draws the arithmetic that justified excluding
+phones no longer holds. What actually costs on a phone is the GLB, fill rate and
+scroll length — so those are tiered rather than answered by refusing to render.
+
+| | desktop | compact (< 900 px or coarse pointer) |
+| --- | --- | --- |
+| camera | authored endpoints | ledger `mobile` overrides: pulled back, wider lens |
+| DPR cap | 1.75 | **1.25** |
+| MSAA | on | **off** |
+| `powerPreference` | high-performance | default |
+| ash flakes | 90 | **34** |
+| pin length | 4.2 vh | **3 vh** |
+| ember trail | yes | **not mounted at all** |
+
+**The fallback ladder, in order.** Every one of these still selects the complete
+static island before three, Draco, a canvas or a pin is mounted:
+reduced motion → Save-Data → `deviceMemory < 4` → CPU probe → no `webgl2` →
+width < 380 px. A cheap phone on a metered plan is still served the poster.
+
+Verified at 1440 / 820 / 390 / 360, plus reduced-motion at 1440 and 390: 6
+ScrollTriggers and 1 pin at every width that should have them, 0 console errors,
+one `h1`, no missing `alt`, and no focusable node inside the pinned stage.
+
+Preconnects to the S3 and gstatic origins are rendered ONLY in scene mode, so a
+visitor on the static fallback never opens sockets it will not use.
+
+### R6.1 The bug that made this possible to find
+
+`withMotion` registered `gsap.matchMedia` with `{ reduce, wide: (min-width:
+1024px) }`. gsap activates a context when at least one named query matches — and
+on a phone with no reduced-motion preference **neither did**, so the build
+callback never ran. Measured: `ScrollTrigger.getAll()` returned 6 at 1440 px and
+**0** at 390 px.
+
+Every scroll entrance on the site — `Lines`, `Settle`, `Formation`,
+`SlicedHeading` — had therefore been silently dead below 1024 px, on every page,
+since the motion system was written. The island pin simply made it visible,
+because a missing pin is obvious in a way a missing fade is not. Fixed by adding
+an exhaustive `narrow: (max-width: 1023.98px)` condition.
+
+## R7. Still open
+
+- The jar GLB is 94% texture (571 KB + 483 KB WebP) and needs a re-export to
+  shrink; preconnect only removes the handshake latency, not the bytes. This is
+  now the single largest mobile cost.
 - The DOM spreads (Origin, Craft, Table) were not touched in this pass.
+- No real-device testing. Everything above is Chromium + SwiftShader at emulated
+  viewports, which models composition and correctness but not thermal throttling
+  or true mobile GPU fill rate.

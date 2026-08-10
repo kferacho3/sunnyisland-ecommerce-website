@@ -4,11 +4,7 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import {
-  ISLAND_CHAPTERS,
-  ISLAND_PIN_VIEWPORTS,
-  captionWindow,
-} from "./island-ledger";
+import { ISLAND_CHAPTERS, pinViewports, captionWindow } from "./island-ledger";
 import { cn } from "@/lib/cn";
 import { useLazyMotion } from "@/lib/motion-lazy";
 import { allowsRichVisuals } from "@/lib/tier";
@@ -39,11 +35,32 @@ const EmberTrail = dynamic(
 
 /* ------------------------------------------------------------------ gates */
 
+/**
+ * Below this width the world is composed for a phone: wider lenses and pulled
+ * back endpoints from the ledger, lower DPR, a thinner ash field, and a shorter
+ * pin. Above it, the desktop composition.
+ */
+const COMPACT_MAX_WIDTH = 900;
+
+/** Under this, the canvas is not worth its bytes on any device. */
+const MIN_WORLD_WIDTH = 380;
+
 function capable(): boolean {
-  // The island is the one WebGL context on the site. Its 768px gate matches
-  // the measured ProductStage precedent: no Draco decode or 260svh pin on the
-  // weakest mobile CPUs, and no second canvas is ever introduced for the hero.
-  if (!allowsRichVisuals(768)) return false;
+  // The island is the one WebGL context on the site, and until 2026-08-09 its
+  // width gate was 768 — which meant every phone scrolled ~11 viewports past a
+  // static poster and got none of the experience the page exists to deliver.
+  //
+  // That gate was set when the scene cost 246 draw calls and ran a full extra
+  // transmission pass per frame. It now costs 27, so the arithmetic that
+  // justified excluding phones no longer holds. What actually costs on a phone
+  // is the 1.07 MB jar GLB, fill rate, and scroll length — all three are tiered
+  // below rather than solved by refusing to render.
+  //
+  // Every genuine protection is UNCHANGED and still ahead of this: reduced
+  // motion, Save-Data, deviceMemory < 4, and the CPU probe all still select the
+  // complete static island before three, Draco, a canvas or a pin is mounted.
+  // A cheap phone on a metered connection is still served the poster.
+  if (!allowsRichVisuals(MIN_WORLD_WIDTH)) return false;
   try {
     if (!document.createElement("canvas").getContext("webgl2")) return false;
   } catch {
@@ -69,18 +86,26 @@ const CAPTIONS = ISLAND_CHAPTERS.map((chapter, index) => ({
   line: chapter.line,
 }));
 
-function useDpr() {
+function useDpr(compact: boolean) {
   const [dpr, setDpr] = useState(1);
   useEffect(() => {
     const coarse = window.matchMedia("(pointer: coarse)").matches;
+    // Phones get 1.25, not 1.5. A modern phone reports devicePixelRatio 3, so
+    // even 1.5 is a 2.25x-area buffer with MSAA on top — the single largest
+    // GPU cost in the compact tier, and the one nobody can see on flat-shaded
+    // silhouettes at that pixel density.
+    if (compact || coarse) {
+      setDpr(Math.min(window.devicePixelRatio, 1.25));
+      return;
+    }
     // Capped at 1.75 rather than 2. The scene is ~38k flat-shaded triangles
     // with no fine texture detail, rendered WITH MSAA over a full-viewport
     // canvas — at DPR 2 that is a 4x-area multisampled buffer buying almost
     // nothing on this material set, while costing fill rate linearly. 1.75 is
     // ~23% fewer pixels for no difference anyone has been able to see on the
     // flat-shaded silhouettes.
-    setDpr(Math.min(window.devicePixelRatio, coarse ? 1.5 : 1.75));
-  }, []);
+    setDpr(Math.min(window.devicePixelRatio, 1.75));
+  }, [compact]);
   return dpr;
 }
 
@@ -94,9 +119,17 @@ export function IslandChapter() {
   const invalidateRef = useRef<() => void>(() => {});
   const [mode, setMode] = useState<"pending" | "scene" | "static">("pending");
   const [mount, setMount] = useState(false);
-  const dpr = useDpr();
+  // Resolved once, alongside the capability gate. It sizes the ash buffer and
+  // the pin, both of which are fixed at mount — a value that flipped on every
+  // resize would remount the instanced mesh mid-scroll.
+  const [compact, setCompact] = useState(false);
+  const dpr = useDpr(compact);
 
   useEffect(() => {
+    setCompact(
+      window.innerWidth < COMPACT_MAX_WIDTH ||
+        window.matchMedia("(pointer: coarse)").matches,
+    );
     setMode(capable() ? "scene" : "static");
   }, []);
 
@@ -169,7 +202,7 @@ export function IslandChapter() {
       const pin = ScrollTrigger.create({
         trigger: wrap,
         start: "top top",
-        end: () => `+=${window.innerHeight * ISLAND_PIN_VIEWPORTS}`,
+        end: () => `+=${window.innerHeight * pinViewports(compact)}`,
         pin: stage,
         pinSpacer: spacer,
         scrub: 0.5,
@@ -188,9 +221,9 @@ export function IslandChapter() {
           ScrollTrigger.create({
             trigger: wrap,
             start: () =>
-              `top+=${window.innerHeight * ISLAND_PIN_VIEWPORTS * caption.at} top`,
+              `top+=${window.innerHeight * pinViewports(compact) * caption.at} top`,
             end: () =>
-              `top+=${window.innerHeight * ISLAND_PIN_VIEWPORTS * caption.until} top`,
+              `top+=${window.innerHeight * pinViewports(compact) * caption.until} top`,
             invalidateOnRefresh: true,
             onToggle: (self) => {
               gsap.to(element, {
@@ -212,7 +245,7 @@ export function IslandChapter() {
         gsap.killTweensOf(captions);
       };
     },
-    { skipIfVisible: false, deps: [mode] },
+    { skipIfVisible: false, deps: [mode, compact] },
   );
 
   if (mode === "static") {
@@ -252,6 +285,19 @@ export function IslandChapter() {
       data-motion="island"
       className="relative bg-ink"
     >
+      {/* The jar GLB is 1.07 MB from S3, and drei's default Draco decoder comes
+          from gstatic — two cross-origins with no prior connection, on the one
+          asset the whole journey is built to arrive at. React 19 hoists these
+          into <head>, and they are rendered only in scene mode, so a visitor
+          served the static fallback never opens sockets it will not use.
+          Latency only: it does not shrink the payload, which is 94% texture and
+          would need a re-export to fix. */}
+      <link
+        rel="preconnect"
+        href="https://sunnyisland.s3.us-east-2.amazonaws.com"
+      />
+      <link rel="preconnect" href="https://www.gstatic.com" crossOrigin="" />
+
       {/* Hand-rendered pin spacer: ScrollTrigger never injects a sibling into
           React's managed tree. No ancestor of the pinned stage may gain
           transform, filter, perspective, contain, backdrop-filter or
@@ -278,6 +324,7 @@ export function IslandChapter() {
               progress={progress}
               drift={drift}
               dpr={dpr}
+              compact={compact}
               onReady={(inv) => {
                 invalidateRef.current = inv;
               }}

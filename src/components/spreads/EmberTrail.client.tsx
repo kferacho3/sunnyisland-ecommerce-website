@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 /**
  * Ember wisps that follow the pointer across the island — built with the
@@ -76,17 +76,25 @@ function bakeSprite(): HTMLCanvasElement {
 
 export function EmberTrail({ className }: { className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  // Purely ambient and purely pointer-driven: under reduced motion there is no
+  // still frame worth composing (unlike the leaves, whose composition was
+  // designed with them in it), and on a coarse pointer a stationary emitter
+  // grows a permanent plume. Both cases render NOTHING — an earlier version
+  // bailed inside the effect but still mounted the <canvas>, which left every
+  // phone compositing a full-stage transparent layer that could never draw.
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    setEnabled(
+      !window.matchMedia("(prefers-reduced-motion: reduce)").matches &&
+        !window.matchMedia("(hover: none)").matches,
+    );
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
-
-    // Purely ambient and purely pointer-driven: under reduced motion there is
-    // no still frame worth composing (unlike the leaves, whose composition was
-    // designed with them in it), and on a coarse pointer a stationary emitter
-    // grows a permanent plume. Both cases simply do not mount.
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (window.matchMedia("(hover: none)").matches) return;
 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
@@ -308,7 +316,9 @@ export function EmberTrail({ className }: { className?: string }) {
       window.removeEventListener("pointerleave", onLeave);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, []);
+  }, [enabled]);
+
+  if (!enabled) return null;
 
   return (
     <canvas

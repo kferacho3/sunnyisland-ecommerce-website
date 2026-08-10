@@ -528,20 +528,30 @@ function Embers({ day }: { day: { current: number } }) {
  * #780200 for the ember-lit flakes rather than a friendlier #8c1410.
  */
 const ASH_COUNT = 90;
+/**
+ * On a phone the band is the same size but the frame is far narrower, so the
+ * skill's own density law applies: on-screen density is count over BAND AREA,
+ * and tightening the band beats raising the count. Here the band is fixed by
+ * the island, so the count comes down instead — a figure that reads as a drift
+ * on a desktop arrives as a blizzard on a 390px screen.
+ */
+const ASH_COUNT_COMPACT = 34;
 const ASH_SPAN = 11;
 
 function Ash({
   progress,
   day,
+  count,
 }: {
   progress: { current: number };
   day: { current: number };
+  count: number;
 }) {
   const mesh = useRef<THREE.InstancedMesh>(null);
 
   const flakes = useMemo(() => {
     const rnd = mulberry(70707);
-    return Array.from({ length: ASH_COUNT }, () => {
+    return Array.from({ length: count }, () => {
       // Uniform-area disc sampling (sqrt), banded around the island rather
       // than centred on the camera — the skill's note that a band centred on
       // the camera puts almost all its volume outside a narrow frustum.
@@ -564,7 +574,7 @@ function Ash({
         lit: rnd() < 0.28,
       };
     });
-  }, []);
+  }, [count]);
 
   const scratch = useMemo(
     () => ({
@@ -644,7 +654,7 @@ function Ash({
   });
 
   return (
-    <instancedMesh ref={mesh} args={[undefined, undefined, ASH_COUNT]}>
+    <instancedMesh ref={mesh} args={[undefined, undefined, count]}>
       {/* A quad, not a point sprite — see the header. Slightly longer than
           wide so the long axis, and therefore the tumble, is legible. */}
       <planeGeometry args={[1, 1.6]} />
@@ -861,9 +871,11 @@ function Rig({
 function IslandScene({
   progress,
   drift,
+  compact,
 }: {
   progress: { current: number };
   drift: { current: { x: number; y: number } };
+  compact: boolean;
 }) {
   // One place turns scroll into daylight; every other part reads `day`.
   const day = useRef(0);
@@ -1049,7 +1061,11 @@ function IslandScene({
 
       <Embers day={day} />
       {/* Tumbling ash off the vent — the falling-leaves mechanism. */}
-      <Ash progress={progress} day={day} />
+      <Ash
+        progress={progress}
+        day={day}
+        count={compact ? ASH_COUNT_COMPACT : ASH_COUNT}
+      />
       {/* Eruption is fully procedural — no loader, nothing to suspend on. It
           used to share the boundary below, which meant the chapter's EARLIEST
           beat (pe starts at p=0.03) was gated behind its LARGEST asset: the
@@ -1070,11 +1086,13 @@ export default function IslandStage({
   progress,
   drift,
   dpr,
+  compact,
   onReady,
 }: {
   progress: { current: number };
   drift: { current: { x: number; y: number } };
   dpr: number;
+  compact: boolean;
   onReady: (invalidate: () => void) => void;
 }) {
   return (
@@ -1082,14 +1100,23 @@ export default function IslandStage({
       frameloop="demand"
       dpr={dpr}
       camera={{ position: [0, 5.4, 20.5], fov: 38 }}
-      gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
+      gl={{
+        // MSAA off in the compact tier. At DPR 1.25 on a phone screen the
+        // flat-shaded silhouettes have no edge detail fine enough for
+        // multisampling to recover, and it is pure fill cost on the hardware
+        // least able to pay it. Antialiasing cannot be toggled after context
+        // creation, which is why it is a mount-time tier rather than a setting.
+        antialias: !compact,
+        alpha: true,
+        powerPreference: compact ? "default" : "high-performance",
+      }}
       onCreated={({ invalidate }) => {
         onReady(invalidate);
         invalidate();
       }}
       className="absolute inset-0"
     >
-      <IslandScene progress={progress} drift={drift} />
+      <IslandScene progress={progress} drift={drift} compact={compact} />
     </Canvas>
   );
 }

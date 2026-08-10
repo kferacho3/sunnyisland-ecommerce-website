@@ -151,8 +151,20 @@ export const ISLAND_STOPS: readonly number[] = (() => {
   return stops;
 })();
 
-/** How many viewport heights the pinned stage spans. */
+/**
+ * How many viewport heights the pinned stage spans.
+ *
+ * Shorter on a phone. 4.2 viewports of pinned scrolling is a considered pace on
+ * a desktop wheel; on a touch screen — where a flick covers far less document
+ * per gesture — the same distance turns five chapters into a stretch of
+ * repeated swiping where the camera barely moves, which reads as the page
+ * being stuck rather than as deliberate pacing.
+ */
 export const ISLAND_PIN_VIEWPORTS = 4.2;
+export const ISLAND_PIN_VIEWPORTS_COMPACT = 3;
+
+export const pinViewports = (compact: boolean) =>
+  compact ? ISLAND_PIN_VIEWPORTS_COMPACT : ISLAND_PIN_VIEWPORTS;
 
 export interface Segment {
   a: IslandChapterSpec;
