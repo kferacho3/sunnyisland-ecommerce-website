@@ -285,13 +285,12 @@ export function IslandChapter() {
       data-motion="island"
       className="relative bg-ink"
     >
-      {/* The jar GLB is same-origin now (see JarModel), so drei's default Draco
-          decoder is the only cross-origin left on the journey's critical asset.
-          React 19 hoists this into <head>, and it renders only in scene mode,
-          so a visitor served the static fallback never opens a socket it will
-          not use. */}
-      <link rel="preconnect" href="https://www.gstatic.com" crossOrigin="" />
-
+      {/* No resource hints here any more, deliberately. The jar GLB is
+          same-origin and meshopt-compressed, whose decoder ships inside the
+          bundle — so the whole journey now makes ZERO cross-origin requests
+          (verified: 0 external requests on /sauce and /). There is nothing left
+          to preconnect to, and a preconnect to an origin you never call is a
+          wasted socket. */}
       {/* Hand-rendered pin spacer: ScrollTrigger never injects a sibling into
           React's managed tree. No ancestor of the pinned stage may gain
           transform, filter, perspective, contain, backdrop-filter or

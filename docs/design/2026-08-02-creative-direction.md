@@ -324,25 +324,34 @@ gives most of the saving straight back.
 | transfer | 1099.8 KB | **358.1 KB** (−67%) |
 | VRAM | 89.3 MB | **11.4 MB** (−87%) |
 | origin | S3, cross-origin | **same-origin** `/models/` |
+| geometry codec | Draco (wasm from gstatic) | **meshopt** (decoder in bundle) |
+| cross-origin requests | 2 | **0** |
 
 Self-hosting also drops a DNS + TLS handshake and lets the app's own cache
 headers apply. Verified: `/sauce` is unchanged at full frame — label type, flame
 badge, "8 FL OZ (250 g)" and the side message panel all still resolve, with the
 transmission glass intact (the flat-glass path is island-only).
 
+Geometry is **meshopt**, not Draco. Draco is 58 KB smaller on this asset (358
+vs 416 KB) but its wasm decoder is fetched from `gstatic.com` at runtime — a
+fourth origin, on the critical path, for the one asset the journey arrives at.
+Meshopt's decoder already ships inside `three-stdlib`, so the trade is 58 KB of
+asset against a DNS + TLS handshake and a ~200 KB wasm download. On a phone that
+is not close. Measured after the swap: **zero cross-origin requests** on either
+`/` or `/sauce`.
+
 Regenerate with:
 ```
 npx @gltf-transform/cli resize in.glb a.glb --width 2048 --height 1024
 npx @gltf-transform/cli webp a.glb b.glb --quality 82
-npx @gltf-transform/cli draco b.glb public/models/sunny-island-jar.glb
+npx @gltf-transform/cli meshopt b.glb public/models/sunny-island-jar.glb
 ```
 
 ## R8. Still open
 
 - The DOM spreads (Origin, Craft, Table) were not touched in this pass.
-- drei's Draco decoder is still fetched from `gstatic.com` at runtime
-  (preconnected, but a fourth-party dependency on the critical path). Self-host
-  it under `public/draco/` and call `useGLTF.setDecoderPath` to remove it.
+- The S3 copy of the jar is now unreferenced by the app. Left in place
+  deliberately — deleting a bucket object is not this branch's call.
 - No real-device testing. Everything above is Chromium + SwiftShader at emulated
   viewports, which models composition and correctness but not thermal throttling
   or true mobile GPU fill rate.
