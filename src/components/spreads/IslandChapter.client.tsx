@@ -4,6 +4,11 @@ import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
+import {
+  ISLAND_CHAPTERS,
+  ISLAND_PIN_VIEWPORTS,
+  captionWindow,
+} from "./island-ledger";
 import { cn } from "@/lib/cn";
 import { useLazyMotion } from "@/lib/motion-lazy";
 import { allowsRichVisuals } from "@/lib/tier";
@@ -24,6 +29,14 @@ const IslandStage = dynamic(() => import("./IslandScene.client"), {
   ssr: false,
 });
 
+/* Deferred too: the trail self-disables on coarse pointers and under reduced
+   motion, so shipping its bytes in the route bundle would bill every phone for
+   a canvas it will never run. */
+const EmberTrail = dynamic(
+  () => import("./EmberTrail.client").then((m) => m.EmberTrail),
+  { ssr: false },
+);
+
 /* ------------------------------------------------------------------ gates */
 
 function capable(): boolean {
@@ -41,27 +54,32 @@ function capable(): boolean {
 
 /* --------------------------------------------------------------- chapter */
 
-const CAPTIONS = [
-  { at: 0.06, until: 0.34, eyebrow: "The island", line: "Born on an island." },
-  {
-    at: 0.4,
-    until: 0.62,
-    eyebrow: "The crossing",
-    line: "Carried five generations across the water.",
-  },
-  {
-    at: 0.7,
-    until: 1,
-    eyebrow: "The landing",
-    line: "It all ends up in the jar.",
-  },
-] as const;
+/**
+ * Captions come from the same ledger the camera does, so a chapter's words and
+ * its composition can never drift apart. They used to be a separate hardcoded
+ * array of at/until pairs here, which meant re-timing the camera silently left
+ * the copy behind.
+ *
+ * The ledger module imports nothing from `three` — that is deliberate. Reading
+ * it here, in the main bundle, must not drag the 3D chunk along with it.
+ */
+const CAPTIONS = ISLAND_CHAPTERS.map((chapter, index) => ({
+  ...captionWindow(index),
+  eyebrow: chapter.eyebrow,
+  line: chapter.line,
+}));
 
 function useDpr() {
   const [dpr, setDpr] = useState(1);
   useEffect(() => {
     const coarse = window.matchMedia("(pointer: coarse)").matches;
-    setDpr(Math.min(window.devicePixelRatio, coarse ? 1.5 : 2));
+    // Capped at 1.75 rather than 2. The scene is ~38k flat-shaded triangles
+    // with no fine texture detail, rendered WITH MSAA over a full-viewport
+    // canvas — at DPR 2 that is a 4x-area multisampled buffer buying almost
+    // nothing on this material set, while costing fill rate linearly. 1.75 is
+    // ~23% fewer pixels for no difference anyone has been able to see on the
+    // flat-shaded silhouettes.
+    setDpr(Math.min(window.devicePixelRatio, coarse ? 1.5 : 1.75));
   }, []);
   return dpr;
 }
@@ -101,11 +119,16 @@ export function IslandChapter() {
   }, [mode]);
 
   // A lost context downgrades to the static world, permanently.
+  // `webglcontextlost` is dispatched ON the <canvas> and does NOT bubble, so
+  // the bubble-phase listener this used to register could never fire and the
+  // whole downgrade path was dead. Non-bubbling events still traverse the
+  // CAPTURE phase from window down to the target, so capture:true sees it
+  // without needing a ref into R3F's canvas.
   useEffect(() => {
     if (mode !== "scene") return;
     const onLost = () => setMode("static");
-    window.addEventListener("webglcontextlost", onLost);
-    return () => window.removeEventListener("webglcontextlost", onLost);
+    window.addEventListener("webglcontextlost", onLost, true);
+    return () => window.removeEventListener("webglcontextlost", onLost, true);
   }, [mode]);
 
   // Pointer drift = cheap interactivity. Each move requests exactly one frame.
@@ -146,7 +169,7 @@ export function IslandChapter() {
       const pin = ScrollTrigger.create({
         trigger: wrap,
         start: "top top",
-        end: () => `+=${window.innerHeight * 2.6}`,
+        end: () => `+=${window.innerHeight * ISLAND_PIN_VIEWPORTS}`,
         pin: stage,
         pinSpacer: spacer,
         scrub: 0.5,
@@ -164,8 +187,10 @@ export function IslandChapter() {
         return [
           ScrollTrigger.create({
             trigger: wrap,
-            start: () => `top+=${window.innerHeight * 2.6 * caption.at} top`,
-            end: () => `top+=${window.innerHeight * 2.6 * caption.until} top`,
+            start: () =>
+              `top+=${window.innerHeight * ISLAND_PIN_VIEWPORTS * caption.at} top`,
+            end: () =>
+              `top+=${window.innerHeight * ISLAND_PIN_VIEWPORTS * caption.until} top`,
             invalidateOnRefresh: true,
             onToggle: (self) => {
               gsap.to(element, {
@@ -258,6 +283,11 @@ export function IslandChapter() {
               }}
             />
           ) : null}
+
+          {/* Ember wisps under the hand. Scoped to this stage — never over the
+              inquiry form. Self-disables on coarse pointers and reduced
+              motion, and runs no rAF once the field has burnt out. */}
+          <EmberTrail className="pointer-events-none absolute inset-0 h-full w-full" />
 
           {/* Grain + edge vignette over the scene, matching the forge. */}
           <div

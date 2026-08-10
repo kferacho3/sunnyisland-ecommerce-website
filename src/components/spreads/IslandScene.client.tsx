@@ -4,7 +4,8 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 
 import { JarModel } from "../product/JarModel";
 import { Eruption } from "./Eruption";
-import { Suspense, useMemo, useRef } from "react";
+import { segmentAt } from "./island-ledger";
+import { Suspense, useEffect, useMemo, useRef } from "react";
 import type { Group, Points as ThreePoints } from "three";
 import * as THREE from "three";
 
@@ -117,8 +118,9 @@ const DAY = {
   cloud: new THREE.Color("#ffd0a0"),
 } as const;
 
-/** Dawn breaks through the middle of the chapter. */
-const dayAt = (p: number) => THREE.MathUtils.smoothstep(p, 0.1, 0.8);
+/* Dawn is no longer a global smoothstep over progress — each chapter in
+   island-ledger.ts authors its own `day`, and the scene interpolates between
+   them. Moving a chapter now moves its light with it. */
 
 /** Shared scratch — nothing allocates inside useFrame. */
 const lerpTo = (
@@ -128,159 +130,296 @@ const lerpTo = (
   t: number,
 ) => target.copy(a).lerp(b, t);
 
+/* ------------------------------------------------------------------ palms */
+
 /**
- * A palm built the way a palm actually grows: a trunk that tapers and leans
- * as it rises, a crown of fronds that arc outward and DROOP under their own
- * weight, and a leaflet spine along each frond. Cones on a stick read as
- * programmer-art; the arc and the droop are what sell it.
+ * Where the palms stand. Seated on the lathed surface via the shared solver,
+ * so no palm floats above the sand or sinks into the flank.
  */
-function Palm({
-  position,
-  lean,
-  scale = 1,
-  seed = 0,
-  day,
-}: {
-  position: [number, number, number];
-  lean: number;
-  scale?: number;
-  seed?: number;
-  day: { current: number };
-}) {
-  const rnd = useMemo(() => mulberry(1000 + seed), [seed]);
-  const frondRefs = useRef<(THREE.Group | null)[]>([]);
-  const frondMats = useRef<(THREE.MeshStandardMaterial | null)[]>([]);
+const PALM_PLACEMENTS = [
+  // The original six.
+  { x: 3.2, z: 2.9, lean: -0.12, scale: 1 },
+  { x: 4.3, z: 0.6, lean: 0.16, scale: 0.85 },
+  { x: -3.1, z: 3.6, lean: 0.1, scale: 1.1 },
+  { x: -4.6, z: -1.1, lean: -0.2, scale: 0.9 },
+  { x: 0.9, z: 4.4, lean: 0.08, scale: 0.95 },
+  { x: -1.6, z: -4.2, lean: -0.14, scale: 0.8 },
+  // Eight more, affordable only because the grove is now instanced: every
+  // additional palm is 37 more instances across the SAME four draw calls, and
+  // 444 triangles against a scene that was never triangle-bound. Six palms on
+  // a whole island read as a diagram; a real stand gives the silhouette
+  // overlap and depth layering the skill's art direction asks for.
+  // Kept clear of the jar's landing anchor at [3.6, ·, 4.6] so the closing
+  // composition frames the product, not a trunk.
+  { x: 2.1, z: -3.4, lean: 0.11, scale: 0.92 },
+  { x: -2.4, z: -2.2, lean: -0.09, scale: 1.05 },
+  { x: 5.0, z: -1.8, lean: 0.18, scale: 0.78 },
+  { x: -5.1, z: 1.4, lean: -0.16, scale: 0.88 },
+  { x: 1.4, z: 5.2, lean: 0.13, scale: 0.7 },
+  { x: -0.6, z: 5.5, lean: -0.07, scale: 0.82 },
+  { x: 5.2, z: 2.4, lean: -0.15, scale: 0.75 },
+  { x: -3.8, z: -3.9, lean: 0.2, scale: 0.95 },
+] as const;
 
-  const trunk = useMemo(() => {
-    // Segment the trunk so it can curve; each ring is narrower than the last.
-    const segments = 7;
-    return Array.from({ length: segments }, (_, i) => {
-      const t = i / segments;
-      return {
-        y: 0.28 + t * 2.1,
-        r: 0.115 - t * 0.055,
-        // Lean accumulates with height, like a real palm carrying its crown.
-        x:
-          Math.sin(t * 1.5) *
-          0.38 *
-          Math.sign(lean || 1) *
-          Math.abs(lean || 0.4),
-        tilt: t * 0.22 * Math.sign(lean || 1),
-      };
-    });
-  }, [lean]);
+const TRUNK_SEGMENTS = 7;
+const FRONDS_PER_PALM = 9;
+const LEAFLETS_PER_FROND = 3;
 
-  const crown = useMemo(() => {
-    const t = 1;
-    return {
-      y: 0.28 + t * 2.1,
-      x:
-        Math.sin(t * 1.5) * 0.38 * Math.sign(lean || 1) * Math.abs(lean || 0.4),
-    };
-  }, [lean]);
+/**
+ * The palms, instanced.
+ *
+ * They used to be six <Palm> components, each rendering 37 separate <mesh>
+ * elements with inline JSX geometry and materials — so 222 meshes, 222 unique
+ * THREE.Geometry instances and 222 unique THREE.Material instances, for six
+ * trees. Measured: 222 of the scene's 246 draw calls (90%) for 7% of its
+ * triangles, plus ~500 R3F node creations at mount.
+ *
+ * Every part turns out to be one unit primitive under non-uniform scale, which
+ * is what makes instancing exact rather than approximate:
+ *
+ *   trunk    cylinder(0.88, 1, 1, 6) · scale [r, 0.34, r]  ≡ cylinder(0.88r, r, 0.34, 6)
+ *   coconut  icosahedron(1, 0)       · scale 0.055         ≡ icosahedron(0.055, 0)
+ *   leaflet  cone(1, 1, 4)           · scale [rad, h, rad] ≡ cone(rad, h, 4)
+ *
+ * Fronds split into two instanced meshes by their lit/unlit tint instead of
+ * carrying a per-instance colour, so the dawn tween is two material writes per
+ * frame rather than 162 setColorAt calls. Total: 4 draw calls.
+ */
+function Palms({ day }: { day: { current: number } }) {
+  const trunkRef = useRef<THREE.InstancedMesh>(null);
+  const coconutRef = useRef<THREE.InstancedMesh>(null);
+  const frondLitRef = useRef<THREE.InstancedMesh>(null);
+  const frondDarkRef = useRef<THREE.InstancedMesh>(null);
+  const frondLitMat = useRef<THREE.MeshStandardMaterial>(null);
+  const frondDarkMat = useRef<THREE.MeshStandardMaterial>(null);
 
-  const fronds = useMemo(
-    () =>
-      Array.from({ length: 9 }, (_, i) => ({
-        yaw: (i / 9) * Math.PI * 2 + rnd() * 0.25,
-        droop: 0.5 + rnd() * 0.45,
-        len: 0.85 + rnd() * 0.4,
-        // Each frond opens on its own beat, so the crown blooms rather
-        // than snapping open all at once.
-        offset: rnd() * 0.24,
-      })),
-    [rnd],
+  // Scratch — nothing allocates inside useFrame.
+  const scratch = useMemo(
+    () => ({
+      unfurl: new THREE.Matrix4(),
+      out: new THREE.Matrix4(),
+      leaf: new THREE.Matrix4(),
+      quat: new THREE.Quaternion(),
+      axisZ: new THREE.Vector3(0, 0, 1),
+      pos: new THREE.Vector3(),
+      scl: new THREE.Vector3(),
+    }),
+    [],
   );
+
+  const build = useMemo(() => {
+    const trunks: THREE.Matrix4[] = [];
+    const trunkColors: THREE.Color[] = [];
+    const coconuts: THREE.Matrix4[] = [];
+    // One slot per frond: its static base matrix, its three static leaflet
+    // matrices, the unfurl offset, and which instanced mesh + slot it writes.
+    const frondSlots: {
+      base: THREE.Matrix4;
+      leaves: THREE.Matrix4[];
+      offset: number;
+      lit: boolean;
+      indices: number[];
+    }[] = [];
+
+    let litCount = 0;
+    let darkCount = 0;
+
+    const m = new THREE.Matrix4();
+    const q = new THREE.Quaternion();
+    const zAxis = new THREE.Vector3(0, 0, 1);
+    const yAxis = new THREE.Vector3(0, 1, 0);
+
+    PALM_PLACEMENTS.forEach((placement, palmIndex) => {
+      const { x, z, lean, scale } = placement;
+      const rnd = mulberry(1000 + palmIndex);
+
+      const root = new THREE.Matrix4().compose(
+        new THREE.Vector3(x, groundHeight(x, z) - 0.1, z),
+        new THREE.Quaternion(),
+        new THREE.Vector3(scale, scale, scale),
+      );
+
+      const leanSign = Math.sign(lean || 1);
+      const leanMag = Math.abs(lean || 0.4);
+
+      // Trunk — each ring narrower than the last, leaning as it rises.
+      for (let i = 0; i < TRUNK_SEGMENTS; i++) {
+        const t = i / TRUNK_SEGMENTS;
+        const y = 0.28 + t * 2.1;
+        const r = 0.115 - t * 0.055;
+        const sx = Math.sin(t * 1.5) * 0.38 * leanSign * leanMag;
+        const tilt = t * 0.22 * leanSign;
+        m.compose(
+          new THREE.Vector3(sx, y, 0),
+          q.setFromAxisAngle(zAxis, -tilt),
+          new THREE.Vector3(r, 0.34, r),
+        );
+        trunks.push(new THREE.Matrix4().multiplyMatrices(root, m));
+        trunkColors.push(new THREE.Color(i % 2 ? C.trunk : C.trunkDark));
+      }
+
+      // Crown sits at the top of the trunk's curve (t = 1).
+      const crownY = 0.28 + 2.1;
+      const crownX = Math.sin(1.5) * 0.38 * leanSign * leanMag;
+      const crown = new THREE.Matrix4().multiplyMatrices(
+        root,
+        new THREE.Matrix4().makeTranslation(crownX, crownY, 0),
+      );
+
+      for (let i = 0; i < 3; i++) {
+        m.compose(
+          new THREE.Vector3(
+            Math.sin((i / 3) * Math.PI * 2) * 0.09,
+            -0.04,
+            Math.cos((i / 3) * Math.PI * 2) * 0.09,
+          ),
+          new THREE.Quaternion(),
+          new THREE.Vector3(0.055, 0.055, 0.055),
+        );
+        coconuts.push(new THREE.Matrix4().multiplyMatrices(crown, m));
+      }
+
+      // Fronds. The draw order of rnd() calls is preserved exactly from the
+      // original so the seeded crowns come out identical.
+      for (let f = 0; f < FRONDS_PER_PALM; f++) {
+        const yaw = (f / FRONDS_PER_PALM) * Math.PI * 2 + rnd() * 0.25;
+        const droop = 0.5 + rnd() * 0.45;
+        const len = 0.85 + rnd() * 0.4;
+        const offset = rnd() * 0.24;
+
+        const base = new THREE.Matrix4().multiplyMatrices(
+          crown,
+          new THREE.Matrix4().makeRotationFromQuaternion(
+            q.setFromAxisAngle(yAxis, yaw),
+          ),
+        );
+
+        // Original: lit = floor(matIndex / 3) % 2 === 1 where matIndex = f*3+seg,
+        // which reduces to f % 2 === 1 — the alternation is per frond.
+        const lit = f % 2 === 1;
+
+        const leaves: THREE.Matrix4[] = [];
+        const indices: number[] = [];
+        for (let seg = 0; seg < LEAFLETS_PER_FROND; seg++) {
+          const t = seg / LEAFLETS_PER_FROND;
+          const drop = droop * t * t;
+          const rad = 0.115 - t * 0.055;
+          leaves.push(
+            new THREE.Matrix4().compose(
+              new THREE.Vector3(0.16 + t * len, 0.13 - drop * 0.62, 0),
+              q.setFromAxisAngle(zAxis, -0.26 - drop * 1.25),
+              new THREE.Vector3(rad, len * 0.62, rad),
+            ),
+          );
+          indices.push(lit ? litCount++ : darkCount++);
+        }
+
+        frondSlots.push({ base, leaves, offset, lit, indices });
+      }
+    });
+
+    return { trunks, trunkColors, coconuts, frondSlots, litCount, darkCount };
+  }, []);
+
+  // Static instances are written once, on mount.
+  useEffect(() => {
+    const trunk = trunkRef.current;
+    if (trunk) {
+      build.trunks.forEach((mat, i) => trunk.setMatrixAt(i, mat));
+      build.trunkColors.forEach((c, i) => trunk.setColorAt(i, c));
+      trunk.instanceMatrix.needsUpdate = true;
+      if (trunk.instanceColor) trunk.instanceColor.needsUpdate = true;
+    }
+    const coconut = coconutRef.current;
+    if (coconut) {
+      build.coconuts.forEach((mat, i) => coconut.setMatrixAt(i, mat));
+      coconut.instanceMatrix.needsUpdate = true;
+    }
+  }, [build]);
 
   useFrame(() => {
     const d = day.current;
+    const lit = frondLitRef.current;
+    const dark = frondDarkRef.current;
+    if (!lit || !dark) return;
 
-    // Closed: fronds pitched upright and drawn in, the way a palm holds a
-    // new spear. Open: spread wide and drooping under their own weight.
-    for (let i = 0; i < fronds.length; i++) {
-      const g = frondRefs.current[i];
-      if (!g) continue;
-      const open = THREE.MathUtils.clamp((d - fronds[i].offset) / 0.5, 0, 1);
+    const { unfurl, out, leaf, quat, axisZ, pos, scl } = scratch;
+
+    for (const slot of build.frondSlots) {
+      // Closed: fronds pitched upright and drawn in, the way a palm holds a
+      // new spear. Open: spread wide and drooping under their own weight.
+      const open = THREE.MathUtils.clamp((d - slot.offset) / 0.5, 0, 1);
       const eased = 1 - Math.pow(1 - open, 3);
-      g.rotation.z = THREE.MathUtils.lerp(-1.12, 0, eased);
-      g.scale.setScalar(THREE.MathUtils.lerp(0.72, 1, eased));
-    }
+      // FLOOR of 0.42, not 0. Fully furled crowns were correct while the
+      // opening camera sat close; from the new establishing shot 25 units out
+      // the trunks are barely a pixel wide, so a closed crown read as a dark
+      // spiky blob apparently floating beside the volcano — fourteen of them.
+      // A real palm only holds a furled spear at its centre anyway; the whole
+      // crown does not close at night. The dawn still visibly opens the canopy,
+      // it just starts from a palm rather than from a shuttlecock.
+      const shaped = 0.42 + eased * 0.58;
+      const rot = THREE.MathUtils.lerp(-1.12, 0, shaped);
+      const s = THREE.MathUtils.lerp(0.72, 1, shaped);
 
-    // And the canopy greens as the light arrives.
-    for (let i = 0; i < frondMats.current.length; i++) {
-      const m = frondMats.current[i];
-      if (!m) continue;
-      const lit = Math.floor(i / 3) % 2 === 1;
-      lerpTo(
-        m.color,
-        lit ? NIGHT.frondLit : NIGHT.frond,
-        lit ? DAY.frondLit : DAY.frond,
-        d,
+      unfurl.compose(
+        pos.set(0, 0, 0),
+        quat.setFromAxisAngle(axisZ, rot),
+        scl.set(s, s, s),
       );
+      out.multiplyMatrices(slot.base, unfurl);
+
+      const target = slot.lit ? lit : dark;
+      for (let seg = 0; seg < LEAFLETS_PER_FROND; seg++) {
+        // Reused scratch — allocating 162 Matrix4 per frame would hand the GC
+        // exactly the per-frame garbage this file is otherwise careful to avoid.
+        leaf.multiplyMatrices(out, slot.leaves[seg]);
+        target.setMatrixAt(slot.indices[seg], leaf);
+      }
     }
+    lit.instanceMatrix.needsUpdate = true;
+    dark.instanceMatrix.needsUpdate = true;
+
+    // The canopy greens as the light arrives — two writes, not 162.
+    if (frondLitMat.current)
+      lerpTo(frondLitMat.current.color, NIGHT.frondLit, DAY.frondLit, d);
+    if (frondDarkMat.current)
+      lerpTo(frondDarkMat.current.color, NIGHT.frond, DAY.frond, d);
   });
 
   return (
-    <group position={position} scale={scale}>
-      {trunk.map((seg, i) => (
-        <mesh key={i} position={[seg.x, seg.y, 0]} rotation={[0, 0, -seg.tilt]}>
-          <cylinderGeometry args={[seg.r * 0.88, seg.r, 0.34, 6]} />
-          <meshStandardMaterial
-            color={i % 2 ? C.trunk : C.trunkDark}
-            flatShading
-          />
-        </mesh>
-      ))}
+    <>
+      <instancedMesh
+        ref={trunkRef}
+        args={[undefined, undefined, build.trunks.length]}
+      >
+        <cylinderGeometry args={[0.88, 1, 1, 6]} />
+        <meshStandardMaterial flatShading />
+      </instancedMesh>
 
-      <group position={[crown.x, crown.y, 0]}>
-        {/* Coconut cluster at the crown base. */}
-        {[0, 1, 2].map((i) => (
-          <mesh
-            key={i}
-            position={[
-              Math.sin((i / 3) * Math.PI * 2) * 0.09,
-              -0.04,
-              Math.cos((i / 3) * Math.PI * 2) * 0.09,
-            ]}
-          >
-            <icosahedronGeometry args={[0.055, 0]} />
-            <meshStandardMaterial color="#3a2412" flatShading />
-          </mesh>
-        ))}
+      <instancedMesh
+        ref={coconutRef}
+        args={[undefined, undefined, build.coconuts.length]}
+      >
+        <icosahedronGeometry args={[1, 0]} />
+        <meshStandardMaterial color="#3a2412" flatShading />
+      </instancedMesh>
 
-        {fronds.map((f, i) => (
-          <group key={i} rotation={[0, f.yaw, 0]}>
-            {/* The unfurling group: closed = pitched upright and drawn in,
-                open = spread wide and drooping under its own weight. */}
-            <group
-              ref={(g) => {
-                frondRefs.current[i] = g;
-              }}
-            >
-              {[0, 1, 2].map((seg) => {
-                const t = seg / 3;
-                const drop = f.droop * t * t;
-                return (
-                  <mesh
-                    key={seg}
-                    position={[0.16 + t * f.len, 0.13 - drop * 0.62, 0]}
-                    rotation={[0, 0, -0.26 - drop * 1.25]}
-                  >
-                    <coneGeometry args={[0.115 - t * 0.055, f.len * 0.62, 4]} />
-                    <meshStandardMaterial
-                      flatShading
-                      ref={(m) => {
-                        frondMats.current[i * 3 + seg] = m;
-                      }}
-                    />
-                  </mesh>
-                );
-              })}
-            </group>
-          </group>
-        ))}
-      </group>
-    </group>
+      <instancedMesh
+        ref={frondLitRef}
+        args={[undefined, undefined, build.litCount]}
+      >
+        <coneGeometry args={[1, 1, 4]} />
+        <meshStandardMaterial ref={frondLitMat} flatShading />
+      </instancedMesh>
+
+      <instancedMesh
+        ref={frondDarkRef}
+        args={[undefined, undefined, build.darkCount]}
+      >
+        <coneGeometry args={[1, 1, 4]} />
+        <meshStandardMaterial ref={frondDarkMat} flatShading />
+      </instancedMesh>
+    </>
   );
 }
 
@@ -298,12 +437,23 @@ function Jar({ progress }: { progress: { current: number } }) {
     g.rotation.y = -1.1 + 1.45 * e;
     // The jar belongs to the landing beat — before that it is not on stage.
     g.scale.setScalar(0.0034 * e);
+    // Scale 0 is NOT free. A zero-radius bounding sphere still sits inside the
+    // frustum, so the cull passes and all four jar meshes stay in the render
+    // list for the entire first half of the chapter. Dropping visibility takes
+    // them out of it until they can actually be seen.
+    g.visible = e > 0.001;
   });
 
   // The raw GLB is ~300 units tall (see legacy PepperSauce.tsx scale=0.0075).
   return (
-    <group ref={group} position={[3.6, 0.34, 4.6]} scale={0.0034}>
-      <JarModel />
+    <group
+      ref={group}
+      position={[3.6, 0.34, 4.6]}
+      scale={0.0034}
+      visible={false}
+    >
+      {/* flatGlass: no transmission pass in the island. See JarModel. */}
+      <JarModel flatGlass />
     </group>
   );
 }
@@ -347,6 +497,167 @@ function Embers({ day }: { day: { current: number } }) {
   );
 }
 
+/* -------------------------------------------------------- ash (falling-leaves) */
+
+/**
+ * Ash drifting off the vent — built with the `falling-leaves` mechanism.
+ *
+ * The skill's core claim is that a falling thing reads as a LEAF (here, a
+ * charred flake) only if it tumbles about its own long axis: it presents a
+ * face, thins to nothing edge-on, then opens out on the other side. A sprite
+ * that merely spins in the picture plane reads as confetti. That single rule
+ * forbids point sprites outright — a point sprite always faces the camera and
+ * so can never go edge-on — which is why this is an InstancedMesh of QUADS and
+ * why the existing <Embers> points field could not simply be restyled.
+ *
+ * Two departures from the skill, both forced by this scene and both deliberate:
+ *
+ * 1. DRIVEN BY SCROLL, NOT WALL CLOCK. The skill assumes a permanent rAF. This
+ *    canvas is frameloop="demand" with 0 RAF at idle (creative direction §7),
+ *    and the whole island is authored so that scrubbing backwards returns it
+ *    exactly. So `phase` comes from scroll progress: the ash falls as you
+ *    travel, reverses when you scrub back, and costs nothing when you stop.
+ * 2. OPAQUE FLAKES, NO ALPHA. The skill warns that alpha-tested leaves lose
+ *    early-Z and that per-pixel cost exceeds triangle count. Ash is opaque
+ *    anyway, so DoubleSide flat-shaded quads give two differently-lit faces for
+ *    free — the skill's "bake both faces" rule satisfied by the normals.
+ *
+ * Colour note: ACESFilmic tone mapping is on (R3F default, never overridden
+ * here). The skill's trap list is explicit that an emissive red returns from a
+ * tone-mapped composite PINK unless G and B are driven to zero — hence
+ * #780200 for the ember-lit flakes rather than a friendlier #8c1410.
+ */
+const ASH_COUNT = 90;
+const ASH_SPAN = 11;
+
+function Ash({
+  progress,
+  day,
+}: {
+  progress: { current: number };
+  day: { current: number };
+}) {
+  const mesh = useRef<THREE.InstancedMesh>(null);
+
+  const flakes = useMemo(() => {
+    const rnd = mulberry(70707);
+    return Array.from({ length: ASH_COUNT }, () => {
+      // Uniform-area disc sampling (sqrt), banded around the island rather
+      // than centred on the camera — the skill's note that a band centred on
+      // the camera puts almost all its volume outside a narrow frustum.
+      const a = rnd() * Math.PI * 2;
+      const r = 2.5 + Math.sqrt(rnd()) * 7.5;
+      return {
+        x: Math.cos(a) * r,
+        z: Math.sin(a) * r,
+        y0: rnd() * ASH_SPAN,
+        fall: 0.9 + rnd() * 1.6,
+        // Every leaf gets its own rates. Sharing any one of these across the
+        // field lets the eye find the common rhythm in about two seconds.
+        spin0: rnd() * Math.PI * 2,
+        spinSp: (0.5 + rnd() * 1.8) * (rnd() < 0.5 ? -1 : 1),
+        roll0: rnd() * Math.PI * 2,
+        rollSp: (rnd() - 0.5) * 1.1,
+        yaw: rnd() * Math.PI * 2,
+        slip: 0.16 + rnd() * 0.3,
+        size: 0.035 + rnd() * 0.055,
+        lit: rnd() < 0.28,
+      };
+    });
+  }, []);
+
+  const scratch = useMemo(
+    () => ({
+      m: new THREE.Matrix4(),
+      q: new THREE.Quaternion(),
+      qSpin: new THREE.Quaternion(),
+      qRoll: new THREE.Quaternion(),
+      pos: new THREE.Vector3(),
+      scl: new THREE.Vector3(),
+      axisX: new THREE.Vector3(1, 0, 0),
+      axisY: new THREE.Vector3(0, 1, 0),
+      axisZ: new THREE.Vector3(0, 0, 1),
+      color: new THREE.Color(),
+    }),
+    [],
+  );
+
+  useEffect(() => {
+    const inst = mesh.current;
+    if (!inst) return;
+    const ash = new THREE.Color("#2a211c");
+    const emberLit = new THREE.Color("#780200");
+    flakes.forEach((f, i) => inst.setColorAt(i, f.lit ? emberLit : ash));
+    if (inst.instanceColor) inst.instanceColor.needsUpdate = true;
+  }, [flakes]);
+
+  useFrame(() => {
+    const inst = mesh.current;
+    if (!inst) return;
+    const p = progress.current;
+    const d = day.current;
+    const { m, q, qSpin, qRoll, pos, scl, axisX, axisY, axisZ } = scratch;
+
+    // Six fall cycles across the chapter — enough that the field is clearly
+    // moving under a normal scroll without strobing under a fast one.
+    const phase = p * 6;
+
+    // Presence is keyed to the JOURNEY, not to daylight. The band is centred on
+    // the island, but the establishing chapter views it from 25 units out — so
+    // flakes sized for the near field sat between camera and island and read as
+    // large dark shapes cluttering the widest, quietest frame in the sequence.
+    // Ash now arrives with the volcano (in by the crossing, full at the vent)
+    // and thins at the landing, where the jar has to carry the frame alone.
+    const arrive = THREE.MathUtils.smoothstep(p, 0.08, 0.34);
+    const settle = THREE.MathUtils.smoothstep(p, 0.76, 1);
+    const presence = arrive * (1 - settle * 0.82) * (1 - d * 0.25);
+
+    for (let i = 0; i < flakes.length; i++) {
+      const f = flakes[i];
+      const spin = f.spin0 + phase * f.spinSp * 2.2;
+      const roll = f.roll0 + phase * f.rollSp;
+
+      // cos(spin) is the face-on factor and crosses zero — that instant of
+      // near-disappearance is what the eye reads as a flake rather than a mote.
+      // The sideways slip is sin(spin): the SAME angle, 90 degrees out of
+      // phase, so the flake skates fastest exactly as it turns edge-on. An
+      // independent sine here would read as wind or as an easing bug.
+      const slipX = Math.sin(spin) * f.slip;
+
+      const yRaw = f.y0 - phase * f.fall;
+      const y = ((yRaw % ASH_SPAN) + ASH_SPAN) % ASH_SPAN;
+
+      qRoll.setFromAxisAngle(axisZ, roll);
+      qSpin.setFromAxisAngle(axisX, spin);
+      q.setFromAxisAngle(axisY, f.yaw).multiply(qRoll).multiply(qSpin);
+
+      const s = f.size * presence;
+      m.compose(
+        pos.set(f.x + slipX, y * 0.92 + 0.15, f.z),
+        q,
+        scl.set(s, s, s),
+      );
+      inst.setMatrixAt(i, m);
+    }
+    inst.instanceMatrix.needsUpdate = true;
+    inst.visible = presence > 0.04;
+  });
+
+  return (
+    <instancedMesh ref={mesh} args={[undefined, undefined, ASH_COUNT]}>
+      {/* A quad, not a point sprite — see the header. Slightly longer than
+          wide so the long axis, and therefore the tumble, is legible. */}
+      <planeGeometry args={[1, 1.6]} />
+      <meshStandardMaterial
+        flatShading
+        side={THREE.DoubleSide}
+        roughness={0.9}
+        metalness={0}
+      />
+    </instancedMesh>
+  );
+}
+
 /* -------------------------------------------------------------------- sky */
 
 /** The sun: a disc climbing out of the sea, with its halo. */
@@ -373,9 +684,18 @@ function Sun({ day }: { day: { current: number } }) {
 
   return (
     <group ref={group}>
+      {/* fog={false} on the whole sky layer. THREE.Fog applies to Basic and
+          Points materials too, and the sun sits ~44 units from the opening
+          camera against a night far-plane of 40 — so it was being lerped
+          entirely to fog colour. A sun that is 100% fog is not a sun. */}
       <mesh>
         <circleGeometry args={[2.8, 32]} />
-        <meshBasicMaterial ref={disc} transparent depthWrite={false} />
+        <meshBasicMaterial
+          ref={disc}
+          transparent
+          depthWrite={false}
+          fog={false}
+        />
       </mesh>
       <mesh position={[0, 0, -0.5]}>
         <circleGeometry args={[9, 32]} />
@@ -385,6 +705,7 @@ function Sun({ day }: { day: { current: number } }) {
           transparent
           depthWrite={false}
           blending={THREE.AdditiveBlending}
+          fog={false}
         />
       </mesh>
     </group>
@@ -428,6 +749,7 @@ function Clouds({ day }: { day: { current: number } }) {
             flatShading
             transparent
             opacity={0.3}
+            fog={false}
           />
         </mesh>
       ))}
@@ -462,6 +784,11 @@ function Stars({ day }: { day: { current: number } }) {
       <bufferGeometry>
         <bufferAttribute attach="attributes-position" args={[positions, 3]} />
       </bufferGeometry>
+      {/* The stars sit on a shell of r=62. Night fog is near 17 / far 40, so
+          the fog factor saturated at 1.0 and every star painted as solid
+          #05070d against a #05070d background — mathematically invisible, and
+          only ever at night, which is the sole time their opacity is non-zero.
+          The starfield has never been seen by anyone. */}
       <pointsMaterial
         ref={mat}
         color="#cfe0ff"
@@ -469,6 +796,7 @@ function Stars({ day }: { day: { current: number } }) {
         sizeAttenuation
         transparent
         depthWrite={false}
+        fog={false}
       />
     </points>
   );
@@ -481,43 +809,50 @@ function Rig({
   progress: { current: number };
   drift: { current: { x: number; y: number } };
 }) {
-  const { camera } = useThree();
+  const { camera, size } = useThree();
   const look = useMemo(() => new THREE.Vector3(), []);
 
+  // Tall/narrow viewports get the authored mobile endpoints. Measured off the
+  // canvas, not a media query, so a resize re-composes rather than keeping a
+  // desktop framing that has since become a centre crop.
+  const narrow = size.width < 900;
+
   useFrame(() => {
-    const p = progress.current;
-    // Beat A (0→0.55): the approach — a slow orbit crossing the water.
-    // Beat B (0.55→1): the landing — a HAND-PLACED shot, lerped to, so the
-    // camera can never fly through the palm belt on its way to the jar.
-    const a = THREE.MathUtils.smoothstep(p, 0, 0.55);
-    const b = THREE.MathUtils.smoothstep(p, 0.55, 1);
+    const { a, b, t } = segmentAt(progress.current);
 
-    const angle = -0.45 + a * 1.05;
-    const radius = 20.5 - a * 8.2;
-    const height = 5.4 - a * 1.6;
+    const posA = (narrow && a.camera.mobile?.pos) || a.camera.pos;
+    const posB = (narrow && b.camera.mobile?.pos) || b.camera.pos;
+    const tgtA = (narrow && a.camera.mobile?.target) || a.camera.target;
+    const tgtB = (narrow && b.camera.mobile?.target) || b.camera.target;
+    const fovA = (narrow && a.camera.mobile?.fov) || a.camera.fov;
+    const fovB = (narrow && b.camera.mobile?.fov) || b.camera.fov;
 
-    const ox = Math.sin(angle) * radius;
-    const oy = height;
-    const oz = Math.cos(angle) * radius;
-
-    // The landing pose: over the shallows, looking back at the jar on the
-    // beach with the island rising behind it.
-    const ex = 6.4;
-    const ey = 1.35;
-    const ez = 7.8;
+    // Pointer drift is clamped and BLENDS OUT toward each keyframe, so it can
+    // never nudge an authored composition off its mark at the moment the
+    // visitor is actually reading it. Peaks mid-transition where the camera is
+    // already moving and a little parallax reads as life.
+    const settle = Math.sin(Math.PI * t);
+    const dx = drift.current.x * 0.42 * settle;
+    const dy = drift.current.y * 0.26 * settle;
 
     camera.position.set(
-      THREE.MathUtils.lerp(ox, ex, b) + drift.current.x * 0.5,
-      THREE.MathUtils.lerp(oy, ey, b) + drift.current.y * 0.3,
-      THREE.MathUtils.lerp(oz, ez, b),
+      THREE.MathUtils.lerp(posA[0], posB[0], t) + dx,
+      THREE.MathUtils.lerp(posA[1], posB[1], t) + dy,
+      THREE.MathUtils.lerp(posA[2], posB[2], t),
     );
-
     look.set(
-      THREE.MathUtils.lerp(0, 3.6, b),
-      THREE.MathUtils.lerp(2.1 - 0.3 * a, 1.15, b),
-      THREE.MathUtils.lerp(0, 4.6, b),
+      THREE.MathUtils.lerp(tgtA[0], tgtB[0], t),
+      THREE.MathUtils.lerp(tgtA[1], tgtB[1], t),
+      THREE.MathUtils.lerp(tgtA[2], tgtB[2], t),
     );
     camera.lookAt(look);
+
+    const fov = THREE.MathUtils.lerp(fovA, fovB, t);
+    const cam = camera as THREE.PerspectiveCamera;
+    if (cam.isPerspectiveCamera && Math.abs(cam.fov - fov) > 1e-3) {
+      cam.fov = fov;
+      cam.updateProjectionMatrix();
+    }
   });
 
   return null;
@@ -544,7 +879,11 @@ function IslandScene({
   const bgRef = useRef<THREE.Color>(null);
 
   useFrame(() => {
-    const d = (day.current = dayAt(progress.current));
+    // Daylight is interpolated from the chapter ledger, in ONE place. Rig only
+    // moves the camera: if both wrote `day`, useFrame ordering would decide
+    // which won and every other subscriber would read a one-frame-stale value.
+    const seg = segmentAt(progress.current);
+    const d = (day.current = THREE.MathUtils.lerp(seg.a.day, seg.b.day, seg.t));
 
     if (bgRef.current) lerpTo(bgRef.current, NIGHT.fog, DAY.fog, d);
     if (fogRef.current) {
@@ -595,15 +934,39 @@ function IslandScene({
     <>
       <color ref={bgRef} attach="background" args={["#05070d"]} />
       <fog ref={fogRef} attach="fog" args={["#05070d", 17, 40]} />
-      <ambientLight intensity={0.35} color="#ffd9b0" />
-      {/* Sunset key, low across the water. */}
+      {/* EVERY light carries its ref. Until 2026-08-09 none of them did: the
+          four refs above were declared and driven every frame while the JSX
+          attached bare, static lights, so the dawn arc this scene is named for
+          had never once executed. The key sat frozen at #f05400/2.2 from
+          [-9,2.2,6] — light from the camera's shoulder, not from the sun at
+          [-17,·,-24] — which is why the island read as a flat muddy cone with
+          no source. Initial props are authored to the d=0 (night) state so the
+          first painted frame matches the scrubbed one. */}
+      <ambientLight ref={ambientRef} intensity={0.14} color="#ffd9b0" />
+      {/* Sky/ground bounce. There was no hemisphere light in the scene at all;
+          groundColor is the volcanic soil throwing warmth back up under the
+          fronds, which is what stops the undersides going pure black. */}
+      <hemisphereLight
+        ref={hemiRef}
+        intensity={0.3}
+        color={NIGHT.hemi.getStyle()}
+        groundColor="#241206"
+      />
+      {/* The key IS the sun. It rises from below the horizon to +7 across the
+          scroll, agreeing with the sun disc's own climb. */}
       <directionalLight
-        position={[-9, 2.2, 6]}
-        intensity={2.2}
-        color="#f05400"
+        ref={keyRef}
+        position={[-13, -1, -10]}
+        intensity={0.7}
+        color={NIGHT.key.getStyle()}
       />
       {/* Gold rim from behind the peak. */}
-      <directionalLight position={[6, 4, -8]} intensity={0.9} color="#fcc000" />
+      <directionalLight
+        ref={fillRef}
+        position={[6, 4, -8]}
+        intensity={0.25}
+        color={NIGHT.fill.getStyle()}
+      />
 
       {/* The sea. */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
@@ -673,27 +1036,9 @@ function IslandScene({
         </mesh>
       ))}
 
-      {/* Seated on the lathed surface via the shared solver, so no palm
-          floats above the sand or sinks into the flank. */}
-      {(
-        [
-          { x: 3.2, z: 2.9, lean: -0.12, scale: 1 },
-          { x: 4.3, z: 0.6, lean: 0.16, scale: 0.85 },
-          { x: -3.1, z: 3.6, lean: 0.1, scale: 1.1 },
-          { x: -4.6, z: -1.1, lean: -0.2, scale: 0.9 },
-          { x: 0.9, z: 4.4, lean: 0.08, scale: 0.95 },
-          { x: -1.6, z: -4.2, lean: -0.14, scale: 0.8 },
-        ] as const
-      ).map((t, i) => (
-        <Palm
-          key={i}
-          position={[t.x, groundHeight(t.x, t.z) - 0.1, t.z]}
-          lean={t.lean}
-          scale={t.scale}
-          seed={i}
-          day={day}
-        />
-      ))}
+      {/* Four instanced draws for the whole grove. Placements live in
+          PALM_PLACEMENTS beside the builder. */}
+      <Palms day={day} />
 
       {/* The sky. Ordered back-to-front: stars sit furthest out and are put
           out by the dawn, the sun climbs through them, the cloud bank catches
@@ -703,10 +1048,17 @@ function IslandScene({
       <Clouds day={day} />
 
       <Embers day={day} />
-      {/* useGLTF suspends — without a boundary neither the jar nor the
-          eruption ever mounts. */}
+      {/* Tumbling ash off the vent — the falling-leaves mechanism. */}
+      <Ash progress={progress} day={day} />
+      {/* Eruption is fully procedural — no loader, nothing to suspend on. It
+          used to share the boundary below, which meant the chapter's EARLIEST
+          beat (pe starts at p=0.03) was gated behind its LARGEST asset: the
+          1.07 MB jar GLB, from a third origin, plus a Draco decoder from a
+          fourth. On a slow connection that showed an island whose volcano
+          simply never erupted. */}
+      <Eruption progress={progress} />
+      {/* useGLTF suspends — the jar, and only the jar, needs the boundary. */}
       <Suspense fallback={null}>
-        <Eruption progress={progress} />
         <Jar progress={progress} />
       </Suspense>
       <Rig progress={progress} drift={drift} />
